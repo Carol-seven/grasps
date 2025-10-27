@@ -1,0 +1,22 @@
+home:
+  title: grasps
+  description: Groupwise Regularized Adaptive Sparse Precision Solution
+
+url: https://github.com/Carol-seven/grasps
+
+template:
+  bootstrap: 5
+  opengraph:
+    image:
+      src: https://github.com/Carol-seven/grasps/blob/main/man/figure/grasps.png
+
+authors:
+  Shiying Xiao:
+    href: http://shiying-xiao.com
+  Jun Yan:
+    href: https://statcomp.org
+  Panpan Zhang:
+    href: https://panpan-zhang.com
+
+development:
+  mode: auto
