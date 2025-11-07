@@ -1,4 +1,4 @@
-#' Sparse-Group Graphical Model
+#' Groupwise Regularized Adaptive Sparse Precision Solution
 #'
 #' @description
 #' Provide a collection of statistical methods that incorporate both
@@ -13,8 +13,8 @@
 #' the sample size. This is only required when the input matrix \code{X} is a
 #' p-by-p sample covariance/correlation matrix with dimension p.
 #'
-#' @param groups An integer vector specifying the group membership. The group
-#' sizes must be consistent with the dimension p.
+#' @param membership An integer vector specifying the group membership.
+#' The length of \code{membership} must be consistent with the dimension p.
 #'
 #' @param penalty A character string specifying the penalty for estimating
 #' precision matrix. Available options include: \enumerate{
@@ -144,7 +144,7 @@
 #'
 #' @export
 
-sggm <- function(X, n = nrow(X), groups, penalty,
+sggm <- function(X, n = nrow(X), membership, penalty,
                  diag.ind = TRUE, diag.grp = TRUE, diag.include = FALSE,
                  lambda = NULL, alpha = NULL, gamma = NULL,
                  nlambda = 10, lambda.min.ratio = 0.01,
@@ -155,8 +155,8 @@ sggm <- function(X, n = nrow(X), groups, penalty,
 
   p <- ncol(X)
 
-  if (length(groups) != p) {
-    stop("The length of 'groups' must be the column dimension of X!\n");
+  if (length(membership) != p) {
+    stop("The length of 'membership' must be the column dimension of X!\n");
   }
   if (!penalty %in% c("lasso", "adapt", "mcp", "scad")) {
     stop("Error in penalty! Available options: 'lasso', 'adapt', 'mcp', 'scad'.\n")
@@ -193,8 +193,8 @@ sggm <- function(X, n = nrow(X), groups, penalty,
     S <- (n-1)/n*cov(X)
   }
 
-  grp <- sort(unique(groups))
-  group.idx <- lapply(grp, function(g) which(groups == g)-1)
+  grp <- sort(unique(membership))
+  group.idx <- lapply(grp, function(g) which(membership == g)-1)
   names(group.idx) <- grp
 
   alpha_null <- is.null(alpha)
@@ -207,11 +207,11 @@ sggm <- function(X, n = nrow(X), groups, penalty,
   if (lambda_null) {
     max_abs.off <- max(abs(S[upper.tri(S, diag = FALSE)]))
     S2 <- S*S
-    sum.row <- rowsum(S2, groups)
-    block.sum <- rowsum(t(sum.row), groups)
+    sum.row <- rowsum(S2, membership)
+    block.sum <- rowsum(t(sum.row), membership)
     block.norm <- sqrt(block.sum)
     max_block.norm.off <- max(block.norm[upper.tri(block.norm, diag = FALSE)])
-    idx_list <- split(seq_along(groups), groups)
+    idx_list <- split(seq_along(membership), membership)
     block.off_list <- list()
     for (g in seq_along(idx_list)) {
       for (gp in seq_along(idx_list)) {
