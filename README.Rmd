@@ -1,0 +1,82 @@
+---
+output:
+  github_document:
+    pandoc_args: [ "--wrap=preserve", "--columns=80" ]
+bibliography: inst/REFERENCES.bib
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+
+# grasps <img src="man/figures/logo.png" align="right" alt="" width="150">
+
+
+## Groupwise Regularized Adaptive Sparse Precision Solution
+
+
+<!-- badges: start -->
+[![GitHub R package version](https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&color=green)](https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Carol-seven/grasps)](https://github.com/Carol-seven/grasps/commits/main)
+[![R-CMD-check](https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml)
+[![GitHub License](https://img.shields.io/github/license/Carol-seven/grasps?color=blue)](https://github.com/Carol-seven/grasps/blob/main/LICENSE.md)
+<!-- badges: end -->
+
+
+The goal of **grasps** is to provide a collection of statistical methods that
+incorporate both element-wise and group-wise penalties to estimate a precision
+matrix, making them user-friendly and useful for researchers and practitioners.
+
+
+## Penalties
+
+
+The package **grasps** provides functions to estimate precision matrices using
+the following penalties:
+
+
+1. Adaptive lasso [@zou2006adaptive;@fan2009network]
+
+2. Lasso [@tibshirani1996regression;@friedman2008sparse]
+
+3. Minimax concave penalty (MCP) [@zhang2010nearly]
+
+4. Smoothly clipped absolute deviation (SCAD) [@fan2001variable;@fan2009network]
+
+
+## Installation
+
+
+You can install the development version of **grasps** from
+[GitHub](https://github.com/) with:
+
+
+```
+# install.packages("devtools")
+devtools::install_github("Carol-seven/grasps")
+```
+
+
+## Example
+
+
+```
+library(grasps)
+
+X <- matrix(rnorm(200), 10, 20)
+membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
+
+grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
+```
+
+
+## Reference {-}
+
