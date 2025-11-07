@@ -1,4 +1,5 @@
 *.Rproj
+*.o
 .DS_Store
 .RData
 .Rhistory
