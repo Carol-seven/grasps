@@ -1,4 +1,4 @@
-# grasps <img src="man/figure/grasps.png" align="right" alt="" width="150">
+# grasps <img src="man/figures/logo.png" align="right" alt="" width="150">
 
 
 [![GitHub R package version](https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&color=green)](https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION)
