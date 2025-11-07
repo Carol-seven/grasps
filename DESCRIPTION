@@ -38,3 +38,7 @@ LinkingTo:
     RcppArmadillo
 RoxygenNote: 7.3.3
 RdMacros: Rdpack
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

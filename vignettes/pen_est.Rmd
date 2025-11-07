@@ -1,0 +1,124 @@
+---
+title: "Penalized Precision Matrix Estimation"
+output: rmarkdown::html_vignette
+bibliography: ../inst/REFERENCES.bib
+vignette: >
+  %\VignetteIndexEntry{pen_est}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+
+## Preliminary
+
+
+Consider the following setting:
+
+
+- Gaussian graphical model (GGM) assumption: \
+  The data $X_{n \times p}$ consists of independent and identically distributed
+  samples $X_1, \dots, X_n \sim N_p(0,\Sigma)$.
+
+
+- Disjoint group structure: \
+  The $p$ variables can be partitioned into disjoint groups.
+
+
+- Goal: \
+  Estimate the precision matrix $\Omega = \Sigma^{-1} = (\omega_{ij})_{p \times p}$.
+
+
+## Bi-level penalty
+
+
+$$
+\hat{\Omega} = \operatorname*{arg\,min}_{\Omega \succ 0} \left\{
+-\log\det(\Omega) + \operatorname{tr}(S\Omega)
++ \alpha P_{\text{individual}} + (1-\alpha) P_{\text{group}} \right\},
+$$
+where:
+
+- $\alpha \in [0,1]$ controls the balance between element-wise and block-wise penalties.
+- $P_{\text{individual}}$ denotes the element-wise individual penalty term.
+- $P_{\text{group}}$ denotes the block-wise group penalty term.
+
+
+## Penalties
+
+
+The package **grasps** estimates precision matrices using the following penalties:
+
+
+1. Adaptive lasso [@zou2006adaptive;@fan2009network]
+
+
+$$
+P_{\text{individual}} = \lambda\sum_{i,j}\frac{\vert\omega_{ij}\vert}{\vert v_{ij}\vert}
+\quad\text{and}\quad
+P_{\text{group}} = \lambda\sum_{g,g^\prime}\frac{\Vert\Omega_{gg^\prime}\Vert_2}{\Vert V_{gg^\prime}\Vert_2}
+$$
+
+
+2. Lasso [@tibshirani1996regression;@friedman2008sparse]
+
+
+$$
+P_{\text{individual}} = \lambda\Vert\Omega\Vert_1
+\quad\text{and}\quad
+P_{\text{group}} = \lambda\sum_{g,g^\prime}\Vert\Omega_{gg^\prime}\Vert_2
+$$
+
+
+3. Minimax concave penalty (MCP) [@zhang2010nearly]
+
+
+$$
+P_{\text{individual}} = \sum_{i,j}\xi_{\lambda,\gamma}(\vert\omega_{ij}\vert)
+\quad\text{and}\quad
+P_{\text{group}} = \sum_{g,g^\prime}\xi_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_2)
+$$
+
+
+4. Smoothly clipped absolute deviation (SCAD) [@fan2001variable;@fan2009network]
+
+
+$$
+P_{\text{individual}} = \sum_{i,j}\psi_{\lambda,\gamma}(\vert\omega_{ij}\vert)
+\quad\text{and}\quad
+P_{\text{group}} = \sum_{g,g^\prime}\psi_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_2)
+$$
+
+
+where:
+
+- $\Omega_{gg^\prime}$ denotes the submatrix of $\Omega$ with the rows from
+group $g$ and columns from group $g^\prime$.
+
+- The norms are defined as
+$$
+\Vert\Omega\Vert_1 = \sum_{i,j} \vert \omega_{ij} \vert \quad\text{and}\quad
+\Vert\Omega\Vert_2 = \Vert\Omega\Vert_F = \sqrt{\sum_{i,j} \vert\omega_{ij}\vert^2}
+= \sqrt{\operatorname{tr}(\Omega^\top\Omega)}.
+$$
+
+- $\lambda > 0$ is a regularization parameter.
+
+- $V = (v_{ij})_{p \times p}$ is a matrix of adaptive weights, which is the
+  estimate from `penalty = "lasso"`.
+
+- $\xi_{\lambda,\gamma}$ is the penalty function of MCP.
+
+- $\psi_{\lambda,\gamma}$ is the penalty function of SCAD.
+
+
+## Reference {-}
+
