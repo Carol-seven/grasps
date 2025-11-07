@@ -144,14 +144,14 @@
 #'
 #' @export
 
-sggm <- function(X, n = nrow(X), membership, penalty,
-                 diag.ind = TRUE, diag.grp = TRUE, diag.include = FALSE,
-                 lambda = NULL, alpha = NULL, gamma = NULL,
-                 nlambda = 10, lambda.min.ratio = 0.01,
-                 growiter.lambda = 30, tol.lambda = 1e-03, maxiter.lambda = 50,
-                 rho = 2, tau.incr = 2, tau.decr = 2, nu = 10,
-                 tol.abs = 1e-04, tol.rel = 1e-04, maxiter = 1e+04,
-                 crit = "BIC", kfold = 5, ebic.tuning = 0.5) {
+grasps <- function(X, n = nrow(X), membership, penalty,
+                   diag.ind = TRUE, diag.grp = TRUE, diag.include = FALSE,
+                   lambda = NULL, alpha = NULL, gamma = NULL,
+                   nlambda = 10, lambda.min.ratio = 0.01,
+                   growiter.lambda = 30, tol.lambda = 1e-03, maxiter.lambda = 50,
+                   rho = 2, tau.incr = 2, tau.decr = 2, nu = 10,
+                   tol.abs = 1e-04, tol.rel = 1e-04, maxiter = 1e+04,
+                   crit = "BIC", kfold = 5, ebic.tuning = 0.5) {
 
   p <- ncol(X)
 
