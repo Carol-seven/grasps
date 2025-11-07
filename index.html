@@ -57,26 +57,64 @@
 <img src="logo.png" class="logo" alt=""><h1 id="grasps-">grasps <a class="anchor" aria-label="anchor" href="#grasps-"></a>
 </h1>
 </div>
-<p><a href="https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION" class="external-link"><img src="https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&amp;color=green" alt="GitHub R package version"></a> <a href="https://github.com/Carol-seven/grasps/commits/main" class="external-link"><img src="https://img.shields.io/github/last-commit/Carol-seven/grasps" alt="GitHub last commit"></a> <a href="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/github/license/Carol-seven/grasps?color=blue" alt="GitHub License"></a></p>
+<div class="section level2">
+<h2 id="groupwise-regularized-adaptive-sparse-precision-solution">Groupwise Regularized Adaptive Sparse Precision Solution<a class="anchor" aria-label="anchor" href="#groupwise-regularized-adaptive-sparse-precision-solution"></a>
+</h2>
+<!-- badges: start -->
+
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
+</div>
+<div class="section level2">
+<h2 id="penalties">Penalties<a class="anchor" aria-label="anchor" href="#penalties"></a>
+</h2>
+<p>The package <strong>grasps</strong> provides functions to estimate precision matrices using the following penalties:</p>
+<ol style="list-style-type: decimal">
+<li><p>Adaptive lasso (Zou 2006; Fan et al. 2009)</p></li>
+<li><p>Lasso (Tibshirani 1996; Friedman et al. 2008)</p></li>
+<li><p>Minimax concave penalty (MCP) (Zhang 2010)</p></li>
+<li><p>Smoothly clipped absolute deviation (SCAD) (Fan and Li 2001; Fan et al. 2009)</p></li>
+</ol>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of <strong>grasps</strong> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Carol-seven/grasps"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"Carol-seven/grasps"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Carol-seven/grasps" class="external-link">grasps</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sggm</span><span class="op">(</span><span class="va">X</span>, groups <span class="op">=</span> <span class="va">groups</span>, penalty <span class="op">=</span> <span class="st">"lasso"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(grasps)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">200</span>), <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>membership <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="dv">2</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="dv">3</span>,<span class="dv">4</span>), <span class="fu">rep</span>(<span class="dv">4</span>,<span class="dv">6</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">grasps</span>(X, <span class="at">membership =</span> membership, <span class="at">penalty =</span> <span class="st">"lasso"</span>, <span class="at">crit =</span> <span class="st">"BIC"</span>)</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-fan2009network" class="csl-entry">
+Fan, Jianqing, Yang Feng, and Yichao Wu. 2009. “Network Exploration via the Adaptive LASSO and SCAD Penalties.” <em>The Annals of Applied Statistics</em> 3 (2): 521–41. <a href="https://doi.org/10.1214/08-aoas215" class="external-link uri">https://doi.org/10.1214/08-aoas215</a>.
+</div>
+<div id="ref-fan2001variable" class="csl-entry">
+Fan, Jianqing, and Runze Li. 2001. “Variable Selection via Nonconcave Penalized Likelihood and Its Oracle Properties.” <em>Journal of the American Statistical Association</em> 96 (456): 1348–60. <a href="https://doi.org/10.1198/016214501753382273" class="external-link uri">https://doi.org/10.1198/016214501753382273</a>.
+</div>
+<div id="ref-friedman2008sparse" class="csl-entry">
+Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008. “Sparse Inverse Covariance Estimation with the Graphical Lasso.” <em>Biostatistics</em> 9 (3): 432–41. <a href="https://doi.org/10.1093/biostatistics/kxm045" class="external-link uri">https://doi.org/10.1093/biostatistics/kxm045</a>.
+</div>
+<div id="ref-tibshirani1996regression" class="csl-entry">
+Tibshirani, Robert. 1996. “Regression Shrinkage and Selection via the Lasso.” <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 58 (1): 267–88. <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" class="external-link uri">https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</a>.
+</div>
+<div id="ref-zhang2010nearly" class="csl-entry">
+Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection Under Minimax Concave Penalty.” <em>The Annals of Statistics</em> 38 (2): 894–942. <a href="https://doi.org/10.1214/09-AOS729" class="external-link uri">https://doi.org/10.1214/09-AOS729</a>.
+</div>
+<div id="ref-zou2006adaptive" class="csl-entry">
+Zou, Hui. 2006. “The Adaptive Lasso and Its Oracle Properties.” <em>Journal of the American Statistical Association</em> 101 (476): 1418–29. <a href="https://doi.org/10.1198/016214506000000735" class="external-link uri">https://doi.org/10.1198/016214506000000735</a>.
+</div>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
