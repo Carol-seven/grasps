@@ -47,4 +47,7 @@ est <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
 ## block-diagonalizel; within-group block for group 3 made diagonal-only.
 res <- sparsify_block_diag(est$hatOmega, membership, group.diag = 3)
 
+## visualization
+visualize(res$Omega, res$membership)
+
 }

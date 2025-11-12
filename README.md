@@ -45,7 +45,7 @@ You can install the development version of **grasps** from
     X <- matrix(rnorm(200), 10, 20)
     membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
 
-    grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
+    res <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
 
 ## Reference
 
