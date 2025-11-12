@@ -30,8 +30,11 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     igraph,
+    ggplot2,
+    grDevices,
     Rcpp,
-    Rdpack
+    Rdpack,
+    scales
 LinkingTo:
     Rcpp,
     RcppArmadillo
