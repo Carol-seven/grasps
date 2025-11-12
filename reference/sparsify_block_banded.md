@@ -60,7 +60,13 @@ est <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
 
 ## default: keep blocks within ±1 of each group
 res1 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 1)
+## visualization
+visualize(res1$Omega, res1$membership)
+
 
 ## wider band: keep blocks within ±2 of each group
 res2 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 2)
+## visualization
+visualize(res2$Omega, res2$membership)
+
 ```

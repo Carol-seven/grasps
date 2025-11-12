@@ -96,9 +96,15 @@ considered neighbors and kept in the mask.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## default: keep blocks within ±1 of each group</span></span></span>
 <span class="r-in"><span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">sparsify_block_banded</span><span class="op">(</span><span class="va">est</span><span class="op">$</span><span class="va">hatOmega</span>, <span class="va">membership</span>, neighbor.range <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## visualization</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="visualize.html">visualize</a></span><span class="op">(</span><span class="va">res1</span><span class="op">$</span><span class="va">Omega</span>, <span class="va">res1</span><span class="op">$</span><span class="va">membership</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="sparsify_block_banded-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## wider band: keep blocks within ±2 of each group</span></span></span>
 <span class="r-in"><span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">sparsify_block_banded</span><span class="op">(</span><span class="va">est</span><span class="op">$</span><span class="va">hatOmega</span>, <span class="va">membership</span>, neighbor.range <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## visualization</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="visualize.html">visualize</a></span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">Omega</span>, <span class="va">res2</span><span class="op">$</span><span class="va">membership</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="sparsify_block_banded-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
