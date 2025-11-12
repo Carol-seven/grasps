@@ -7,7 +7,8 @@
 #' @param sampler A specification of the sampling distribution, either:
 #' \enumerate{
 #' \item A string specifying the distribution family. Supported distribution
-#' families (corresponding base R generators in parentheses) include: \itemize{
+#' families (corresponding base R generators in parentheses) include:
+#' \itemize{
 #' \item "beta": Beta distribution (\code{\link[stats]{rbeta}})
 #' \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
 #' \item "chisq": Chi-squared distribution (\code{\link[stats]{rchisq}}).
@@ -30,7 +31,7 @@
 #' @param n An integer specifying the number of samples to generate.
 #'
 #' @return
-#' A numeric vector of length \code{n} containing simulated data.
+#' A numeric vector of length \eqn{n} containing simulated data.
 #'
 #' @examples
 #' ## reproducibility for everything
