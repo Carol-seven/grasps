@@ -1,25 +1,30 @@
 #' Expand Block-Level Specifications for SBM Weight Generation
 #'
 #' @description
-#' Expand a user-provided specification for within-group and between-group block
-#' weight-generation rules into a full list of length \code{K + K(K-1)/2}, where:
-#' - the first \code{K} elements correspond to within-group blocks, and
-#' - the remaining \code{K(K-1)/2} elements correspond to between-group blocks.
+#' Expand specifications for within-group and between-group block
+#' weight-generation rules into a full list of length \eqn{K + K(K-1)/2}, where:
+#' - The first \eqn{K} elements correspond to within-group blocks, and
+#' - The remaining \eqn{K(K-1)/2} elements correspond to between-group blocks.
 #'
-#' @param spec A list specifying weight parameters. Acceptable forms:
+#' @param spec A list specifying specifications. Acceptable forms:
 #' \enumerate{
-#' \item length = 1: use the same specification for all blocks.
-#' \item length = 2: first for within-group blocks, second for between-group
+#' \item length = 1: Same specification for all blocks.
+#' \item length = 2: First for within-group blocks, second for between-group
 #' blocks.
-#' \item length = \code{K + K(K-1)/2}: full specification for each block.
+#' \item length = \eqn{K + K(K-1)/2}: Full specification for each block.
 #' }
 #'
 #' @param K An integer specifying the number of groups.
 #'
 #' @return
-#' A list of length \code{K + K(K-1)/2}, where the first \code{K} elements
-#' correspond to within-group blocks, and the remaining \code{K(K-1)/2}
+#' A list of length \eqn{K + K(K-1)/2}, where the first \eqn{K} elements
+#' correspond to within-group blocks, and the remaining \eqn{K(K-1)/2}
 #' correspond to between-group blocks.
+#'
+#' @examples
+#' my_spec <- list("gamma", "unif")
+#' K <- 3
+#' expand_spec(my_spec, K)
 #'
 #' @noRd
 
@@ -36,25 +41,23 @@ expand_spec <- function(spec, K) {
     spec <- as.list(spec)
   }
 
-  if (length(spec) == 1) {
+  spec_len <- length(spec)
+  if (spec_len == 1) {
     ## Case 1: one rule -> use the same specification for all blocks
     return(rep(list(spec[[1]]), n_total))
 
-  } else if (length(spec) == 2) {
+  } else if (spec_len == 2) {
     ## Case 2: two rules -> 1st rule for all within-group blocks
     ##                      2nd rule for all between-group blocks
     return(c(rep(list(spec[[1]]), n_within),
              rep(list(spec[[2]]), n_between)))
 
-  } else if (length(spec) == n_total) {
+  } else if (spec_len == n_total) {
     ## Case 3: full specification explicitly provided
     return(spec)
   }
 
   ## otherwise: invalid specification length
-  stop(paste0(
-    "`weight.dists`/`weight.paras` length must be 1, 2, or K + K*(K-1)/2.\n",
-    "For K = ", K, ", expected lengths: 1, 2, or ", n_total, "."
-  ))
+  stop(paste0("`weight.dists`/`weight.paras` length must be 1, 2, or K + K*(K-1)/2.\n",
+              sprintf("For K = %d, expected lengths: 1, 2, or %d.", K, n_total)))
 }
-
