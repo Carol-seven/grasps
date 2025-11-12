@@ -1,51 +1,53 @@
-#' SBM-based Gaussian Data with a Block-Structured Precision Matrix
+#' Block-Structured Precision Matrix based on SBM
 #'
 #' @description
-#' Generate multivariate Gaussian data \eqn{X \in \mathbb{R}^{n \times p}} whose
-#' precision matrix exhibits a block (group) structure induced by a Stochastic
-#' Block Model (SBM).
-#'
-#' @param n An integer specifying the number of sample size.
+#' Generate a precision matrix that exhibits block structure induced by
+#' a stochastic block model (SBM).
 #'
 #' @param p An integer specifying the number of variables (dimensions).
 #'
-#' @param seed An integer (default = 1) specifying the random seed for
-#' reproducibility.
-#'
-#' @param block.sizes An integer vector (default = NULL) specifying the size of
-#' each group. If \code{NULL}, the \code{p} variables are divided as evenly as
-#' possible across \code{K} groups.
+#' @param block.sizes An integer vector (default = \code{NULL}) specifying
+#' the size of each group. If \code{NULL}, the \eqn{p} variables are divided
+#' as evenly as possible across \eqn{K} groups.
 #'
 #' @param K An integer (default = 3) specifying the number of groups.
 #' Ignored if \code{block.sizes} is provided; then \code{K <- length(block.sizes)}.
 #'
-#' @param prob.mat A \code{K}-by-\code{K} symmetric matrix (default = NULL)
+#' @param prob.mat A \eqn{K}-by-\eqn{K} symmetric matrix (default = \code{NULL})
 #' specifying the Bernoulli rates. Element (i,j) gives the probability of
 #' creating an edge between vertices from groups i and j. If \code{NULL},
 #' a matrix with \code{within.prob} on the diagonal and \code{between.prob}
 #' off-diagonal is used.
 #'
-#' @param within.prob A scalar in [0,1] (default = 0.25) specifying the
-#' probability of creating an edge between vertices within the same group.
+#' @param within.prob A scalar in [0,1] (default = 0.25) specifying
+#' the probability of creating an edge between vertices within the same group.
+#' This argument is used only when \code{prob.mat = NULL}.
 #'
-#' @param between.prob A scalar in [0,1] (default = 0.05) specifying the
-#' probability of creating an edge between vertices from different groups.
+#' @param between.prob A scalar in [0,1] (default = 0.05) specifying
+#' the probability of creating an edge between vertices from different groups.
+#' This argument is used only when \code{prob.mat = NULL}.
 #'
-#' @param weight.mat A \code{p}-by-\code{p} symmetric matrix (default = NULL)
+#' @param weight.mat A \eqn{p}-by-\eqn{p} symmetric matrix (default = \code{NULL})
 #' specifying the edge weights. If \code{NULL}, weights are generated block-wise
 #' according to \code{weight.dists} and \code{weight.paras}.
 #'
-#' @param weight.dists A character vector (default = c("gamma", "unif"))
-#' specifying the distribution family for each block of weights.
-#' Its length can be: \itemize{
-#' \item length = 1: same distribution for all blocks.
-#' \item length = 2: first for within-group blocks, second for between-group
+#' @param weight.dists A list (default = \code{list("gamma", "unif")})
+#' specifying the sampling distribution for each block of weights.
+#' Its length determines how the distributions are assigned:
+#' \itemize{
+#' \item length = 1: Same specification for all blocks.
+#' \item length = 2: First for within-group blocks, second for between-group
 #' blocks.
-#' \item length = \code{K + K(K-1)/2}: full specification for each block (see
-#' Details).
+#' \item length = \eqn{K + K(K-1)/2}: Full specification for each block.
+#' The first \eqn{K} elements correspond to within-group blocks with indices 1,
+#' \dots, K, and the remaining \eqn{K(K-1)/2} elements correspond to
+#' between-group blocks ordered as (1,2), (1,3), \dots, (1,K), (2,3), \dots,
+#' (K-1,K).
 #' }
-#' Accepted distributions (base R functions in parentheses) include:
+#' Each element of \code{weight.dists} can be:
 #' \enumerate{
+#' \item A string specifying the distribution family. Accepted distributions
+#' (base R samplers in parentheses) include: \itemize{
 #' \item "beta": Beta distribution (\code{\link[stats]{rbeta}})
 #' \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
 #' \item "chisq": Chi-squared distribution (\code{\link[stats]{rchisq}}).
@@ -53,50 +55,58 @@
 #' \item "f": F distribution (\code{\link[stats]{rf}}).
 #' \item "gamma": Gamma distribution (\code{\link[stats]{rgamma}}).
 #' \item "lnorm": Log normal distribution (\code{\link[stats]{rlnorm}}).
-#' \item "norm: Normal distribution (\code{\link[stats]{rnorm}}).
+#' \item "norm": Normal distribution (\code{\link[stats]{rnorm}}).
 #' \item "t": Student's t distribution (\code{\link[stats]{rt}}).
-#' \item "unif: Uniform distribution (\code{\link[stats]{runif}}).
+#' \item "unif": Uniform distribution (\code{\link[stats]{runif}}).
 #' \item "weibull": Weibull distribution (\code{\link[stats]{rweibull}}).
 #' }
+#' \item A user-supplied function used for sampling. The function must accept
+#' an argument \code{n} specifying the number of samples.
+#' }
 #'
-#' @param weight.paras A list (default = list(c(shape = 1e4, rate = 1e2),
-#' c(min = 0, max = 5)) specifying the parameters associated with
-#' \code{weight.dists}. It must follow the same length rules as
-#' \code{weight.dists}. Each element should be a named vector or list
-#' suitable for the corresponding base R generator.
+#' @param weight.paras A list (default =
+#' \code{list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))}) specifying
+#' the parameters associated with \code{weight.dists}. It must follow the same
+#' length rules as \code{weight.dists}. Each element should be a named vector
+#' or list suitable for the corresponding sampler.
 #'
 #' @param min.eig A scalar (default = 0.1) specifying the minimum eigenvalue
 #' target for the precision matrix. A diagonal shift ensures positive
 #' definiteness.
 #'
 #' @details
-#' Within-group and between-group edges are generated independently according to
+#' \strong{Edge sampling.}
+#' Within- and between-group edges are sampled independently according to
 #' Bernoulli distributions specified by \code{prob.mat}, or by \code{within.prob}
 #' and \code{between.prob} if \code{prob.mat} is not supplied.
 #'
+#' \strong{Weight sampling.}
 #' Conditional on the adjacency structure, edge weights are sampled block-wise
-#' from distributions specified in \code{weight.dists} and \code{weight.paras}.
+#' from samplers specified in \code{weight.dists} and \code{weight.paras}.
 #' The length of \code{weight.dists} (and \code{weight.paras}) determines how
-#' weight distributions are assigned: \itemize{
-#' \item length = 1: same distribution for all blocks;
-#' \item length = 2: first for within-group blocks, second for between-group blocks;
-#' \item length = \eqn{K + K(K - 1)/2}: full specification for each block.
+#' weight distributions are assigned:
+#' \itemize{
+#' \item length = 1: Same specification for all blocks.
+#' \item length = 2: first for within-group blocks, second for between-group
+#' blocks.
+#' \item length = \eqn{K + K(K - 1)/2}: Full specification for each block.
 #' }
 #'
-#' Block indexing for weight specifications uses \code{K} within-group blocks
-#' with indices \code{1, \dots, K}, followed by \code{K(K-1)/2} between-group
-#' blocks ordered as \code{(1,2), (1,3), \dots, (1,K), (2,3), \dots, (K-1,K)}.
+#' \strong{Block indexing.}
+#' The order for blocks is:
+#' \itemize{
+#' \item Within-group blocks: Indices 1, \dots, K.
+#' \item Between-group blocks: \eqn{K(K-1)/2} blocks in order (1,2), (1,3),
+#' \dots, (1,K), (2,3), \dots, (K-1,K).
+#' }
 #'
-#' The weighted adjacency matrix is then symmetrized and used as the precision
-#' matrix \eqn{\Omega}. Since arbitrary block-structured weights may not be
-#' positive definite, a diagonal adjustment is applied to ensure the minimum
-#' eigenvalue of \eqn{\Omega} is at least \code{min.eig}. The covariance matrix
-#' is then computed as \eqn{\Sigma = \Omega^{-1}}, and the data matrix \eqn{X}
-#' is generated from a multivariate normal distribution
-#' \eqn{X \sim \mathcal{N}(0, \Sigma)}.
+#' \strong{Positive definiteness.}
+#' The weighted adjacency matrix is symmetrized and used as the precision matrix
+#' \eqn{\Omega}. Since arbitrary block-structured weights may not be positive
+#' definite, a diagonal adjustment is applied to ensure the minimum eigenvalue
+#' of \eqn{\Omega} is at least \code{min.eig}.
 #'
 #' @importFrom igraph as_adjacency_matrix sample_sbm
-#' @importFrom MASS mvrnorm
 #'
 #' @return
 #' A list with the following components:
@@ -104,24 +114,34 @@
 #' \item{Omega}{The precision matrix with SBM block structure.}
 #' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
 #' \item{sparsity}{Proportion of zero entries in \code{Omega}.}
-#' \item{X}{An n-by-p matrix of Gaussian observations sampled from
-#' \eqn{\mathcal{N}(0, \Sigma)}.}
 #' \item{membership}{An integer vector specifying the group membership.}
 #' }
 #'
+#' @examples
+#' ## reproducibility for everything
+#' set.seed(1234)
+#'
+#' ## user-defined sampler
+#' my_gamma <- function(n) {
+#'   rgamma(n, shape = 10, scale = 0.5)
+#' }
+#'
+#' sim <- gen_prec_sbm(p = 20, K = 3,
+#'                     within.prob = 0.25, between.prob = 0.05,
+#'                     weight.dists = list(my_gamma, "unif"),
+#'                     weight.paras = list(NULL, c(min = 0, max = 5)),
+#'                     min.eig = 0.1)
+#'
 #' @export
 
-gen_sbm_data <- function(n, p, seed = 1,
+gen_prec_sbm <- function(p,
                          block.sizes = NULL, K = 3,
                          prob.mat = NULL, within.prob = 0.25, between.prob = 0.05,
                          weight.mat = NULL,
-                         weight.dists = c("gamma", "unif"),
+                         weight.dists = list("gamma", "unif"),
                          weight.paras = list(c(shape = 1e4, rate = 1e2),
                                              c(min = 0, max = 5)),
                          min.eig = 0.1) {
-
-  ## reproducibility for everything
-  set.seed(seed)
 
   ## block sizes (allow p not divisible by K)
   if (is.null(block.sizes)) {
@@ -176,13 +196,13 @@ gen_sbm_data <- function(n, p, seed = 1,
     for (i in 1:K) {
       rows <- idx_list[[i]]
       nr <- length(rows)
-      weight.mat[rows, rows] <- draw_dist(dists_expand[[i]], paras_expand[[i]], nr*nr)
+      weight.mat[rows, rows] <- draw_sample(dists_expand[[i]], paras_expand[[i]], nr*nr)
       if (i < K) {
         for (j in (i+1):K) {
           cols <- idx_list[[j]]
           nc <- length(cols)
           k <- K + ((i-1)*(2*K-i))/2 + (j-i)
-          weight.mat[rows, cols] <- draw_dist(dists_expand[[k]], paras_expand[[k]], nr*nc)
+          weight.mat[rows, cols] <- draw_sample(dists_expand[[k]], paras_expand[[k]], nr*nc)
           weight.mat[cols, rows] <- t(weight.mat[rows, cols])
         }
       }
@@ -202,10 +222,8 @@ gen_sbm_data <- function(n, p, seed = 1,
 
   ## covariance matrix
   Sigma <- solve(Omega)
-  ## sample
-  X <- MASS::mvrnorm(n = n, mu = rep(0, ncol(Omega)), Sigma = Sigma)
 
-  return(list(Omega = Omega, Sigma = Sigma, sparsity = sum(Omega == 0) / length(Omega),
-              X = X, membership = membership))
+  return(list(Omega = Omega, Sigma = Sigma,
+              sparsity = sum(Omega == 0) / length(Omega),
+              membership = membership))
 }
-
