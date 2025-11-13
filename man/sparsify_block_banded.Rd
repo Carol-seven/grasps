@@ -49,4 +49,9 @@ res2 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 2)
 ## visualization
 visualize(res2$Omega, res2$membership)
 
+## special case: block-diagonal matrix
+res3 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 0)
+## visualization
+visualize(res3$Omega, res3$membership)
+
 }

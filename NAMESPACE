@@ -3,7 +3,6 @@
 export(gen_prec_sbm)
 export(grasps)
 export(sparsify_block_banded)
-export(sparsify_block_diag)
 export(visualize)
 import(ggplot2)
 importFrom(Rcpp,evalCpp)
