@@ -326,4 +326,3 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   return(result)
 
 }
-

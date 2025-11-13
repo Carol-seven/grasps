@@ -72,4 +72,3 @@ line_search_lambda_max <- function(blockList, lambda.safe, alpha, growiter, tol,
   }
   return(lambda_upper)
 }
-
