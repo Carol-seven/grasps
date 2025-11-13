@@ -70,9 +70,11 @@
 #' length rules as \code{weight.dists}. Each element should be a named vector
 #' or list suitable for the corresponding sampler.
 #'
-#' @param min.eig A scalar (default = 0.1) specifying the minimum eigenvalue
-#' target for the precision matrix. A diagonal shift ensures positive
-#' definiteness.
+#' @param cond.target A scalar (default = 100) specifying the target condition
+#' number for the precision matrix. A diagonal shift is applied so that
+#' the smallest eigenvalue satisfies
+#' \eqn{\lambda_{\min} \geq \lambda_{\max}/\code{cond.target}},
+#' ensuring both positive definiteness and numerical stability.
 #'
 #' @details
 #' \strong{Edge sampling.}
@@ -102,9 +104,17 @@
 #'
 #' \strong{Positive definiteness.}
 #' The weighted adjacency matrix is symmetrized and used as the precision matrix
-#' \eqn{\Omega}. Since arbitrary block-structured weights may not be positive
-#' definite, a diagonal adjustment is applied to ensure the minimum eigenvalue
-#' of \eqn{\Omega} is at least \code{min.eig}.
+#' \eqn{\Omega_0}. Since arbitrary block-structured weights may not be positive
+#' definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
+#' Specifically, let \eqn{\lambda_{\max}} and \eqn{\lambda_{\min}} denote
+#' the largest and smallest eigenvalues of the initial matrix. A scalar
+#' \eqn{\tau} is added to the diagonal so that
+#' \deqn{\lambda_{\min}(\Omega_0 + \tau I) \;\geq\;
+#' \lambda_{\max} / \code{cond.target},
+#' }
+#' which ensures both positive definiteness and that the condition number
+#' does not exceed \code{cond.target}. This guarantees numerical stability even
+#' in high-dimensional settings.
 #'
 #' @importFrom igraph as_adjacency_matrix sample_sbm
 #'
@@ -130,7 +140,7 @@
 #'                     within.prob = 0.25, between.prob = 0.05,
 #'                     weight.dists = list(my_gamma, "unif"),
 #'                     weight.paras = list(NULL, c(min = 0, max = 5)),
-#'                     min.eig = 0.1)
+#'                     cond.target = 100)
 #'
 #' @export
 
@@ -141,7 +151,7 @@ gen_prec_sbm <- function(d,
                          weight.dists = list("gamma", "unif"),
                          weight.paras = list(c(shape = 1e4, rate = 1e2),
                                              c(min = 0, max = 5)),
-                         min.eig = 0.1) {
+                         cond.target = 100) {
 
   ## block sizes (allow d not divisible by K)
   if (is.null(block.sizes)) {
@@ -213,11 +223,16 @@ gen_prec_sbm <- function(d,
   Omega <- SBM_adj * weight.mat
   Omega <- (Omega + t(Omega)) / 2 ## symmetric; diag still 0
 
-  ## ensure positive definiteness by shifting diagonal
-  # add a scalar tau to the diagonal so that lambda_min(Omega + tau*I) = min.eig
+  ## ensure positive definiteness and control the condition number
+  ## add a scalar tau to the diagonal so that lambda_min(Omega + tau*I) >= target_min,
+  ## where target_min = lambda_max / cond.target
+  ## this guarantees the condition number satisfies kappa(Omega) <= cond.target
   ## (shift all eigenvalues by the same tau)
-  eigmin <- min(eigen(Omega, only.values = TRUE)$values)
-  tau <- ifelse(eigmin < min.eig, min.eig - eigmin, 0)
+  eigvals <- eigen(Omega, only.values = TRUE)$values
+  eigval_max <- max(eigvals)
+  eigval_min <- min(eigvals)
+  target_min <- eigval_max / cond.target
+  tau <- ifelse(eigval_min < target_min, target_min - eigval_min, 0)
   diag(Omega) <- diag(Omega) + tau
 
   ## covariance matrix

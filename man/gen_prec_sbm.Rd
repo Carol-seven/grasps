@@ -14,7 +14,7 @@ gen_prec_sbm(
   weight.mat = NULL,
   weight.dists = list("gamma", "unif"),
   weight.paras = list(c(shape = 10000, rate = 100), c(min = 0, max = 5)),
-  min.eig = 0.1
+  cond.target = 100
 )
 }
 \arguments{
@@ -84,9 +84,11 @@ the parameters associated with \code{weight.dists}. It must follow the same
 length rules as \code{weight.dists}. Each element should be a named vector
 or list suitable for the corresponding sampler.}
 
-\item{min.eig}{A scalar (default = 0.1) specifying the minimum eigenvalue
-target for the precision matrix. A diagonal shift ensures positive
-definiteness.}
+\item{cond.target}{A scalar (default = 100) specifying the target condition
+number for the precision matrix. A diagonal shift is applied so that
+the smallest eigenvalue satisfies
+\eqn{\lambda_{\min} \geq \lambda_{\max}/\code{cond.target}},
+ensuring both positive definiteness and numerical stability.}
 }
 \value{
 A list with the following components:
@@ -129,9 +131,17 @@ The order for blocks is:
 
 \strong{Positive definiteness.}
 The weighted adjacency matrix is symmetrized and used as the precision matrix
-\eqn{\Omega}. Since arbitrary block-structured weights may not be positive
-definite, a diagonal adjustment is applied to ensure the minimum eigenvalue
-of \eqn{\Omega} is at least \code{min.eig}.
+\eqn{\Omega_0}. Since arbitrary block-structured weights may not be positive
+definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
+Specifically, let \eqn{\lambda_{\max}} and \eqn{\lambda_{\min}} denote
+the largest and smallest eigenvalues of the initial matrix. A scalar
+\eqn{\tau} is added to the diagonal so that
+\deqn{\lambda_{\min}(\Omega_0 + \tau I) \;\geq\;
+\lambda_{\max} / \code{cond.target},
+}
+which ensures both positive definiteness and that the condition number
+does not exceed \code{cond.target}. This guarantees numerical stability even
+in high-dimensional settings.
 }
 \examples{
 ## reproducibility for everything
@@ -146,6 +156,6 @@ sim <- gen_prec_sbm(d = 20, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list(my_gamma, "unif"),
                     weight.paras = list(NULL, c(min = 0, max = 5)),
-                    min.eig = 0.1)
+                    cond.target = 100)
 
 }
