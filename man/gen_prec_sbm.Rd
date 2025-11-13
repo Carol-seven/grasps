@@ -5,7 +5,7 @@
 \title{Block-Structured Precision Matrix based on SBM}
 \usage{
 gen_prec_sbm(
-  p,
+  d,
   block.sizes = NULL,
   K = 3,
   prob.mat = NULL,
@@ -18,10 +18,10 @@ gen_prec_sbm(
 )
 }
 \arguments{
-\item{p}{An integer specifying the number of variables (dimensions).}
+\item{d}{An integer specifying the number of variables (dimensions).}
 
 \item{block.sizes}{An integer vector (default = \code{NULL}) specifying
-the size of each group. If \code{NULL}, the \eqn{p} variables are divided
+the size of each group. If \code{NULL}, the \eqn{d} variables are divided
 as evenly as possible across \eqn{K} groups.}
 
 \item{K}{An integer (default = 3) specifying the number of groups.
@@ -41,7 +41,7 @@ This argument is used only when \code{prob.mat = NULL}.}
 the probability of creating an edge between vertices from different groups.
 This argument is used only when \code{prob.mat = NULL}.}
 
-\item{weight.mat}{A \eqn{p}-by-\eqn{p} symmetric matrix (default = \code{NULL})
+\item{weight.mat}{A \eqn{d}-by-\eqn{d} symmetric matrix (default = \code{NULL})
 specifying the edge weights. If \code{NULL}, weights are generated block-wise
 according to \code{weight.dists} and \code{weight.paras}.}
 
@@ -142,7 +142,7 @@ my_gamma <- function(n) {
   rgamma(n, shape = 10, scale = 0.5)
 }
 
-sim <- gen_prec_sbm(p = 20, K = 3,
+sim <- gen_prec_sbm(d = 20, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list(my_gamma, "unif"),
                     weight.paras = list(NULL, c(min = 0, max = 5)),
