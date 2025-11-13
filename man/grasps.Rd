@@ -34,16 +34,16 @@ grasps(
 }
 \arguments{
 \item{X}{\enumerate{
-\item An n-by-p data matrix with sample size n and dimension p.
-\item A p-by-p sample covariance/correlation matrix with dimension p.
+\item An n-by-d data matrix with sample size n and dimension d.
+\item A d-by-d sample covariance/correlation matrix with dimension d.
 }}
 
-\item{n}{An integer (default = the number of columns of \code{X}) specifying
-the sample size. This is only required when the input matrix \code{X} is a
-p-by-p sample covariance/correlation matrix with dimension p.}
+\item{n}{An integer (default = \code{nrow(X)}) specifying the sample size.
+This is only required when the input matrix \code{X} is a d-by-d sample
+covariance/correlation matrix with dimension d.}
 
 \item{membership}{An integer vector specifying the group membership.
-The length of \code{membership} must be consistent with the dimension p.}
+The length of \code{membership} must be consistent with the dimension d.}
 
 \item{penalty}{A character string specifying the penalty for estimating
 precision matrix. Available options include: \enumerate{

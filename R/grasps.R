@@ -5,16 +5,16 @@
 #' element-wise and group-wise penalties to estimate a precision matrix.
 #'
 #' @param X \enumerate{
-#' \item An n-by-p data matrix with sample size n and dimension p.
-#' \item A p-by-p sample covariance/correlation matrix with dimension p.
+#' \item An n-by-d data matrix with sample size n and dimension d.
+#' \item A d-by-d sample covariance/correlation matrix with dimension d.
 #' }
 #'
-#' @param n An integer (default = the number of columns of \code{X}) specifying
-#' the sample size. This is only required when the input matrix \code{X} is a
-#' p-by-p sample covariance/correlation matrix with dimension p.
+#' @param n An integer (default = \code{nrow(X)}) specifying the sample size.
+#' This is only required when the input matrix \code{X} is a d-by-d sample
+#' covariance/correlation matrix with dimension d.
 #'
 #' @param membership An integer vector specifying the group membership.
-#' The length of \code{membership} must be consistent with the dimension p.
+#' The length of \code{membership} must be consistent with the dimension d.
 #'
 #' @param penalty A character string specifying the penalty for estimating
 #' precision matrix. Available options include: \enumerate{
@@ -153,37 +153,37 @@ grasps <- function(X, n = nrow(X), membership, penalty,
                    tol.abs = 1e-04, tol.rel = 1e-04, maxiter = 1e+04,
                    crit = "BIC", kfold = 5, ebic.tuning = 0.5) {
 
-  p <- ncol(X)
+  d <- ncol(X)
 
-  if (length(membership) != p) {
-    stop("The length of 'membership' must be the column dimension of X!\n");
+  if (length(membership) != d) {
+    stop("The length of 'membership' must equal the column dimension of X!")
   }
   if (!penalty %in% c("lasso", "adapt", "mcp", "scad")) {
-    stop("Error in penalty! Available options: 'lasso', 'adapt', 'mcp', 'scad'.\n")
+    stop("Error in penalty! Available options: 'lasso', 'adapt', 'mcp', 'scad'.")
   }
   if (!all(lambda > 0)) {
-    stop("The parameter 'lambda' must be positive!\n")
+    stop("The parameter 'lambda' must be positive!")
   }
   if (!all(alpha >= 0 & alpha <= 1)) {
-    stop("The parameter 'alpha' must be in [0,1]!\n")
+    stop("The parameter 'alpha' must be in [0,1]!")
   }
   if (rho <= 0) {
-    stop("The parameter 'rho' must be positive!\n")
+    stop("The parameter 'rho' must be positive!")
   }
   if (tau.incr <= 1) {
-    stop("The parameter 'tau.incr' must be greater than 1!\n");
+    stop("The parameter 'tau.incr' must be greater than 1!");
   }
   if (tau.decr <= 1) {
-    stop("The parameter 'tau.decr' must be greater than 1!\n");
+    stop("The parameter 'tau.decr' must be greater than 1!");
   }
   if (nu <= 1) {
-    stop("The parameter 'nu' must be greater than 1!\n");
+    stop("The parameter 'nu' must be greater than 1!");
   }
   if (tol.abs <= 0) {
-    stop("The parameter 'tol.abs' must be positive!\n");
+    stop("The parameter 'tol.abs' must be positive!");
   }
   if (tol.rel <= 0) {
-    stop("The parameter 'tol.rel' must be positive!\n");
+    stop("The parameter 'tol.rel' must be positive!");
   }
 
   if (isSymmetric(X)) {
