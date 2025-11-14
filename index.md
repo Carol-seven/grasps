@@ -40,7 +40,7 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 100, K = 5,
+sim <- gen_prec_sbm(d = 60, K = 5,
                     within.prob = 0.5, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
@@ -48,10 +48,12 @@ sim <- gen_prec_sbm(d = 100, K = 5,
 
 ## synthetic data
 library(MASS)
-X <- MASS::mvrnorm(n = 50, mu = rep(0, ncol(sim$Sigma)), Sigma = sim$Sigma)
+X <- MASS::mvrnorm(n = 30, mu = rep(0, 60), Sigma = sim$Sigma)
 
 ## solution
 res <- grasps(X = X, membership = sim$membership, penalty = "lasso", crit = "BIC")
+
+## visualization
 plot(res)
 ```
 

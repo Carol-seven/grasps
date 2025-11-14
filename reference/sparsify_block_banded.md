@@ -50,6 +50,8 @@ An object with S3 class "grasps" containing the following components:
 ## Examples
 
 ``` r
+library(grasps)
+
 ## reproducibility for everything
 set.seed(1234)
 
@@ -71,5 +73,4 @@ plot(res2)
 ## special case: block-diagonal matrix
 res3 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 0)
 plot(res3)
-
 ```
