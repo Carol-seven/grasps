@@ -33,24 +33,8 @@
 #' @return
 #' A numeric vector of length \eqn{n} containing simulated data.
 #'
-#' @examples
-#' ## reproducibility for everything
-#' set.seed(1234)
-#'
-#' ## user-defined sampler
-#' my_gamma <- function(n) {
-#'   rgamma(n, shape = 10, scale = 0.5)
-#' }
-#' draw_sample(my_gamma, n = 10)
-#'
-#' my_unif <- function(n, min, max) {
-#'   runif(n, min = 0, max = 1)
-#' }
-#' draw_sample(my_unif, para = list(min = 1, max = 5), n = 10)
-#'
-#' ## base R distribution
-#' draw_sample("gamma", para = list(shape = 10, scale = 0.5), n = 10)
-#' draw_sample("unif", para = list(min = 1, max = 5), n = 10)
+#' @example
+#' inst/example/ex-draw_sample.R
 #'
 #' @noRd
 

@@ -17,24 +17,8 @@
 #' A \code{ggplot2} heatmap showing the matrix entries. Dashed lines indicate
 #' group boundaries. The plot title also reports matrix dimension and sparsity.
 #'
-#' @examples
-#' ## reproducibility for everything
-#' set.seed(1234)
-#'
-#' ## user-defined sampler
-#' my_gamma <- function(n) {
-#'   rgamma(n, shape = 20, scale = 5)
-#' }
-#'
-#' ## block-structured precision matrix based on SBM
-#' sim <- gen_prec_sbm(d = 100, K = 5,
-#'                     within.prob = 0.5, between.prob = 0.05,
-#'                     weight.dists = list(my_gamma, "unif"),
-#'                     weight.paras = list(NULL, c(min = 0, max = 1)),
-#'                     cond.target = 100)
-#'
-#' ## visualization
-#' plot(sim)
+#' @example
+#' inst/example/ex-plot.grasps.R
 #'
 #' @export
 #' @noRd

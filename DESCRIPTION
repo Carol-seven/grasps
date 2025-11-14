@@ -42,5 +42,6 @@ RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Suggests: 
     knitr,
+    MASS,
     rmarkdown
 VignetteBuilder: knitr

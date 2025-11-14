@@ -21,10 +21,8 @@
 #' correspond to within-group blocks, and the remaining \eqn{K(K-1)/2}
 #' correspond to between-group blocks.
 #'
-#' @examples
-#' my_spec <- list("gamma", "unif")
-#' K <- 3
-#' expand_spec(my_spec, K)
+#' @example
+#' inst/example/ex-expand_spec.R
 #'
 #' @noRd
 

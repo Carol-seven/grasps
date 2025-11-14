@@ -144,19 +144,18 @@ does not exceed \code{cond.target}. This guarantees numerical stability even
 in high-dimensional settings.
 }
 \examples{
+library(grasps)
+
 ## reproducibility for everything
 set.seed(1234)
 
-## user-defined sampler
-my_gamma <- function(n) {
-  rgamma(n, shape = 10, scale = 0.5)
-}
-
-sim <- gen_prec_sbm(d = 20, K = 3,
-                    within.prob = 0.25, between.prob = 0.05,
-                    weight.dists = list(my_gamma, "unif"),
-                    weight.paras = list(NULL, c(min = 0, max = 5)),
+## block-structured precision matrix based on SBM
+sim <- gen_prec_sbm(d = 100, K = 5,
+                    within.prob = 0.5, between.prob = 0.05,
+                    weight.dists = list("gamma", "unif"),
+                    weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
                     cond.target = 100)
-plot(sim)
 
+## visualization
+plot(sim)
 }

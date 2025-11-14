@@ -31,6 +31,8 @@ Make a precision-like matrix block-banded according to group membership,
 keeping only entries within specified group neighborhoods.
 }
 \examples{
+library(grasps)
+
 ## reproducibility for everything
 set.seed(1234)
 
@@ -50,5 +52,4 @@ plot(res2)
 ## special case: block-diagonal matrix
 res3 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 0)
 plot(res3)
-
 }

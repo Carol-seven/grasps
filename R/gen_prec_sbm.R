@@ -127,21 +127,8 @@
 #' \item{membership}{An integer vector specifying the group membership.}
 #' }
 #'
-#' @examples
-#' ## reproducibility for everything
-#' set.seed(1234)
-#'
-#' ## user-defined sampler
-#' my_gamma <- function(n) {
-#'   rgamma(n, shape = 10, scale = 0.5)
-#' }
-#'
-#' sim <- gen_prec_sbm(d = 20, K = 3,
-#'                     within.prob = 0.25, between.prob = 0.05,
-#'                     weight.dists = list(my_gamma, "unif"),
-#'                     weight.paras = list(NULL, c(min = 0, max = 5)),
-#'                     cond.target = 100)
-#' plot(sim)
+#' @example
+#' inst/example/ex-gen_prec_sbm.R
 #'
 #' @export
 

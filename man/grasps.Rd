@@ -171,19 +171,29 @@ Provide a collection of statistical methods that incorporate both
 element-wise and group-wise penalties to estimate a precision matrix.
 }
 \examples{
+library(grasps)
+
 ## reproducibility for everything
 set.seed(1234)
 
-## n-by-d data matrix
-X <- matrix(rnorm(200), 10, 20)
+## block-structured precision matrix based on SBM
+sim <- gen_prec_sbm(d = 60, K = 3,
+                    within.prob = 0.5, between.prob = 0.05,
+                    weight.dists = list("gamma", "unif"),
+                    weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
+                    cond.target = 100)
+## visualization
+plot(sim)
 
-## group membership
-membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
+## n-by-d data matrix
+library(MASS)
+X <- mvrnorm(n = 30, mu = rep(0, 60), Sigma = sim$Sigma)
 
 ## lasso, BIC
-res <- grasps(X = X, membership = membership, penalty = "lasso", crit = "BIC")
-plot(res)
+res <- grasps(X = X, membership = sim$membership, penalty = "lasso", crit = "BIC")
 
+## visualization
+plot(res)
 }
 \references{
 \insertAllCited{}

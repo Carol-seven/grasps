@@ -143,19 +143,8 @@
 #' @references
 #' \insertAllCited{}
 #'
-#' @examples
-#' ## reproducibility for everything
-#' set.seed(1234)
-#'
-#' ## n-by-d data matrix
-#' X <- matrix(rnorm(200), 10, 20)
-#'
-#' ## group membership
-#' membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
-#'
-#' ## lasso, BIC
-#' res <- grasps(X = X, membership = membership, penalty = "lasso", crit = "BIC")
-#' plot(res)
+#' @example
+#' inst/example/ex-grasps.R
 #'
 #' @export
 
