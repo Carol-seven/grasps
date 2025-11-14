@@ -115,7 +115,7 @@
 #' @importFrom Rdpack reprompt
 #'
 #' @return
-#' A list containing the following components:
+#' An object with S3 class "grasps" containing the following components:
 #' \describe{
 #' \item{hatOmega}{The estimated precision matrix.}
 #' \item{lambda}{The optimal regularization parameter.}
@@ -137,10 +137,25 @@
 #' \item{IC.score}{The information criterion score for each parameter
 #' combination when \code{crit} is set to \code{"AIC"}, \code{"BIC"},
 #' \code{"EBIC"}, or \code{"HBIC"}.}
+#' \item{membership}{The group membership.}
 #' }
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @examples
+#' ## reproducibility for everything
+#' set.seed(1234)
+#'
+#' ## n-by-d data matrix
+#' X <- matrix(rnorm(200), 10, 20)
+#'
+#' ## group membership
+#' membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
+#'
+#' ## lasso, BIC
+#' res <- grasps(X = X, membership = membership, penalty = "lasso", crit = "BIC")
+#' plot(res)
 #'
 #' @export
 
@@ -156,34 +171,37 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   d <- ncol(X)
 
   if (length(membership) != d) {
-    stop("The length of 'membership' must equal the column dimension of X!")
+    stop('The length of `membership` must equal the column dimension of `X`!')
   }
   if (!penalty %in% c("lasso", "adapt", "mcp", "scad")) {
-    stop("Error in penalty! Available options: 'lasso', 'adapt', 'mcp', 'scad'.")
+    stop('Error in `penalty`!\nAvailable options: "lasso", "adapt", "mcp", "scad".')
+  }
+  if (!crit %in% c("AIC", "BIC", "EBIC", "HBIC", "CV")) {
+    stop('Error in `crit`!\nAvailable options: "AIC", "BIC", "EBIC", "HBIC", "CV".')
   }
   if (!all(lambda > 0)) {
-    stop("The parameter 'lambda' must be positive!")
+    stop('The parameter `lambda` must be positive!')
   }
   if (!all(alpha >= 0 & alpha <= 1)) {
-    stop("The parameter 'alpha' must be in [0,1]!")
+    stop('The parameter `alpha` must be in [0,1]!')
   }
   if (rho <= 0) {
-    stop("The parameter 'rho' must be positive!")
+    stop('The parameter `rho` must be positive!')
   }
   if (tau.incr <= 1) {
-    stop("The parameter 'tau.incr' must be greater than 1!");
+    stop('The parameter `tau.incr` must be greater than 1!')
   }
   if (tau.decr <= 1) {
-    stop("The parameter 'tau.decr' must be greater than 1!");
+    stop('The parameter `tau.decr` must be greater than 1!')
   }
   if (nu <= 1) {
-    stop("The parameter 'nu' must be greater than 1!");
+    stop('The parameter `nu` must be greater than 1!')
   }
   if (tol.abs <= 0) {
-    stop("The parameter 'tol.abs' must be positive!");
+    stop('The parameter `tol.abs` must be positive!')
   }
   if (tol.rel <= 0) {
-    stop("The parameter 'tol.rel' must be positive!");
+    stop('The parameter `tol.rel` must be positive!')
   }
 
   if (isSymmetric(X)) {
@@ -262,11 +280,11 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     if (crit == "CV") {
 
       if(is.null(X)) {
-        stop("CV requires the n-by-p data matrix!")
+        stop('CV requires the n-by-d data matrix!')
       }
 
       if (kfold < 2 | kfold > n) {
-        stop("'kfold' must be between 2 and the row dimension of X!")
+        stop('`kfold` must be between 2 and the row dimension of `X`!')
       }
 
       CV <- ADMMsggm_CV(X = X, group_idx = group.idx, penalty = penalty,
@@ -323,6 +341,8 @@ grasps <- function(X, n = nrow(X), membership, penalty,
 
   }
 
+  result$membership <- membership
+  class(result) <- "grasps"
   return(result)
 
 }

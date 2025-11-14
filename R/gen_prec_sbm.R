@@ -119,7 +119,7 @@
 #' @importFrom igraph as_adjacency_matrix sample_sbm
 #'
 #' @return
-#' A list with the following components:
+#' An object with S3 class "grasps" containing the following components:
 #' \describe{
 #' \item{Omega}{The precision matrix with SBM block structure.}
 #' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
@@ -141,6 +141,7 @@
 #'                     weight.dists = list(my_gamma, "unif"),
 #'                     weight.paras = list(NULL, c(min = 0, max = 5)),
 #'                     cond.target = 100)
+#' plot(sim)
 #'
 #' @export
 
@@ -238,7 +239,9 @@ gen_prec_sbm <- function(d,
   ## covariance matrix
   Sigma <- solve(Omega)
 
-  return(list(Omega = Omega, Sigma = Sigma,
-              sparsity = sum(Omega == 0) / length(Omega),
-              membership = membership))
+  result <- list(Omega = Omega, Sigma = Sigma,
+                 sparsity = sum(Omega == 0) / length(Omega),
+                 membership = membership)
+  class(result) <- "grasps"
+  return(result)
 }

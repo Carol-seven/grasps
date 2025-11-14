@@ -14,7 +14,7 @@
 #' where groups whose labels differ by at most \code{neighbor.range} are
 #' considered neighbors and kept in the mask.
 #'
-#' @return A list containing:
+#' @return An object with S3 class "grasps" containing the following components:
 #' \describe{
 #' \item{Omega}{The masked precision matrix.}
 #' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
@@ -33,18 +33,15 @@
 #'
 #' ## default: keep blocks within ±1 of each group
 #' res1 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 1)
-#' ## visualization
-#' visualize(res1$Omega, res1$membership)
+#' plot(res1)
 #'
 #' ## wider band: keep blocks within ±2 of each group
 #' res2 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 2)
-#' ## visualization
-#' visualize(res2$Omega, res2$membership)
+#' plot(res2)
 #'
 #' ## special case: block-diagonal matrix
 #' res3 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 0)
-#' ## visualization
-#' visualize(res3$Omega, res3$membership)
+#' plot(res3)
 #'
 #' @export
 
@@ -64,7 +61,9 @@ sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
   ## compute covariance
   Sigma <- solve(Omega)
 
-  return(list(Omega = Omega, Sigma = Sigma,
-              sparsity = sum(Omega == 0) / length(Omega),
-              membership = membership))
+  result <- list(Omega = Omega, Sigma = Sigma,
+                 sparsity = sum(Omega == 0) / length(Omega),
+                 membership = membership)
+  class(result) <- "grasps"
+  return(result)
 }

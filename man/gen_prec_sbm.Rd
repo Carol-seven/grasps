@@ -91,7 +91,7 @@ the smallest eigenvalue satisfies
 ensuring both positive definiteness and numerical stability.}
 }
 \value{
-A list with the following components:
+An object with S3 class "grasps" containing the following components:
 \describe{
 \item{Omega}{The precision matrix with SBM block structure.}
 \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
@@ -157,5 +157,6 @@ sim <- gen_prec_sbm(d = 20, K = 3,
                     weight.dists = list(my_gamma, "unif"),
                     weight.paras = list(NULL, c(min = 0, max = 5)),
                     cond.target = 100)
+plot(sim)
 
 }

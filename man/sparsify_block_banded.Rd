@@ -18,7 +18,7 @@ where groups whose labels differ by at most \code{neighbor.range} are
 considered neighbors and kept in the mask.}
 }
 \value{
-A list containing:
+An object with S3 class "grasps" containing the following components:
 \describe{
 \item{Omega}{The masked precision matrix.}
 \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
@@ -41,17 +41,14 @@ est <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
 
 ## default: keep blocks within ±1 of each group
 res1 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 1)
-## visualization
-visualize(res1$Omega, res1$membership)
+plot(res1)
 
 ## wider band: keep blocks within ±2 of each group
 res2 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 2)
-## visualization
-visualize(res2$Omega, res2$membership)
+plot(res2)
 
 ## special case: block-diagonal matrix
 res3 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 0)
-## visualization
-visualize(res3$Omega, res3$membership)
+plot(res3)
 
 }

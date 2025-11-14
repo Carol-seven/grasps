@@ -141,7 +141,7 @@ method to use. Available options include: \enumerate{
 calculate for \code{crit = "EBIC"}.}
 }
 \value{
-A list containing the following components:
+An object with S3 class "grasps" containing the following components:
 \describe{
 \item{hatOmega}{The estimated precision matrix.}
 \item{lambda}{The optimal regularization parameter.}
@@ -163,11 +163,27 @@ to \code{"AIC"}, \code{"BIC"}, \code{"EBIC"}, or \code{"HBIC"}.}
 \item{IC.score}{The information criterion score for each parameter
 combination when \code{crit} is set to \code{"AIC"}, \code{"BIC"},
 \code{"EBIC"}, or \code{"HBIC"}.}
+\item{membership}{The group membership.}
 }
 }
 \description{
 Provide a collection of statistical methods that incorporate both
 element-wise and group-wise penalties to estimate a precision matrix.
+}
+\examples{
+## reproducibility for everything
+set.seed(1234)
+
+## n-by-d data matrix
+X <- matrix(rnorm(200), 10, 20)
+
+## group membership
+membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
+
+## lasso, BIC
+res <- grasps(X = X, membership = membership, penalty = "lasso", crit = "BIC")
+plot(res)
+
 }
 \references{
 \insertAllCited{}

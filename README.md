@@ -40,12 +40,29 @@ You can install the development version of **grasps** from
 
 ## Example
 
-    library(grasps)
+``` r
+library(grasps)
 
-    X <- matrix(rnorm(200), 10, 20)
-    membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
+## reproducibility for everything
+set.seed(1234)
 
-    res <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
+## block-structured precision matrix based on SBM
+sim <- gen_prec_sbm(d = 100, K = 5,
+                    within.prob = 0.5, between.prob = 0.05,
+                    weight.dists = list("gamma", "unif"),
+                    weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
+                    cond.target = 100)
+
+## synthetic data
+library(MASS)
+X <- MASS::mvrnorm(n = 50, mu = rep(0, ncol(sim$Sigma)), Sigma = sim$Sigma)
+
+## solution
+res <- grasps(X = X, membership = sim$membership, penalty = "lasso", crit = "BIC")
+plot(res)
+```
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
 ## Reference
 
