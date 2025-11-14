@@ -7,7 +7,7 @@ stochastic block model (SBM).
 
 ``` r
 gen_prec_sbm(
-  p,
+  d,
   block.sizes = NULL,
   K = 3,
   prob.mat = NULL,
@@ -16,20 +16,20 @@ gen_prec_sbm(
   weight.mat = NULL,
   weight.dists = list("gamma", "unif"),
   weight.paras = list(c(shape = 10000, rate = 100), c(min = 0, max = 5)),
-  min.eig = 0.1
+  cond.target = 100
 )
 ```
 
 ## Arguments
 
-- p:
+- d:
 
   An integer specifying the number of variables (dimensions).
 
 - block.sizes:
 
   An integer vector (default = `NULL`) specifying the size of each
-  group. If `NULL`, the \\p\\ variables are divided as evenly as
+  group. If `NULL`, the \\d\\ variables are divided as evenly as
   possible across \\K\\ groups.
 
 - K:
@@ -58,7 +58,7 @@ gen_prec_sbm(
 
 - weight.mat:
 
-  A \\p\\-by-\\p\\ symmetric matrix (default = `NULL`) specifying the
+  A \\d\\-by-\\d\\ symmetric matrix (default = `NULL`) specifying the
   edge weights. If `NULL`, weights are generated block-wise according to
   `weight.dists` and `weight.paras`.
 
@@ -128,14 +128,17 @@ gen_prec_sbm(
   length rules as `weight.dists`. Each element should be a named vector
   or list suitable for the corresponding sampler.
 
-- min.eig:
+- cond.target:
 
-  A scalar (default = 0.1) specifying the minimum eigenvalue target for
-  the precision matrix. A diagonal shift ensures positive definiteness.
+  A scalar (default = 100) specifying the target condition number for
+  the precision matrix. A diagonal shift is applied so that the smallest
+  eigenvalue satisfies \\\lambda\_{\min} \geq
+  \lambda\_{\max}/\code{cond.target}\\, ensuring both positive
+  definiteness and numerical stability.
 
 ## Value
 
-A list with the following components:
+An object with S3 class "grasps" containing the following components:
 
 - Omega:
 
@@ -180,10 +183,16 @@ determines how weight distributions are assigned:
   (1,K), (2,3), ..., (K-1,K).
 
 **Positive definiteness.** The weighted adjacency matrix is symmetrized
-and used as the precision matrix \\\Omega\\. Since arbitrary
+and used as the precision matrix \\\Omega_0\\. Since arbitrary
 block-structured weights may not be positive definite, a diagonal
-adjustment is applied to ensure the minimum eigenvalue of \\\Omega\\ is
-at least `min.eig`.
+adjustment is applied to control the eigenvalue spectrum. Specifically,
+let \\\lambda\_{\max}\\ and \\\lambda\_{\min}\\ denote the largest and
+smallest eigenvalues of the initial matrix. A scalar \\\tau\\ is added
+to the diagonal so that \$\$\lambda\_{\min}(\Omega_0 + \tau I) \\\geq\\
+\lambda\_{\max} / \code{cond.target}, \$\$ which ensures both positive
+definiteness and that the condition number does not exceed
+`cond.target`. This guarantees numerical stability even in
+high-dimensional settings.
 
 ## Examples
 
@@ -196,9 +205,11 @@ my_gamma <- function(n) {
   rgamma(n, shape = 10, scale = 0.5)
 }
 
-sim <- gen_prec_sbm(p = 20, K = 3,
+sim <- gen_prec_sbm(d = 20, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list(my_gamma, "unif"),
                     weight.paras = list(NULL, c(min = 0, max = 5)),
-                    min.eig = 0.1)
+                    cond.target = 100)
+plot(sim)
+
 ```

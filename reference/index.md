@@ -8,7 +8,3 @@
   Groupwise Regularized Adaptive Sparse Precision Solution
 - [`sparsify_block_banded()`](https://shiying-xiao.com/grasps/reference/sparsify_block_banded.md)
   : Groupwise Block-Banded Sparsifier
-- [`sparsify_block_diag()`](https://shiying-xiao.com/grasps/reference/sparsify_block_diag.md)
-  : Groupwise Block-Diagonal Sparsifier
-- [`visualize()`](https://shiying-xiao.com/grasps/reference/visualize.md)
-  : Visualize a Matrix with Group Boundaries

@@ -78,20 +78,20 @@ element-wise and group-wise penalties to estimate a precision matrix.</p>
 
 
 <dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><ol><li><p>An n-by-p data matrix with sample size n and dimension p.</p></li>
-<li><p>A p-by-p sample covariance/correlation matrix with dimension p.</p></li>
+<dd><ol><li><p>An n-by-d data matrix with sample size n and dimension d.</p></li>
+<li><p>A d-by-d sample covariance/correlation matrix with dimension d.</p></li>
 </ol></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>An integer (default = the number of columns of <code>X</code>) specifying
-the sample size. This is only required when the input matrix <code>X</code> is a
-p-by-p sample covariance/correlation matrix with dimension p.</p></dd>
+<dd><p>An integer (default = <code>nrow(X)</code>) specifying the sample size.
+This is only required when the input matrix <code>X</code> is a d-by-d sample
+covariance/correlation matrix with dimension d.</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
 <dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension p.</p></dd>
+The length of <code>membership</code> must be consistent with the dimension d.</p></dd>
 
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
@@ -240,7 +240,7 @@ calculate for <code>crit = "EBIC"</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing the following components:</p><dl><dt>hatOmega</dt>
+    <p>An object with S3 class "grasps" containing the following components:</p><dl><dt>hatOmega</dt>
 <dd><p>The estimated precision matrix.</p></dd>
 
 <dt>lambda</dt>
@@ -285,6 +285,9 @@ to <code>"AIC"</code>, <code>"BIC"</code>, <code>"EBIC"</code>, or <code>"HBIC"<
 <dd><p>The information criterion score for each parameter
 combination when <code>crit</code> is set to <code>"AIC"</code>, <code>"BIC"</code>,
 <code>"EBIC"</code>, or <code>"HBIC"</code>.</p></dd>
+
+<dt>membership</dt>
+<dd><p>The group membership.</p></dd>
 
 
 </dl></div>
@@ -334,6 +337,24 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 .</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## reproducibility for everything</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## n-by-d data matrix</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## group membership</span></span></span>
+<span class="r-in"><span><span class="va">membership</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## lasso, BIC</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">grasps</span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"lasso"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="grasps-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

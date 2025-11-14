@@ -39,20 +39,20 @@ grasps(
 
 - X:
 
-  1.  An n-by-p data matrix with sample size n and dimension p.
+  1.  An n-by-d data matrix with sample size n and dimension d.
 
-  2.  A p-by-p sample covariance/correlation matrix with dimension p.
+  2.  A d-by-d sample covariance/correlation matrix with dimension d.
 
 - n:
 
-  An integer (default = the number of columns of `X`) specifying the
-  sample size. This is only required when the input matrix `X` is a
-  p-by-p sample covariance/correlation matrix with dimension p.
+  An integer (default = `nrow(X)`) specifying the sample size. This is
+  only required when the input matrix `X` is a d-by-d sample
+  covariance/correlation matrix with dimension d.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension p.
+  `membership` must be consistent with the dimension d.
 
 - penalty:
 
@@ -205,7 +205,7 @@ grasps(
 
 ## Value
 
-A list containing the following components:
+An object with S3 class "grasps" containing the following components:
 
 - hatOmega:
 
@@ -265,6 +265,10 @@ A list containing the following components:
   The information criterion score for each parameter combination when
   `crit` is set to `"AIC"`, `"BIC"`, `"EBIC"`, or `"HBIC"`.
 
+- membership:
+
+  The group membership.
+
 ## References
 
 Akaike H (1973). “Information Theory and an Extension of the Maximum
@@ -323,3 +327,21 @@ Zou H (2006). “The Adaptive Lasso and Its Oracle Properties.” *Journal
 of the American Statistical Association*, **101**(476), 1418–1429.
 [doi:10.1198/016214506000000735](https://doi.org/10.1198/016214506000000735)
 .
+
+## Examples
+
+``` r
+## reproducibility for everything
+set.seed(1234)
+
+## n-by-d data matrix
+X <- matrix(rnorm(200), 10, 20)
+
+## group membership
+membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
+
+## lasso, BIC
+res <- grasps(X = X, membership = membership, penalty = "lasso", crit = "BIC")
+plot(res)
+
+```

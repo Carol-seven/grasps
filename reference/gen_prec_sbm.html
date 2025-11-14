@@ -45,7 +45,7 @@ a stochastic block model (SBM).</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gen_prec_sbm</span><span class="op">(</span></span>
-<span>  <span class="va">p</span>,</span>
+<span>  <span class="va">d</span>,</span>
 <span>  block.sizes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  K <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  prob.mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -54,7 +54,7 @@ a stochastic block model (SBM).</p>
 <span>  weight.mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span>
 <span>  weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">10000</span>, rate <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  min.eig <span class="op">=</span> <span class="fl">0.1</span></span>
+<span>  cond.target <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -62,13 +62,13 @@ a stochastic block model (SBM).</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
+<dl><dt id="arg-d">d<a class="anchor" aria-label="anchor" href="#arg-d"></a></dt>
 <dd><p>An integer specifying the number of variables (dimensions).</p></dd>
 
 
 <dt id="arg-block-sizes">block.sizes<a class="anchor" aria-label="anchor" href="#arg-block-sizes"></a></dt>
 <dd><p>An integer vector (default = <code>NULL</code>) specifying
-the size of each group. If <code>NULL</code>, the \(p\) variables are divided
+the size of each group. If <code>NULL</code>, the \(d\) variables are divided
 as evenly as possible across \(K\) groups.</p></dd>
 
 
@@ -98,7 +98,7 @@ This argument is used only when <code>prob.mat = NULL</code>.</p></dd>
 
 
 <dt id="arg-weight-mat">weight.mat<a class="anchor" aria-label="anchor" href="#arg-weight-mat"></a></dt>
-<dd><p>A \(p\)-by-\(p\) symmetric matrix (default = <code>NULL</code>)
+<dd><p>A \(d\)-by-\(d\) symmetric matrix (default = <code>NULL</code>)
 specifying the edge weights. If <code>NULL</code>, weights are generated block-wise
 according to <code>weight.dists</code> and <code>weight.paras</code>.</p></dd>
 
@@ -140,15 +140,17 @@ length rules as <code>weight.dists</code>. Each element should be a named vector
 or list suitable for the corresponding sampler.</p></dd>
 
 
-<dt id="arg-min-eig">min.eig<a class="anchor" aria-label="anchor" href="#arg-min-eig"></a></dt>
-<dd><p>A scalar (default = 0.1) specifying the minimum eigenvalue
-target for the precision matrix. A diagonal shift ensures positive
-definiteness.</p></dd>
+<dt id="arg-cond-target">cond.target<a class="anchor" aria-label="anchor" href="#arg-cond-target"></a></dt>
+<dd><p>A scalar (default = 100) specifying the target condition
+number for the precision matrix. A diagonal shift is applied so that
+the smallest eigenvalue satisfies
+\(\lambda_{\min} \geq \lambda_{\max}/\code{cond.target}\),
+ensuring both positive definiteness and numerical stability.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with the following components:</p><dl><dt>Omega</dt>
+    <p>An object with S3 class "grasps" containing the following components:</p><dl><dt>Omega</dt>
 <dd><p>The precision matrix with SBM block structure.</p></dd>
 
 <dt>Sigma</dt>
@@ -182,9 +184,17 @@ The order for blocks is:</p><ul><li><p>Within-group blocks: Indices 1, ..., K.</
 ..., (1,K), (2,3), ..., (K-1,K).</p></li>
 </ul><p><strong>Positive definiteness.</strong>
 The weighted adjacency matrix is symmetrized and used as the precision matrix
-\(\Omega\). Since arbitrary block-structured weights may not be positive
-definite, a diagonal adjustment is applied to ensure the minimum eigenvalue
-of \(\Omega\) is at least <code>min.eig</code>.</p>
+\(\Omega_0\). Since arbitrary block-structured weights may not be positive
+definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
+Specifically, let \(\lambda_{\max}\) and \(\lambda_{\min}\) denote
+the largest and smallest eigenvalues of the initial matrix. A scalar
+\(\tau\) is added to the diagonal so that
+$$\lambda_{\min}(\Omega_0 + \tau I) \;\geq\;
+\lambda_{\max} / \code{cond.target},
+$$
+which ensures both positive definiteness and that the condition number
+does not exceed <code>cond.target</code>. This guarantees numerical stability even
+in high-dimensional settings.</p>
     </div>
 
     <div class="section level2">
@@ -197,11 +207,13 @@ of \(\Omega\) is at least <code>min.eig</code>.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="va">n</span>, shape <span class="op">=</span> <span class="fl">10</span>, scale <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">gen_prec_sbm</span><span class="op">(</span>p <span class="op">=</span> <span class="fl">20</span>, K <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">gen_prec_sbm</span><span class="op">(</span>d <span class="op">=</span> <span class="fl">20</span>, K <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>                    within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_gamma</span>, <span class="st">"unif"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                    min.eig <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                    cond.target <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="gen_prec_sbm-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
