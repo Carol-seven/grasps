@@ -18,10 +18,15 @@
 #'
 #' @param penalty A character string specifying the penalty for estimating
 #' precision matrix. Available options include: \enumerate{
-#' \item "adapt": adaptive lasso \insertCite{zou2006adaptive,fan2009network}{grasps}.
-#' \item "lasso": lasso \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
-#' \item "mcp": minimax concave penalty \insertCite{zhang2010nearly}{grasps}.
-#' \item "scad": smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
+#' \item "lasso": Least absolute shrinkage and selection operator
+#' \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
+#' \item "adapt": Adaptive lasso \insertCite{zou2006adaptive,fan2009network}{grasps}.
+#' \item "atan": Arctangent type penalty \insertCite{wang2016variable}{grasps}.
+#' \item "exp": Exponential type penalty \insertCite{wang2018variable}{grasps}.
+#' \item "lq": Lq penalty \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
+#' \item "lsp": Log-sum penalty \insertCite{candes2008enhancing}{grasps}.
+#' \item "mcp": Minimax concave penalty \insertCite{zhang2010nearly}{grasps}.
+#' \item "scad": Smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
 #' }
 #'
 #' @param diag.ind A boolean (default = TRUE) specifying whether to penalize
@@ -44,9 +49,13 @@
 #' corresponds to the group penalty only. The default values is a sequence from
 #' 0.05 to 0.95 with increments of 0.05.
 #'
-#' @param gamma A scalar specifying the hyperparameter for the chosen
+#' @param gamma A scalar specifying the additional parameter for the chosen
 #' \code{penalty}. Default values: \enumerate{
 #' \item "adapt": 0.5
+#' \item "atan": 0.005
+#' \item "exp": 0.01
+#' \item "lq": 0.5
+#' \item "lsp": 0.1
 #' \item "mcp": 3
 #' \item "scad": 3.7
 #' }
@@ -162,33 +171,45 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   if (length(membership) != d) {
     stop('The length of `membership` must equal the column dimension of `X`!')
   }
-  if (!penalty %in% c("lasso", "adapt", "mcp", "scad")) {
-    stop('Error in `penalty`!\nAvailable options: "lasso", "adapt", "mcp", "scad".')
+
+  if (!(penalty %in% c("lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad"))) {
+    stop('Error in `penalty`!
+         Available options: "lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad".')
   }
-  if (!crit %in% c("AIC", "BIC", "EBIC", "HBIC", "CV")) {
-    stop('Error in `crit`!\nAvailable options: "AIC", "BIC", "EBIC", "HBIC", "CV".')
+
+  if (!(crit %in% c("AIC", "BIC", "EBIC", "HBIC", "CV"))) {
+    stop('Error in `crit`!
+         Available options: "AIC", "BIC", "EBIC", "HBIC", "CV".')
   }
+
   if (!all(lambda > 0)) {
     stop('The parameter `lambda` must be positive!')
   }
+
   if (!all(alpha >= 0 & alpha <= 1)) {
     stop('The parameter `alpha` must be in [0,1]!')
   }
+
   if (rho <= 0) {
     stop('The parameter `rho` must be positive!')
   }
+
   if (tau.incr <= 1) {
     stop('The parameter `tau.incr` must be greater than 1!')
   }
+
   if (tau.decr <= 1) {
     stop('The parameter `tau.decr` must be greater than 1!')
   }
+
   if (nu <= 1) {
     stop('The parameter `nu` must be greater than 1!')
   }
+
   if (tol.abs <= 0) {
     stop('The parameter `tol.abs` must be positive!')
   }
+
   if (tol.rel <= 0) {
     stop('The parameter `tol.rel` must be positive!')
   }
@@ -252,16 +273,11 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     parameter <- data.frame(alpha = alpha, lambda = lambda)
   }
 
-  if (is.null(gamma)) {
-    if (penalty == "adapt") {
-      gamma <- 0.5
-    } else if (penalty == "mcp") {
-      gamma <- 3
-    } else if (penalty == "scad") {
-      gamma <- 3.7
-    } else {
-      gamma <- NA
-    }
+  ## default gamma by penalty
+  if (missing(gamma) || is.null(gamma)) {
+    gamma <- switch(penalty,
+                    "adapt" = 0.5, "atan" = 0.005, "exp"  = 0.01, "lq"   = 0.5,
+                    "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7, NA)
   }
 
   if (nrow(parameter) > 1) {

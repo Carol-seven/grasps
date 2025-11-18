@@ -1,6 +1,8 @@
 #pragma once
 
 
+static const double eps = 1e-10;
+
 arma::mat soft_matrix(const arma::mat& M, const arma::mat& Thres);
 
 arma::uvec index_kfold(const int n, const int kfold);

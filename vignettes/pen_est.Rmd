@@ -1,7 +1,8 @@
 ---
-title: "Penalized Precision Matrix Estimation"
+title: "Penalized Precision Matrix Estimation in grasps"
 output: rmarkdown::html_vignette
 bibliography: ../inst/REFERENCES.bib
+link-citations: yes
 vignette: >
   %\VignetteIndexEntry{pen_est}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,9 +12,8 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.align = "center"
+  collapse = TRUE, echo = FALSE, message = FALSE, warning = FALSE, results='hide',
+  comment = "#>", fig.align = "center"
 )
 ```
 
@@ -25,99 +25,252 @@ Consider the following setting:
 
 
 - Gaussian graphical model (GGM) assumption: \
-  The data $X_{n \times p}$ consists of independent and identically distributed
-  samples $X_1, \dots, X_n \sim N_p(0,\Sigma)$.
+  The data $X_{n \times d}$ consists of independent and identically distributed
+  samples $X_1, \dots, X_n \sim N_d(\mu,\Sigma)$.
 
 
 - Disjoint group structure: \
-  The $p$ variables can be partitioned into disjoint groups.
+  The $d$ variables can be partitioned into disjoint groups.
 
 
 - Goal: \
-  Estimate the precision matrix $\Omega = \Sigma^{-1} = (\omega_{ij})_{p \times p}$.
+  Estimate the precision matrix $\Omega = \Sigma^{-1} = (\omega_{ij})_{d \times d}$.
 
 
-## Bi-level penalty
+## Sparse-Group Estimator
 
 
 $$
-\hat{\Omega} = \operatorname*{arg\,min}_{\Omega \succ 0} \left\{
--\log\det(\Omega) + \operatorname{tr}(S\Omega)
-+ \alpha P_{\text{individual}} + (1-\alpha) P_{\text{group}} \right\},
+\begin{gather}
+\hat{\Omega}(\lambda,\alpha,\gamma)
+= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
+- \log\det(\Omega) + \operatorname{tr}(S\Omega)
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
+P_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
+P^\text{individual}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
+P^\text{group}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F),
+\end{gather}
 $$
+
+
 where:
 
-- $\alpha \in [0,1]$ controls the balance between element-wise and block-wise penalties.
-- $P_{\text{individual}}$ denotes the element-wise individual penalty term.
-- $P_{\text{group}}$ denotes the block-wise group penalty term.
+
+- $S = n^{-1} \sum_{i=1}^n (X_i-\bar{X})(X_i-\bar{X})^\top$ is the empirical
+  covariance matrix.
+
+- $\lambda \geq 0$ is the global regularization parameter controlling overall
+  shrinkage.
+
+
+- $\alpha \in [0,1]$ is the mixing parameter controlling the balance between
+  element-wise and block-wise penalties.
+
+
+- $\gamma$ is the additional parameter controlling the curvature and effective
+  degree of nonconvexity of the penalty.
+
+
+- $P_{\lambda,\alpha,\gamma}(\Omega)$ is a generic bi-level penalty template
+  that can incorporate convex or non-convex regularizers while preserving
+  the intrinsic group structure among variables.
+
+
+- $P^\text{individual}_{\lambda,\gamma}(\Omega)$ is the element-wise individual
+  penalty term.
+
+
+- $P^\text{group}_{\lambda,\gamma}(\Omega)$ is the block-wise group penalty term.
+
+
+- $p_{\lambda,\gamma}(\cdot)$ is a penalty function parameterized by $\lambda$
+  and $\gamma$.
+
+
+- $\Omega_{gg^\prime}$ is the submatrix of $\Omega$ with the rows from group $g$
+  and columns from group $g^\prime$.
+
+
+- The Frobenius norm $\Vert\Omega\Vert_F$ is defined as
+  $\Vert\Omega\Vert_F = (\sum_{i,j} \vert\omega_{ij}\vert^2)^{1/2} = [\operatorname{tr}(\Omega^\top\Omega)]^{1/2}$.
+
+
+<div class="note">
+**Note**: For convex penalties, the parameter $\gamma$ is not required, and
+the penalty function $p_{\lambda,\gamma}(\cdot)$ simplifies to $p_\lambda(\cdot)$. </div>
 
 
 ## Penalties
 
 
-The package **grasps** estimates precision matrices using the following penalties:
+1. Lasso: Least absolute shrinkage and selection operator
+[@tibshirani1996regression; @friedman2008sparse]
 
 
-1. Adaptive lasso [@zou2006adaptive;@fan2009network]
+$$p_\lambda(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.$$
 
 
-$$
-P_{\text{individual}} = \lambda\sum_{i,j}\frac{\vert\omega_{ij}\vert}{\vert v_{ij}\vert}
-\quad\text{and}\quad
-P_{\text{group}} = \lambda\sum_{g,g^\prime}\frac{\Vert\Omega_{gg^\prime}\Vert_2}{\Vert V_{gg^\prime}\Vert_2}
-$$
-
-
-2. Lasso [@tibshirani1996regression;@friedman2008sparse]
+2. Adaptive lasso [@zou2006adaptive; @fan2009network]
 
 
 $$
-P_{\text{individual}} = \lambda\Vert\Omega\Vert_1
-\quad\text{and}\quad
-P_{\text{group}} = \lambda\sum_{g,g^\prime}\Vert\Omega_{gg^\prime}\Vert_2
+p_\lambda(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
 $$
+where $V = (v_{ij})_{d \times d} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{d \times d}$
+is a matrix of adaptive weights, and $\tilde{\omega}_{ij}$ is the initial estimate
+obtained using `penalty = "lasso"`.
 
 
-3. Minimax concave penalty (MCP) [@zhang2010nearly]
-
-
-$$
-P_{\text{individual}} = \sum_{i,j}\xi_{\lambda,\gamma}(\vert\omega_{ij}\vert)
-\quad\text{and}\quad
-P_{\text{group}} = \sum_{g,g^\prime}\xi_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_2)
-$$
-
-
-4. Smoothly clipped absolute deviation (SCAD) [@fan2001variable;@fan2009network]
+3. Atan: Arctangent type penalty [@wang2016variable]
 
 
 $$
-P_{\text{individual}} = \sum_{i,j}\psi_{\lambda,\gamma}(\vert\omega_{ij}\vert)
-\quad\text{and}\quad
-P_{\text{group}} = \sum_{g,g^\prime}\psi_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_2)
+p_{\lambda,\gamma}(\omega_{ij})
+= \lambda(\gamma+\frac{2}{\pi})
+\arctan\left(\frac{\vert\omega_{ij}\vert}{\gamma}\right),
+\quad \gamma > 0.
 $$
 
 
-where:
+4. Exp: Exponential type penalty [@wang2018variable]
 
-- $\Omega_{gg^\prime}$ denotes the submatrix of $\Omega$ with the rows from
-group $g$ and columns from group $g^\prime$.
 
-- The norms are defined as
 $$
-\Vert\Omega\Vert_1 = \sum_{i,j} \vert \omega_{ij} \vert \quad\text{and}\quad
-\Vert\Omega\Vert_2 = \Vert\Omega\Vert_F = \sqrt{\sum_{i,j} \vert\omega_{ij}\vert^2}
-= \sqrt{\operatorname{tr}(\Omega^\top\Omega)}.
+p_{\lambda,\gamma}(\omega_{ij})
+= \lambda\left[1-\exp\left(-\frac{\vert\omega_{ij}\vert}{\gamma}\right)\right],
+\quad \gamma > 0.
 $$
 
-- $\lambda > 0$ is a regularization parameter.
 
-- $V = (v_{ij})_{p \times p}$ is a matrix of adaptive weights, which is the
-  estimate from `penalty = "lasso"`.
+5. Lq [@frank1993statistical; @fu1998penalized; @fan2001variable]
 
-- $\xi_{\lambda,\gamma}$ is the penalty function of MCP.
 
-- $\psi_{\lambda,\gamma}$ is the penalty function of SCAD.
+$$
+p_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
+\quad 0 < \gamma < 1.
+$$
+
+
+6. LSP: Log-sum penalty [@candes2008enhancing]
+
+
+$$
+p_{\lambda,\gamma}(\omega_{ij})
+= \lambda\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
+\quad \gamma > 0.
+$$
+
+
+7. MCP: Minimax concave penalty [@zhang2010nearly]
+
+
+$$
+p_{\lambda,\gamma}(\omega_{ij})
+= \begin{cases}
+\lambda\vert\omega_{ij}\vert - \dfrac{\omega_{ij}^2}{2\gamma},
+& \text{if } \vert\omega_{ij}\vert \leq \gamma\lambda, \\
+\dfrac{1}{2}\gamma\lambda^2,
+& \text{if } \vert\omega_{ij}\vert > \gamma\lambda.
+\end{cases}
+\quad \gamma > 1.
+$$
+
+
+8. SCAD: Smoothly clipped absolute deviation [@fan2001variable; @fan2009network]
+
+
+$$
+p_{\lambda,\gamma}(\omega_{ij})
+= \begin{cases}
+\lambda\vert\omega_{ij}\vert
+& \text{if } \vert\omega_{ij}\vert \leq \lambda, \\
+\dfrac{2\gamma\lambda\vert\omega_{ij}\vert-\omega_{ij}^2-\lambda^2}{2(\gamma-1)}
+& \text{if } \lambda < \vert\omega_{ij}\vert < \gamma\lambda, \\
+\dfrac{\lambda^2(\gamma+1)}{2}
+& \text{if } \vert\omega_{ij}\vert \geq \gamma\lambda.
+\end{cases}
+\quad \gamma > 2.
+$$
+
+
+## Illustrative Visualization
+
+
+Figure 1 illustrates a comparison of various penalty functions $p(\omega)$
+evaluated over a range of $\omega$ values. The main panel (right) provides
+a wider view of the penalty functions' behavior for larger $\vert\omega\vert$,
+while the inset panel (left) magnifies the region near zero $[-1, 1]$.
+
+
+```{r pen, fig.cap="Figure 1: Illustrative penalty functions."}
+library(ggforce) ## for facet_zoom
+library(ggplot2) ## for visualization
+library(grasps) ## for deriv, pen
+# library(patchwork) ## for plot_layout
+
+omegas <- seq(-4, 4, by = 0.01)
+penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad")
+
+df <- grasps::pen(omegas, penalties, lambda = 1)
+ggplot(df, aes(x = omega, y = value, color = penalty)) +
+  geom_line() +
+  facet_zoom(xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
+  xlab(expression(italic(omega))) +
+  ylab(expression("Penalty Function" ~ italic(p) ~ "(" * italic(omega) * ")")) +
+  scale_color_discrete(name = "Penalty Type",
+                       labels = c(expression(atan ~ "(" * gamma == 0.005 * ")"),
+                                  expression(exp ~ "(" * gamma == 0.01 * ")"),
+                                  "lasso",
+                                  expression(lq ~ "(" * gamma == 0.5 * ")"),
+                                  expression(lsp ~ "(" * gamma == 0.1 * ")"),
+                                  expression(mcp ~ "(" * gamma == 3 * ")"),
+                                  expression(scad ~ "(" * gamma == 3.7 * ")"))) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+Figure 2 displays the derivative function $p^\prime(\omega)$ associated with
+a range of penalty types.
+The Lasso exhibits a constant derivative, corresponding to uniform shrinkage.
+For MCP and SCAD, the derivatives are piecewise: initially equal to the Lasso
+derivative, then decreasing over an intermediate region, and eventually dropping
+to zero, indicating that large $\vert\omega\vert$ receive no shrinkage.
+Other non-convex penalties show smoothly diminishing derivatives as
+$\vert\omega\vert$ increases, reflecting their tendency to shrink small
+$\vert\omega\vert$ strongly while exerting little to no shrinkage on large ones.
+
+
+```{r fig.cap="Figure 2: Illustrative penalty derivatives."}
+df <- grasps::deriv(omegas, penalties, lambda = 1)
+ggplot(df, aes(x = omega, y = value, color = penalty)) +
+  geom_line() +
+  scale_x_continuous(limits = c(0, 4)) +
+  scale_y_continuous(limits = c(0, 1.5)) +
+  xlab(expression(italic(omega))) +
+  ylab(expression("Derivative Function" ~ italic(p) * "'(" * italic(omega) * ")")) +
+  scale_color_discrete(name = "Penalty Type",
+                       labels = c(expression(atan ~ "(" * gamma == 0.005 * ")"),
+                                  expression(exp ~ "(" * gamma == 0.01 * ")"),
+                                  "lasso",
+                                  expression(lq ~ "(" * gamma == 0.5 * ")"),
+                                  expression(lsp ~ "(" * gamma == 0.1 * ")"),
+                                  expression(mcp ~ "(" * gamma == 3 * ")"),
+                                  expression(scad ~ "(" * gamma == 3.7 * ")"))) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
+  theme_bw() +
+  theme(aspect.ratio = 1,
+        legend.position = "bottom")
+
+# pen_plot + deriv_plot +
+#   plot_layout(widths = c(2.2,1), guides = "collect") &
+#   theme(legend.position = "bottom")
+```
 
 
 ## Reference {-}

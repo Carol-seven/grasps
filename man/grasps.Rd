@@ -47,10 +47,15 @@ The length of \code{membership} must be consistent with the dimension d.}
 
 \item{penalty}{A character string specifying the penalty for estimating
 precision matrix. Available options include: \enumerate{
-\item "adapt": adaptive lasso \insertCite{zou2006adaptive,fan2009network}{grasps}.
-\item "lasso": lasso \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
-\item "mcp": minimax concave penalty \insertCite{zhang2010nearly}{grasps}.
-\item "scad": smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
+\item "lasso": Least absolute shrinkage and selection operator
+\insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
+\item "adapt": Adaptive lasso \insertCite{zou2006adaptive,fan2009network}{grasps}.
+\item "atan": Arctangent type penalty \insertCite{wang2016variable}{grasps}.
+\item "exp": Exponential type penalty \insertCite{wang2018variable}{grasps}.
+\item "lq": Lq penalty \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
+\item "lsp": Log-sum penalty \insertCite{candes2008enhancing}{grasps}.
+\item "mcp": Minimax concave penalty \insertCite{zhang2010nearly}{grasps}.
+\item "scad": Smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
 }}
 
 \item{diag.ind}{A boolean (default = TRUE) specifying whether to penalize
@@ -73,9 +78,13 @@ An alpha of 1 corresponds to the element penalty only; an alpha of 0
 corresponds to the group penalty only. The default values is a sequence from
 0.05 to 0.95 with increments of 0.05.}
 
-\item{gamma}{A scalar specifying the hyperparameter for the chosen
+\item{gamma}{A scalar specifying the additional parameter for the chosen
 \code{penalty}. Default values: \enumerate{
 \item "adapt": 0.5
+\item "atan": 0.005
+\item "exp": 0.01
+\item "lq": 0.5
+\item "lsp": 0.1
 \item "mcp": 3
 \item "scad": 3.7
 }}

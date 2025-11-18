@@ -6,9 +6,6 @@
 using namespace Rcpp;
 
 
-static const double eps = 1e-10;
-
-
 // Sparse-Group Graphical Lasso via ADMM
 List ADMMsggl(const arma::mat& S, const List& group_idx,
               bool diag_ind, bool diag_grp, bool diag_include,

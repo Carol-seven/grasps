@@ -3,6 +3,7 @@ output:
   github_document:
     pandoc_args: [ "--wrap=preserve", "--columns=80" ]
 bibliography: inst/REFERENCES.bib
+link-citations: yes
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -36,6 +37,27 @@ incorporate both element-wise and group-wise penalties to estimate a precision
 matrix, making them user-friendly and useful for researchers and practitioners.
 
 
+$$
+\begin{gather}
+\hat{\Omega}(\lambda,\alpha,\gamma)
+= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
+- \log\det(\Omega) + \operatorname{tr}(S\Omega)
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
+P_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
+P^\text{individual}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
+P^\text{group}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
+\end{gather}
+$$
+
+
+For more details, see the vignette
+[Penalized Precision Matrix Estimation in grasps](https://shiying-xiao.com/grasps/articles/pen_estl#sparse-group-estimator).
+
+
 ## Penalties
 
 
@@ -43,13 +65,21 @@ The package **grasps** provides functions to estimate precision matrices using
 the following penalties:
 
 
-1. Adaptive lasso [@zou2006adaptive;@fan2009network]
+| Penalty | Reference |
+|:--------|:----------|
+| Lasso (`penalty = "lasso"`) | @tibshirani1996regression; @friedman2008sparse |
+| Adaptive lasso (`penalty = "adapt"`) | @zou2006adaptive; @fan2009network |
+| Atan (`penalty = "atan"`) | @wang2016variable |
+| Exp (`penalty = "exp"`) | @wang2018variable |
+| Lq (`penalty = "lq"`) | @frank1993statistical; @fu1998penalized; @fan2001variable |
+| LSP (`penalty = "lsp"`) | @candes2008enhancing |
+| MCP (`penalty = "mcp"`) | @zhang2010nearly |
+| SCAD (`penalty = "scad"`) | @fan2001variable; @fan2009network |
 
-2. Lasso [@tibshirani1996regression;@friedman2008sparse]
 
-3. Minimax concave penalty (MCP) [@zhang2010nearly]
-
-4. Smoothly clipped absolute deviation (SCAD) [@fan2001variable;@fan2009network]
+See the vignette
+[Penalized Precision Matrix Estimation in grasps](https://shiying-xiao.com/grasps/articles/pen_est#penalties)
+for more details.
 
 
 ## Installation
@@ -75,7 +105,7 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 60, K = 5,
+sim <- gen_prec_sbm(d = 100, K = 5,
                     within.prob = 0.5, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
@@ -83,7 +113,7 @@ sim <- gen_prec_sbm(d = 60, K = 5,
 
 ## synthetic data
 library(MASS)
-X <- MASS::mvrnorm(n = 30, mu = rep(0, 60), Sigma = sim$Sigma)
+X <- MASS::mvrnorm(n = 50, mu = rep(0, 100), Sigma = sim$Sigma)
 
 ## solution
 res <- grasps(X = X, membership = sim$membership, penalty = "lasso", crit = "BIC")

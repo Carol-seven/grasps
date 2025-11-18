@@ -41,6 +41,7 @@ LinkingTo:
 RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Suggests: 
+    ggforce,
     knitr,
     MASS,
     rmarkdown

@@ -1,14 +1,8 @@
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
-#include <algorithm>
+#include <algorithm> // for std::max
+#include "internals.h"
 using namespace Rcpp;
-
-
-double lambda_group(const arma::mat& Omega, std::string penalty,
-                    double lambda, double gamma);
-
-
-static const double eps = 1e-10;
 
 
 // Update Omega
