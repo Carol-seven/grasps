@@ -42,14 +42,13 @@ Consider the following setting:
 
 $$
 \hat{\Omega}(\lambda,\alpha,\gamma)
-= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
-- \log\det(\Omega) + \operatorname{tr}(S\Omega)
-+ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\},
+= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{ - \log\det(\Omega) +
+\operatorname{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\},
 $$
 $$
 P_{\lambda,\alpha,\gamma}(\Omega)
-= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
-+ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),
+= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega) +
+(1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),
 $$
 $$
 P^\text{individual}_{\lambda,\gamma}(\Omega)
@@ -57,7 +56,7 @@ P^\text{individual}_{\lambda,\gamma}(\Omega)
 $$
 $$
 P^\text{group}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F),
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
 $$
 
 
@@ -122,7 +121,7 @@ $$p_\lambda(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.$$
 
 
 $$
-p_\lambda(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
+p_{\lambda,\gamma}(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
 $$
 where $V = (v_{ij})_{d \times d} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{d \times d}$
 is a matrix of adaptive weights, and $\tilde{\omega}_{ij}$ is the initial estimate
