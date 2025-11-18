@@ -55,13 +55,13 @@ arma::mat update_Zblock(const arma::mat& M, const std::string& penalty,
         Z_block *= scale_grp;
       } else {
         double sq_all = arma::accu(arma::square(Z_block));
-        arma::vec d = Z_diag.elem(row_idx);
-        double sq_diag = arma::dot(d, d);
+        arma::vec de = Z_diag.elem(row_idx);
+        double sq_diag = arma::dot(de, de);
         double offblock_norm = std::sqrt(std::max(sq_all-sq_diag, 0.0));
         double scale_grp = std::max(1.0 - lambda_grp * (1-alpha) / (rho * (offblock_norm + eps)), 0.0);
         Z_block *= scale_grp;
         for (arma::uword k = 0; k < row_idx.n_elem; ++k) {
-          Z(row_idx[k], row_idx[k]) = d[k];
+          Z(row_idx[k], row_idx[k]) = de[k];
         }
       }
     }
