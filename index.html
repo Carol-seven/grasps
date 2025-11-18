@@ -69,20 +69,18 @@
 <!-- badges: start -->
 
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
-<p><span class="math display">$$\begin{gather}
-\hat{\Omega}(\lambda,\alpha,\gamma)
+<p><span class="math display">$$\hat{\Omega}(\lambda,\alpha,\gamma)
 = \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
 - \log\det(\Omega) + \operatorname{tr}(S\Omega)
-+ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
-P_{\lambda,\alpha,\gamma}(\Omega)
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\},$$</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>α</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>α</mi><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">individual</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">group</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">P_{\lambda,\alpha,\gamma}(\Omega)
 = \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
-+ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
-P^\text{individual}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
-P^\text{group}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
-\end{gather}$$</span></p>
-<p>For more details, see the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_estl#sparse-group-estimator">Penalized Precision Matrix Estimation in grasps</a>.</p>
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">individual</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">P^\text{individual}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert),</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">group</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mi>F</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">P^\text{group}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).</annotation></semantics></math></p>
+<p>For more details, see the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator">Penalized Precision Matrix Estimation in grasps</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="penalties">Penalties<a class="anchor" aria-label="anchor" href="#penalties"></a>

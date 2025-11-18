@@ -92,20 +92,22 @@ Estimate the precision matrix
 <h2 id="sparse-group-estimator">Sparse-Group Estimator<a class="anchor" aria-label="anchor" href="#sparse-group-estimator"></a>
 </h2>
 <p><span class="math display">$$
-\begin{gather}
 \hat{\Omega}(\lambda,\alpha,\gamma)
 = \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
 - \log\det(\Omega) + \operatorname{tr}(S\Omega)
-+ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\},
+$$</span>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>α</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>α</mi><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">individual</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">group</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 P_{\lambda,\alpha,\gamma}(\Omega)
 = \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
-+ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),
+</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">individual</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 P^\text{individual}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert),
+</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">group</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mi>F</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 P^\text{group}_{\lambda,\gamma}(\Omega)
 = \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F),
-\end{gather}
-$$</span></p>
+</annotation></semantics></math></p>
 <p>where:</p>
 <ul>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><msup><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = n^{-1} \sum_{i=1}^n (X_i-\bar{X})(X_i-\bar{X})^\top</annotation></semantics></math>
