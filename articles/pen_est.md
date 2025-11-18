@@ -17,16 +17,16 @@ Consider the following setting:
 
 ## Sparse-Group Estimator
 
-\$\$\begin{gather} \hat{\Omega}(\lambda,\alpha,\gamma) =
+\$\$\begin{align} \hat{\Omega}(\lambda,\alpha,\gamma) =
 \operatorname\*{arg\\min}\_{\Omega \succ 0} \Bigl\\ - \log\det(\Omega) +
 \operatorname{tr}(S\Omega) + P\_{\lambda,\alpha,\gamma}(\Omega) \Bigr\\,
-\\ \\ P\_{\lambda,\alpha,\gamma}(\Omega) = \alpha
+\\ P\_{\lambda,\alpha,\gamma}(\Omega) = \alpha
 P^\text{individual}\_{\lambda,\gamma}(\Omega) + (1-\alpha)
-P^\text{group}\_{\lambda,\gamma}(\Omega), \\ \\
+P^\text{group}\_{\lambda,\gamma}(\Omega), \\
 P^\text{individual}\_{\lambda,\gamma}(\Omega) = \sum\_{i,j}
-p\_{\lambda,\gamma}(\vert\omega\_{ij}\vert), \\ \\
+p\_{\lambda,\gamma}(\vert\omega\_{ij}\vert), \\
 P^\text{group}\_{\lambda,\gamma}(\Omega) = \sum\_{g,g^\prime}
-p\_{\lambda,\gamma}(\Vert\Omega\_{gg^\prime}\Vert_F), \end{gather}\$\$
+p\_{\lambda,\gamma}(\Vert\Omega\_{gg^\prime}\Vert_F), \end{align}\$\$
 
 where:
 
