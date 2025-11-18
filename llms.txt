@@ -7,7 +7,7 @@ that incorporate both element-wise and group-wise penalties to estimate
 a precision matrix, making them user-friendly and useful for researchers
 and practitioners.
 
-$$\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\left\{ - \log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \right\},$$
+$$\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{ - \log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega)\},$$
 
 $$P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),$$
 
