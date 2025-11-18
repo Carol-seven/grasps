@@ -18,7 +18,7 @@ incorporate both element-wise and group-wise penalties to estimate a precision
 matrix, making them user-friendly and useful for researchers and practitioners.
 
 $$\hat{\Omega}(\lambda,\alpha,\gamma)
-= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{ - \log\det(\Omega) +
+= {\arg\min}_{\Omega \succ 0} \Bigl\{ - \log\det(\Omega) +
 \operatorname{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\},$$
 
 $$P_{\lambda,\alpha,\gamma}(\Omega)
