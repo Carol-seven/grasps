@@ -40,23 +40,19 @@ Consider the following setting:
 ## Sparse-Group Estimator
 
 
-$$
-\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \}, \\
-$$
-$$
+\begin{gather}
+\hat{\Omega}(\lambda,\alpha,\gamma)
+= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
+- \log\det(\Omega) + \operatorname{tr}(S\Omega)
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
 P_{\lambda,\alpha,\gamma}(\Omega)
-= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega) +
-(1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\
-$$
-$$
+= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
 P^\text{individual}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\
-$$
-$$
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
 P^\text{group}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
-$$
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F),
+\end{gather}
 
 
 where:
