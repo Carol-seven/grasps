@@ -42,7 +42,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/pen_est.html">Penalized Precision Matrix Estimation</a></li>
+<li><a class="dropdown-item" href="articles/pen_est.html">Penalized Precision Matrix Estimation in grasps</a></li>
   </ul>
 </li>
       </ul>
@@ -69,17 +69,70 @@
 <!-- badges: start -->
 
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
+<p><span class="math display">$$\begin{gather}
+\hat{\Omega}(\lambda,\alpha,\gamma)
+= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
+- \log\det(\Omega) + \operatorname{tr}(S\Omega)
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
+P_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
+P^\text{individual}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
+P^\text{group}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
+\end{gather}$$</span></p>
+<p>For more details, see the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_estl#sparse-group-estimator">Penalized Precision Matrix Estimation in grasps</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="penalties">Penalties<a class="anchor" aria-label="anchor" href="#penalties"></a>
 </h2>
 <p>The package <strong>grasps</strong> provides functions to estimate precision matrices using the following penalties:</p>
-<ol style="list-style-type: decimal">
-<li><p>Adaptive lasso (Zou 2006; Fan et al. 2009)</p></li>
-<li><p>Lasso (Tibshirani 1996; Friedman et al. 2008)</p></li>
-<li><p>Minimax concave penalty (MCP) (Zhang 2010)</p></li>
-<li><p>Smoothly clipped absolute deviation (SCAD) (Fan and Li 2001; Fan et al. 2009)</p></li>
-</ol>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Penalty</th>
+<th align="left">Reference</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lasso (<code>penalty = "lasso"</code>)</td>
+<td align="left">Tibshirani (<a href="#ref-tibshirani1996regression">1996</a>); Friedman et al. (<a href="#ref-friedman2008sparse">2008</a>)</td>
+</tr>
+<tr class="even">
+<td align="left">Adaptive lasso (<code>penalty = "adapt"</code>)</td>
+<td align="left">Zou (<a href="#ref-zou2006adaptive">2006</a>); Fan et al. (<a href="#ref-fan2009network">2009</a>)</td>
+</tr>
+<tr class="odd">
+<td align="left">Atan (<code>penalty = "atan"</code>)</td>
+<td align="left">Wang and Zhu (<a href="#ref-wang2016variable">2016</a>)</td>
+</tr>
+<tr class="even">
+<td align="left">Exp (<code>penalty = "exp"</code>)</td>
+<td align="left">Wang et al. (<a href="#ref-wang2018variable">2018</a>)</td>
+</tr>
+<tr class="odd">
+<td align="left">Lq (<code>penalty = "lq"</code>)</td>
+<td align="left">Frank and Friedman (<a href="#ref-frank1993statistical">1993</a>); Fu (<a href="#ref-fu1998penalized">1998</a>); Fan and Li (<a href="#ref-fan2001variable">2001</a>)</td>
+</tr>
+<tr class="even">
+<td align="left">LSP (<code>penalty = "lsp"</code>)</td>
+<td align="left">Candès et al. (<a href="#ref-candes2008enhancing">2008</a>)</td>
+</tr>
+<tr class="odd">
+<td align="left">MCP (<code>penalty = "mcp"</code>)</td>
+<td align="left">Zhang (<a href="#ref-zhang2010nearly">2010</a>)</td>
+</tr>
+<tr class="even">
+<td align="left">SCAD (<code>penalty = "scad"</code>)</td>
+<td align="left">Fan and Li (<a href="#ref-fan2001variable">2001</a>); Fan et al. (<a href="#ref-fan2009network">2009</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>See the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_est#penalties">Penalized Precision Matrix Estimation in grasps</a> for more details.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -93,12 +146,17 @@
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Carol-seven/grasps" class="external-link">grasps</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'grasps'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     deriv</span></span>
 <span></span>
 <span><span class="co">## reproducibility for everything</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## block-structured precision matrix based on SBM</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">60</span>, K <span class="op">=</span> <span class="fl">5</span>,</span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">100</span>, K <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                    within.prob <span class="op">=</span> <span class="fl">0.5</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span>
 <span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, scale <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -106,7 +164,7 @@
 <span></span>
 <span><span class="co">## synthetic data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">MASS</a></span><span class="op">)</span></span>
-<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">30</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## solution</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grasps.html">grasps</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"lasso"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span>
@@ -119,17 +177,32 @@
 <h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-candes2008enhancing" class="csl-entry">
+Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008. “Enhancing Sparsity by Reweighted <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>ℓ</mo><mn>1</mn></msub><annotation encoding="application/x-tex">\ell_1</annotation></semantics></math> Minimization.” <em>Journal of Fourier Analysis and Applications</em> 14 (5): 877–905. <a href="https://doi.org/10.1007/s00041-008-9045-x" class="external-link uri">https://doi.org/10.1007/s00041-008-9045-x</a>.
+</div>
 <div id="ref-fan2009network" class="csl-entry">
 Fan, Jianqing, Yang Feng, and Yichao Wu. 2009. “Network Exploration via the Adaptive LASSO and SCAD Penalties.” <em>The Annals of Applied Statistics</em> 3 (2): 521–41. <a href="https://doi.org/10.1214/08-aoas215" class="external-link uri">https://doi.org/10.1214/08-aoas215</a>.
 </div>
 <div id="ref-fan2001variable" class="csl-entry">
 Fan, Jianqing, and Runze Li. 2001. “Variable Selection via Nonconcave Penalized Likelihood and Its Oracle Properties.” <em>Journal of the American Statistical Association</em> 96 (456): 1348–60. <a href="https://doi.org/10.1198/016214501753382273" class="external-link uri">https://doi.org/10.1198/016214501753382273</a>.
 </div>
+<div id="ref-frank1993statistical" class="csl-entry">
+Frank, Lldiko E., and Jerome H. Friedman. 1993. “A Statistical View of Some Chemometrics Regression Tools.” <em>Technometrics</em> 35 (2): 109–35. <a href="https://doi.org/10.1080/00401706.1993.10485033" class="external-link uri">https://doi.org/10.1080/00401706.1993.10485033</a>.
+</div>
 <div id="ref-friedman2008sparse" class="csl-entry">
 Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008. “Sparse Inverse Covariance Estimation with the Graphical Lasso.” <em>Biostatistics</em> 9 (3): 432–41. <a href="https://doi.org/10.1093/biostatistics/kxm045" class="external-link uri">https://doi.org/10.1093/biostatistics/kxm045</a>.
 </div>
+<div id="ref-fu1998penalized" class="csl-entry">
+Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge Versus the Lasso.” <em>Journal of Computational and Graphical Statistics</em> 7 (3): 397–416. <a href="https://doi.org/10.1080/10618600.1998.10474784" class="external-link uri">https://doi.org/10.1080/10618600.1998.10474784</a>.
+</div>
 <div id="ref-tibshirani1996regression" class="csl-entry">
 Tibshirani, Robert. 1996. “Regression Shrinkage and Selection via the Lasso.” <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 58 (1): 267–88. <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" class="external-link uri">https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</a>.
+</div>
+<div id="ref-wang2018variable" class="csl-entry">
+Wang, Yanxin, Qibin Fan, and Li Zhu. 2018. “Variable Selection and Estimation Using a Continuous Approximation to the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>0</mn></msub><annotation encoding="application/x-tex">L_0</annotation></semantics></math> Penalty.” <em>Annals of the Institute of Statistical Mathematics</em> 70 (1): 191–214. <a href="https://doi.org/10.1007/s10463-016-0588-3" class="external-link uri">https://doi.org/10.1007/s10463-016-0588-3</a>.
+</div>
+<div id="ref-wang2016variable" class="csl-entry">
+Wang, Yanxin, and Li Zhu. 2016. “Variable Selection and Parameter Estimation with the Atan Regularization Method.” <em>Journal of Probability and Statistics</em> 2016: 6495417. <a href="https://doi.org/10.1155/2016/6495417" class="external-link uri">https://doi.org/10.1155/2016/6495417</a>.
 </div>
 <div id="ref-zhang2010nearly" class="csl-entry">
 Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection Under Minimax Concave Penalty.” <em>The Annals of Statistics</em> 38 (2): 894–942. <a href="https://doi.org/10.1214/09-AOS729" class="external-link uri">https://doi.org/10.1214/09-AOS729</a>.

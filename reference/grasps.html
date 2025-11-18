@@ -20,7 +20,7 @@ element-wise and group-wise penalties to estimate a precision matrix."><meta pro
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation in grasps</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -96,13 +96,22 @@ The length of <code>membership</code> must be consistent with the dimension d.</
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
 <dd><p>A character string specifying the penalty for estimating
-precision matrix. Available options include:</p><ol><li><p>"adapt": adaptive lasso (Zou 2006; Fan et al. 2009)
+precision matrix. Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and selection operator
+(Tibshirani 1996; Friedman et al. 2008)
 .</p></li>
-<li><p>"lasso": lasso (Tibshirani 1996; Friedman et al. 2008)
+<li><p>"adapt": Adaptive lasso (Zou 2006; Fan et al. 2009)
 .</p></li>
-<li><p>"mcp": minimax concave penalty (Zhang 2010)
+<li><p>"atan": Arctangent type penalty (Wang and Zhu 2016)
 .</p></li>
-<li><p>"scad": smoothly clipped absolute deviation (Fan and Li 2001; Fan et al. 2009)
+<li><p>"exp": Exponential type penalty (Wang et al. 2018)
+.</p></li>
+<li><p>"lq": Lq penalty (Frank and Friedman 1993; Fu 1998; Fan and Li 2001)
+.</p></li>
+<li><p>"lsp": Log-sum penalty (Candès et al. 2008)
+.</p></li>
+<li><p>"mcp": Minimax concave penalty (Zhang 2010)
+.</p></li>
+<li><p>"scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan et al. 2009)
 .</p></li>
 </ol></dd>
 
@@ -138,8 +147,12 @@ corresponds to the group penalty only. The default values is a sequence from
 
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
-<dd><p>A scalar specifying the hyperparameter for the chosen
+<dd><p>A scalar specifying the additional parameter for the chosen
 <code>penalty</code>. Default values:</p><ol><li><p>"adapt": 0.5</p></li>
+<li><p>"atan": 0.005</p></li>
+<li><p>"exp": 0.01</p></li>
+<li><p>"lq": 0.5</p></li>
+<li><p>"lsp": 0.1</p></li>
 <li><p>"mcp": 3</p></li>
 <li><p>"scad": 3.7</p></li>
 </ol></dd>
@@ -296,7 +309,11 @@ combination when <code>crit</code> is set to <code>"AIC"</code>, <code>"BIC"</co
     <p>Akaike H (1973).
 “Information Theory and an Extension of the Maximum Likelihood Principle.”
 In Petrov BN, Csáki F (eds.), <em>Second International Symposium on Information Theory</em>, 267–281.
-Akad\'emiai Kiad\'o, Budapest, Hungary.<br><br> Fan J, Feng Y, Wu Y (2009).
+Akad\'emiai Kiad\'o, Budapest, Hungary.<br><br> Candès EJ, Wakin MB, Boyd SP (2008).
+“Enhancing Sparsity by Reweighted \(\ell_1\) Minimization.”
+<em>Journal of Fourier Analysis and Applications</em>, <b>14</b>(5), 877–905.
+<a href="https://doi.org/10.1007/s00041-008-9045-x" class="external-link">doi:10.1007/s00041-008-9045-x</a>
+.<br><br> Fan J, Feng Y, Wu Y (2009).
 “Network Exploration via the Adaptive LASSO and SCAD Penalties.”
 <em>The Annals of Applied Statistics</em>, <b>3</b>(2), 521–541.
 <a href="https://doi.org/10.1214/08-aoas215" class="external-link">doi:10.1214/08-aoas215</a>
@@ -310,10 +327,18 @@ Akad\'emiai Kiad\'o, Budapest, Hungary.<br><br> Fan J, Feng Y, Wu Y (2009).
 <a href="https://doi.org/10.1111/rssb.12168" class="external-link">doi:10.1111/rssb.12168</a>
 .<br><br> Foygel R, Drton M (2010).
 “Extended Bayesian Information Criteria for Gaussian Graphical Models.”
-In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advances in Neural Information Processing Systems 23 (NIPS 2010)</em>, 604–612.<br><br> Friedman J, Hastie T, Tibshirani R (2008).
+In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advances in Neural Information Processing Systems 23 (NIPS 2010)</em>, 604–612.<br><br> Frank LE, Friedman JH (1993).
+“A Statistical View of Some Chemometrics Regression Tools.”
+<em>Technometrics</em>, <b>35</b>(2), 109–135.
+<a href="https://doi.org/10.1080/00401706.1993.10485033" class="external-link">doi:10.1080/00401706.1993.10485033</a>
+.<br><br> Friedman J, Hastie T, Tibshirani R (2008).
 “Sparse Inverse Covariance Estimation with the Graphical Lasso.”
 <em>Biostatistics</em>, <b>9</b>(3), 432–441.
 <a href="https://doi.org/10.1093/biostatistics/kxm045" class="external-link">doi:10.1093/biostatistics/kxm045</a>
+.<br><br> Fu WJ (1998).
+“Penalized Regressions: The Bridge versus the Lasso.”
+<em>Journal of Computational and Graphical Statistics</em>, <b>7</b>(3), 397–416.
+<a href="https://doi.org/10.1080/10618600.1998.10474784" class="external-link">doi:10.1080/10618600.1998.10474784</a>
 .<br><br> Schwarz G (1978).
 “Estimating the Dimension of a Model.”
 <em>The Annals of Statistics</em>, <b>6</b>(2), 461–464.
@@ -326,6 +351,14 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 “Calibrating Nonconvex Penalized Regression in Ultra-High Dimension.”
 <em>The Annals of Statistics</em>, <b>41</b>(5), 2505–2536.
 <a href="https://doi.org/10.1214/13-AOS1159" class="external-link">doi:10.1214/13-AOS1159</a>
+.<br><br> Wang Y, Fan Q, Zhu L (2018).
+“Variable Selection and Estimation using a Continuous Approximation to the \(L_0\) Penalty.”
+<em>Annals of the Institute of Statistical Mathematics</em>, <b>70</b>(1), 191–214.
+<a href="https://doi.org/10.1007/s10463-016-0588-3" class="external-link">doi:10.1007/s10463-016-0588-3</a>
+.<br><br> Wang Y, Zhu L (2016).
+“Variable Selection and Parameter Estimation with the Atan Regularization Method.”
+<em>Journal of Probability and Statistics</em>, <b>2016</b>, 6495417.
+<a href="https://doi.org/10.1155/2016/6495417" class="external-link">doi:10.1155/2016/6495417</a>
 .<br><br> Zhang C (2010).
 “Nearly Unbiased Variable Selection under Minimax Concave Penalty.”
 <em>The Annals of Statistics</em>, <b>38</b>(2), 894–942.

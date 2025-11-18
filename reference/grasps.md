@@ -59,13 +59,23 @@ grasps(
   A character string specifying the penalty for estimating precision
   matrix. Available options include:
 
-  1.  "adapt": adaptive lasso (Zou 2006; Fan et al. 2009) .
+  1.  "lasso": Least absolute shrinkage and selection operator
+      (Tibshirani 1996; Friedman et al. 2008) .
 
-  2.  "lasso": lasso (Tibshirani 1996; Friedman et al. 2008) .
+  2.  "adapt": Adaptive lasso (Zou 2006; Fan et al. 2009) .
 
-  3.  "mcp": minimax concave penalty (Zhang 2010) .
+  3.  "atan": Arctangent type penalty (Wang and Zhu 2016) .
 
-  4.  "scad": smoothly clipped absolute deviation (Fan and Li 2001; Fan
+  4.  "exp": Exponential type penalty (Wang et al. 2018) .
+
+  5.  "lq": Lq penalty (Frank and Friedman 1993; Fu 1998; Fan and
+      Li 2001) .
+
+  6.  "lsp": Log-sum penalty (Candès et al. 2008) .
+
+  7.  "mcp": Minimax concave penalty (Zhang 2010) .
+
+  8.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
 - diag.ind:
@@ -99,14 +109,22 @@ grasps(
 
 - gamma:
 
-  A scalar specifying the hyperparameter for the chosen `penalty`.
+  A scalar specifying the additional parameter for the chosen `penalty`.
   Default values:
 
   1.  "adapt": 0.5
 
-  2.  "mcp": 3
+  2.  "atan": 0.005
 
-  3.  "scad": 3.7
+  3.  "exp": 0.01
+
+  4.  "lq": 0.5
+
+  5.  "lsp": 0.1
+
+  6.  "mcp": 3
+
+  7.  "scad": 3.7
 
 - nlambda:
 
@@ -276,6 +294,12 @@ Likelihood Principle.” In Petrov BN, Csáki F (eds.), *Second
 International Symposium on Information Theory*, 267–281. Akad\\emiai
 Kiad\\o, Budapest, Hungary.  
   
+Candès EJ, Wakin MB, Boyd SP (2008). “Enhancing Sparsity by Reweighted
+\\\ell_1\\ Minimization.” *Journal of Fourier Analysis and
+Applications*, **14**(5), 877–905.
+[doi:10.1007/s00041-008-9045-x](https://doi.org/10.1007/s00041-008-9045-x)
+.  
+  
 Fan J, Feng Y, Wu Y (2009). “Network Exploration via the Adaptive LASSO
 and SCAD Penalties.” *The Annals of Applied Statistics*, **3**(2),
 521–541. [doi:10.1214/08-aoas215](https://doi.org/10.1214/08-aoas215)
@@ -298,10 +322,20 @@ Gaussian Graphical Models.” In Lafferty J, Williams C, Shawe-Taylor J,
 Zemel R, Culotta A (eds.), *Advances in Neural Information Processing
 Systems 23 (NIPS 2010)*, 604–612.  
   
+Frank LE, Friedman JH (1993). “A Statistical View of Some Chemometrics
+Regression Tools.” *Technometrics*, **35**(2), 109–135.
+[doi:10.1080/00401706.1993.10485033](https://doi.org/10.1080/00401706.1993.10485033)
+.  
+  
 Friedman J, Hastie T, Tibshirani R (2008). “Sparse Inverse Covariance
 Estimation with the Graphical Lasso.” *Biostatistics*, **9**(3),
 432–441.
 [doi:10.1093/biostatistics/kxm045](https://doi.org/10.1093/biostatistics/kxm045)
+.  
+  
+Fu WJ (1998). “Penalized Regressions: The Bridge versus the Lasso.”
+*Journal of Computational and Graphical Statistics*, **7**(3), 397–416.
+[doi:10.1080/10618600.1998.10474784](https://doi.org/10.1080/10618600.1998.10474784)
 .  
   
 Schwarz G (1978). “Estimating the Dimension of a Model.” *The Annals of
@@ -318,6 +352,17 @@ Wang L, Kim Y, Li R (2013). “Calibrating Nonconvex Penalized Regression
 in Ultra-High Dimension.” *The Annals of Statistics*, **41**(5),
 2505–2536. [doi:10.1214/13-AOS1159](https://doi.org/10.1214/13-AOS1159)
 .  
+  
+Wang Y, Fan Q, Zhu L (2018). “Variable Selection and Estimation using a
+Continuous Approximation to the \\L_0\\ Penalty.” *Annals of the
+Institute of Statistical Mathematics*, **70**(1), 191–214.
+[doi:10.1007/s10463-016-0588-3](https://doi.org/10.1007/s10463-016-0588-3)
+.  
+  
+Wang Y, Zhu L (2016). “Variable Selection and Parameter Estimation with
+the Atan Regularization Method.” *Journal of Probability and
+Statistics*, **2016**, 6495417.
+[doi:10.1155/2016/6495417](https://doi.org/10.1155/2016/6495417) .  
   
 Zhang C (2010). “Nearly Unbiased Variable Selection under Minimax
 Concave Penalty.” *The Annals of Statistics*, **38**(2), 894–942.

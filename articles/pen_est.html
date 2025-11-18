@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Penalized Precision Matrix Estimation • grasps</title>
+<title>Penalized Precision Matrix Estimation in grasps • grasps</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Penalized Precision Matrix Estimation">
+<meta property="og:title" content="Penalized Precision Matrix Estimation in grasps">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -39,7 +39,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation</a></li>
+<li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation in grasps</a></li>
   </ul>
 </li>
       </ul>
@@ -60,7 +60,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Penalized Precision Matrix Estimation</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Penalized Precision Matrix Estimation in grasps</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/main/vignettes/pen_est.Rmd" class="external-link"><code>vignettes/pen_est.Rmd</code></a></small>
@@ -76,112 +76,222 @@
 <ul>
 <li><p>Gaussian graphical model (GGM) assumption:<br>
 The data
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mrow><mi>n</mi><mo>×</mo><mi>p</mi></mrow></msub><annotation encoding="application/x-tex">X_{n \times p}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mrow><mi>n</mi><mo>×</mo><mi>d</mi></mrow></msub><annotation encoding="application/x-tex">X_{n \times d}</annotation></semantics></math>
 consists of independent and identically distributed samples
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>∼</mo><msub><mi>N</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_1, \dots, X_n \sim N_p(0,\Sigma)</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>∼</mo><msub><mi>N</mi><mi>d</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>μ</mi><mo>,</mo><mi>Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_1, \dots, X_n \sim N_d(\mu,\Sigma)</annotation></semantics></math>.</p></li>
 <li><p>Disjoint group structure:<br>
 The
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
 variables can be partitioned into disjoint groups.</p></li>
 <li><p>Goal:<br>
 Estimate the precision matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Ω</mi><mo>=</mo><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\Omega = \Sigma^{-1} = (\omega_{ij})_{p \times p}</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Ω</mi><mo>=</mo><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>d</mi><mo>×</mo><mi>d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\Omega = \Sigma^{-1} = (\omega_{ij})_{d \times d}</annotation></semantics></math>.</p></li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="bi-level-penalty">Bi-level penalty<a class="anchor" aria-label="anchor" href="#bi-level-penalty"></a>
+<h2 id="sparse-group-estimator">Sparse-Group Estimator<a class="anchor" aria-label="anchor" href="#sparse-group-estimator"></a>
 </h2>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Ω</mi><mo accent="true">̂</mo></mover><mo>=</mo><munder><mo>arg min</mo><mrow><mi>Ω</mi><mo>≻</mo><mn>0</mn></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mo>−</mo><mo>log</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>tr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>α</mi><msub><mi>P</mi><mtext mathvariant="normal">individual</mtext></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>P</mi><mtext mathvariant="normal">group</mtext></msub><mo stretchy="true" form="postfix">}</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
-\hat{\Omega} = \operatorname*{arg\,min}_{\Omega \succ 0} \left\{
--\log\det(\Omega) + \operatorname{tr}(S\Omega)
-+ \alpha P_{\text{individual}} + (1-\alpha) P_{\text{group}} \right\},
-</annotation></semantics></math> where:</p>
-<ul>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha \in [0,1]</annotation></semantics></math>
-controls the balance between element-wise and block-wise penalties.</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mtext mathvariant="normal">individual</mtext></msub><annotation encoding="application/x-tex">P_{\text{individual}}</annotation></semantics></math>
-denotes the element-wise individual penalty term.</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mtext mathvariant="normal">group</mtext></msub><annotation encoding="application/x-tex">P_{\text{group}}</annotation></semantics></math>
-denotes the block-wise group penalty term.</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="penalties">Penalties<a class="anchor" aria-label="anchor" href="#penalties"></a>
-</h2>
-<p>The package <strong>grasps</strong> estimates precision matrices
-using the following penalties:</p>
-<ol style="list-style-type: decimal">
-<li>Adaptive lasso <span class="citation">(Zou 2006; Fan, Feng, and Wu
-2009)</span>
-</li>
-</ol>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">individual</mtext></msub><mo>=</mo><mi>λ</mi><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mfrac><mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mrow><mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>v</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mrow></mfrac><mspace width="1.0em"></mspace><mtext mathvariant="normal">and</mtext><mspace width="1.0em"></mspace><msub><mi>P</mi><mtext mathvariant="normal">group</mtext></msub><mo>=</mo><mi>λ</mi><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><mfrac><mrow><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mn>2</mn></msub></mrow><mrow><mo stretchy="false" form="postfix">‖</mo><msub><mi>V</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mn>2</mn></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">
-P_{\text{individual}} = \lambda\sum_{i,j}\frac{\vert\omega_{ij}\vert}{\vert v_{ij}\vert}
-\quad\text{and}\quad
-P_{\text{group}} = \lambda\sum_{g,g^\prime}\frac{\Vert\Omega_{gg^\prime}\Vert_2}{\Vert V_{gg^\prime}\Vert_2}
-</annotation></semantics></math></p>
-<ol start="2" style="list-style-type: decimal">
-<li>Lasso <span class="citation">(Tibshirani 1996; Friedman, Hastie, and
-Tibshirani 2008)</span>
-</li>
-</ol>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">individual</mtext></msub><mo>=</mo><mi>λ</mi><mo stretchy="false" form="postfix">‖</mo><mi>Ω</mi><msub><mo stretchy="false" form="postfix">‖</mo><mn>1</mn></msub><mspace width="1.0em"></mspace><mtext mathvariant="normal">and</mtext><mspace width="1.0em"></mspace><msub><mi>P</mi><mtext mathvariant="normal">group</mtext></msub><mo>=</mo><mi>λ</mi><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">
-P_{\text{individual}} = \lambda\Vert\Omega\Vert_1
-\quad\text{and}\quad
-P_{\text{group}} = \lambda\sum_{g,g^\prime}\Vert\Omega_{gg^\prime}\Vert_2
-</annotation></semantics></math></p>
-<ol start="3" style="list-style-type: decimal">
-<li>Minimax concave penalty (MCP) <span class="citation">(Zhang
-2010)</span>
-</li>
-</ol>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">individual</mtext></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>ξ</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mtext mathvariant="normal">and</mtext><mspace width="1.0em"></mspace><msub><mi>P</mi><mtext mathvariant="normal">group</mtext></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><msub><mi>ξ</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-P_{\text{individual}} = \sum_{i,j}\xi_{\lambda,\gamma}(\vert\omega_{ij}\vert)
-\quad\text{and}\quad
-P_{\text{group}} = \sum_{g,g^\prime}\xi_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_2)
-</annotation></semantics></math></p>
-<ol start="4" style="list-style-type: decimal">
-<li>Smoothly clipped absolute deviation (SCAD) <span class="citation">(Fan and Li 2001; Fan, Feng, and Wu 2009)</span>
-</li>
-</ol>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mtext mathvariant="normal">individual</mtext></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>ψ</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mtext mathvariant="normal">and</mtext><mspace width="1.0em"></mspace><msub><mi>P</mi><mtext mathvariant="normal">group</mtext></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><msub><mi>ψ</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
-P_{\text{individual}} = \sum_{i,j}\psi_{\lambda,\gamma}(\vert\omega_{ij}\vert)
-\quad\text{and}\quad
-P_{\text{group}} = \sum_{g,g^\prime}\psi_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_2)
-</annotation></semantics></math></p>
+<p><span class="math display">$$
+\begin{gather}
+\hat{\Omega}(\lambda,\alpha,\gamma)
+= \operatorname*{arg\,min}_{\Omega \succ 0} \Bigl\{
+- \log\det(\Omega) + \operatorname{tr}(S\Omega)
++ P_{\lambda,\alpha,\gamma}(\Omega) \Bigr\}, \\ \\
+P_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega)
++ (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega), \\ \\
+P^\text{individual}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert), \\ \\
+P^\text{group}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F),
+\end{gather}
+$$</span></p>
 <p>where:</p>
 <ul>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><msup><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>−</mo><mover><mi>X</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">S = n^{-1} \sum_{i=1}^n (X_i-\bar{X})(X_i-\bar{X})^\top</annotation></semantics></math>
+is the empirical covariance matrix.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda \geq 0</annotation></semantics></math>
+is the global regularization parameter controlling overall
+shrinkage.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha \in [0,1]</annotation></semantics></math>
+is the mixing parameter controlling the balance between element-wise and
+block-wise penalties.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+is the additional parameter controlling the curvature and effective
+degree of nonconvexity of the penalty.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>α</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P_{\lambda,\alpha,\gamma}(\Omega)</annotation></semantics></math>
+is a generic bi-level penalty template that can incorporate convex or
+non-convex regularizers while preserving the intrinsic group structure
+among variables.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">individual</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P^\text{individual}_{\lambda,\gamma}(\Omega)</annotation></semantics></math>
+is the element-wise individual penalty term.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow><mtext mathvariant="normal">group</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P^\text{group}_{\lambda,\gamma}(\Omega)</annotation></semantics></math>
+is the block-wise group penalty term.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{\lambda,\gamma}(\cdot)</annotation></semantics></math>
+is a penalty function parameterized by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>.</p></li>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><annotation encoding="application/x-tex">\Omega_{gg^\prime}</annotation></semantics></math>
-denotes the submatrix of
+is the submatrix of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
 with the rows from group
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
 and columns from group
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mi>′</mi></msup><annotation encoding="application/x-tex">g^\prime</annotation></semantics></math>.</p></li>
-<li><p>The norms are defined as
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">‖</mo><mi>Ω</mi><msub><mo stretchy="false" form="postfix">‖</mo><mn>1</mn></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mspace width="1.0em"></mspace><mtext mathvariant="normal">and</mtext><mspace width="1.0em"></mspace><mo stretchy="false" form="postfix">‖</mo><mi>Ω</mi><msub><mo stretchy="false" form="postfix">‖</mo><mn>2</mn></msub><mo>=</mo><mo stretchy="false" form="postfix">‖</mo><mi>Ω</mi><msub><mo stretchy="false" form="postfix">‖</mo><mi>F</mi></msub><mo>=</mo><msqrt><mrow><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mo stretchy="false" form="postfix">|</mo><mn>2</mn></msup></mrow></msqrt><mo>=</mo><msqrt><mrow><mo>tr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ω</mi><mi>⊤</mi></msup><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">
-\Vert\Omega\Vert_1 = \sum_{i,j} \vert \omega_{ij} \vert \quad\text{and}\quad
-\Vert\Omega\Vert_2 = \Vert\Omega\Vert_F = \sqrt{\sum_{i,j} \vert\omega_{ij}\vert^2}
-= \sqrt{\operatorname{tr}(\Omega^\top\Omega)}.
-</annotation></semantics></math></p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda &gt; 0</annotation></semantics></math>
-is a regularization parameter.</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>p</mi><mo>×</mo><mi>p</mi></mrow></msub></mrow><annotation encoding="application/x-tex">V = (v_{ij})_{p \times p}</annotation></semantics></math>
-is a matrix of adaptive weights, which is the estimate from
-<code>penalty = "lasso"</code>.</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><annotation encoding="application/x-tex">\xi_{\lambda,\gamma}</annotation></semantics></math>
-is the penalty function of MCP.</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><annotation encoding="application/x-tex">\psi_{\lambda,\gamma}</annotation></semantics></math>
-is the penalty function of SCAD.</p></li>
+<li><p>The Frobenius norm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">‖</mo><mi>Ω</mi><msub><mo stretchy="false" form="postfix">‖</mo><mi>F</mi></msub></mrow><annotation encoding="application/x-tex">\Vert\Omega\Vert_F</annotation></semantics></math>
+is defined as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">‖</mo><mi>Ω</mi><msub><mo stretchy="false" form="postfix">‖</mo><mi>F</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mo stretchy="false" form="postfix">|</mo><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><mo>tr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ω</mi><mi>⊤</mi></msup><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Vert\Omega\Vert_F = (\sum_{i,j} \vert\omega_{ij}\vert^2)^{1/2} = [\operatorname{tr}(\Omega^\top\Omega)]^{1/2}</annotation></semantics></math>.</p></li>
 </ul>
+<div class="note">
+<strong>Note</strong>: For convex penalties, the parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+is not required, and the penalty function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{\lambda,\gamma}(\cdot)</annotation></semantics></math>
+simplifies to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>λ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_\lambda(\cdot)</annotation></semantics></math>.
+</div>
+</div>
+<div class="section level2">
+<h2 id="penalties">Penalties<a class="anchor" aria-label="anchor" href="#penalties"></a>
+</h2>
+<ol style="list-style-type: decimal">
+<li>Lasso: Least absolute shrinkage and selection operator <span class="citation">(<a href="#ref-tibshirani1996regression">Tibshirani
+1996</a>; <a href="#ref-friedman2008sparse">Friedman, Hastie, and
+Tibshirani 2008</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>λ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>λ</mi><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">p_\lambda(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.</annotation></semantics></math></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Adaptive lasso <span class="citation">(<a href="#ref-zou2006adaptive">Zou 2006</a>; <a href="#ref-fan2009network">Fan, Feng, and Wu 2009</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>λ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>λ</mi><mfrac><mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mrow><msub><mi>v</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p_\lambda(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>d</mi><mo>×</mo><mi>d</mi></mrow></msub><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">|</mo><msub><mover><mi>ω</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mo stretchy="false" form="postfix">|</mo><mi>γ</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>d</mi><mo>×</mo><mi>d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">V = (v_{ij})_{d \times d} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{d \times d}</annotation></semantics></math>
+is a matrix of adaptive weights, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>ω</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\tilde{\omega}_{ij}</annotation></semantics></math>
+is the initial estimate obtained using
+<code>penalty = "lasso"</code>.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Atan: Arctangent type penalty <span class="citation">(<a href="#ref-wang2016variable">Wang and Zhu 2016</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>+</mo><mfrac><mn>2</mn><mi>π</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>arctan</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mrow><mi>γ</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mi>γ</mi><mo>&gt;</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{\lambda,\gamma}(\omega_{ij})
+= \lambda(\gamma+\frac{2}{\pi})
+\arctan\left(\frac{\vert\omega_{ij}\vert}{\gamma}\right),
+\quad \gamma &gt; 0.
+</annotation></semantics></math></p>
+<ol start="4" style="list-style-type: decimal">
+<li>Exp: Exponential type penalty <span class="citation">(<a href="#ref-wang2018variable">Wang, Fan, and Zhu 2018</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mfrac><mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mrow><mi>γ</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mi>γ</mi><mo>&gt;</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{\lambda,\gamma}(\omega_{ij})
+= \lambda\left[1-\exp\left(-\frac{\vert\omega_{ij}\vert}{\gamma}\right)\right],
+\quad \gamma &gt; 0.
+</annotation></semantics></math></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Lq <span class="citation">(<a href="#ref-frank1993statistical">Frank
+and Friedman 1993</a>; <a href="#ref-fu1998penalized">Fu 1998</a>; <a href="#ref-fan2001variable">Fan and Li 2001</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>λ</mi><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mo stretchy="false" form="postfix">|</mo><mi>γ</mi></msup><mo>,</mo><mspace width="1.0em"></mspace><mn>0</mn><mo>&lt;</mo><mi>γ</mi><mo>&lt;</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
+\quad 0 &lt; \gamma &lt; 1.
+</annotation></semantics></math></p>
+<ol start="6" style="list-style-type: decimal">
+<li>LSP: Log-sum penalty <span class="citation">(<a href="#ref-candes2008enhancing">Candès, Wakin, and Boyd
+2008</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>λ</mi><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mrow><mi>γ</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mi>γ</mi><mo>&gt;</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{\lambda,\gamma}(\omega_{ij})
+= \lambda\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
+\quad \gamma &gt; 0.
+</annotation></semantics></math></p>
+<ol start="7" style="list-style-type: decimal">
+<li>MCP: Minimax concave penalty <span class="citation">(<a href="#ref-zhang2010nearly">Zhang 2010</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>λ</mi><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>−</mo><mfrac displaystyle="true"><msubsup><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow><mn>2</mn></msubsup><mrow><mn>2</mn><mi>γ</mi></mrow></mfrac><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>≤</mo><mi>γ</mi><mi>λ</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac displaystyle="true"><mn>1</mn><mn>2</mn></mfrac><mi>γ</mi><msup><mi>λ</mi><mn>2</mn></msup><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>&gt;</mo><mi>γ</mi><mi>λ</mi><mi>.</mi></mtd></mtr></mtable></mrow><mspace width="1.0em"></mspace><mi>γ</mi><mo>&gt;</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{\lambda,\gamma}(\omega_{ij})
+= \begin{cases}
+\lambda\vert\omega_{ij}\vert - \dfrac{\omega_{ij}^2}{2\gamma},
+&amp; \text{if } \vert\omega_{ij}\vert \leq \gamma\lambda, \\
+\dfrac{1}{2}\gamma\lambda^2,
+&amp; \text{if } \vert\omega_{ij}\vert &gt; \gamma\lambda.
+\end{cases}
+\quad \gamma &gt; 1.
+</annotation></semantics></math></p>
+<ol start="8" style="list-style-type: decimal">
+<li>SCAD: Smoothly clipped absolute deviation <span class="citation">(<a href="#ref-fan2001variable">Fan and Li 2001</a>; <a href="#ref-fan2009network">Fan, Feng, and Wu 2009</a>)</span>
+</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>λ</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mi>λ</mi><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>≤</mo><mi>λ</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac displaystyle="true"><mrow><mn>2</mn><mi>γ</mi><mi>λ</mi><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>−</mo><msubsup><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow><mn>2</mn></msubsup><mo>−</mo><msup><mi>λ</mi><mn>2</mn></msup></mrow><mrow><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>λ</mi><mo>&lt;</mo><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>&lt;</mo><mi>γ</mi><mi>λ</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac displaystyle="true"><mrow><msup><mi>λ</mi><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mn>2</mn></mfrac></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo>≥</mo><mi>γ</mi><mi>λ</mi><mi>.</mi></mtd></mtr></mtable></mrow><mspace width="1.0em"></mspace><mi>γ</mi><mo>&gt;</mo><mn>2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{\lambda,\gamma}(\omega_{ij})
+= \begin{cases}
+\lambda\vert\omega_{ij}\vert
+&amp; \text{if } \vert\omega_{ij}\vert \leq \lambda, \\
+\dfrac{2\gamma\lambda\vert\omega_{ij}\vert-\omega_{ij}^2-\lambda^2}{2(\gamma-1)}
+&amp; \text{if } \lambda &lt; \vert\omega_{ij}\vert &lt; \gamma\lambda, \\
+\dfrac{\lambda^2(\gamma+1)}{2}
+&amp; \text{if } \vert\omega_{ij}\vert \geq \gamma\lambda.
+\end{cases}
+\quad \gamma &gt; 2.
+</annotation></semantics></math></p>
+</div>
+<div class="section level2">
+<h2 id="illustrative-visualization">Illustrative Visualization<a class="anchor" aria-label="anchor" href="#illustrative-visualization"></a>
+</h2>
+<p>Figure 1 illustrates a comparison of various penalty functions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\omega)</annotation></semantics></math>
+evaluated over a range of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+values. The main panel (right) provides a wider view of the penalty
+functions’ behavior for larger
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">|</mo><mi>ω</mi><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\vert\omega\vert</annotation></semantics></math>,
+while the inset panel (left) magnifies the region near zero
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[-1, 1]</annotation></semantics></math>.</p>
+<div class="figure" style="text-align: center">
+<img src="pen_est_files/figure-html/pen-1.png" class="r-plt" alt="Figure 1: Illustrative penalty functions." width="700"><p class="caption">
+Figure 1: Illustrative penalty functions.
+</p>
+</div>
+<p>Figure 2 displays the derivative function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>p</mi><mi>′</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p^\prime(\omega)</annotation></semantics></math>
+associated with a range of penalty types. The Lasso exhibits a constant
+derivative, corresponding to uniform shrinkage. For MCP and SCAD, the
+derivatives are piecewise: initially equal to the Lasso derivative, then
+decreasing over an intermediate region, and eventually dropping to zero,
+indicating that large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">|</mo><mi>ω</mi><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\vert\omega\vert</annotation></semantics></math>
+receive no shrinkage. Other non-convex penalties show smoothly
+diminishing derivatives as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">|</mo><mi>ω</mi><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\vert\omega\vert</annotation></semantics></math>
+increases, reflecting their tendency to shrink small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">|</mo><mi>ω</mi><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">\vert\omega\vert</annotation></semantics></math>
+strongly while exerting little to no shrinkage on large ones.</p>
+<div class="figure" style="text-align: center">
+<img src="pen_est_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="Figure 2: Illustrative penalty derivatives." width="700"><p class="caption">
+Figure 2: Illustrative penalty derivatives.
+</p>
+</div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-candes2008enhancing" class="csl-entry">
+Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008.
+<span>“Enhancing Sparsity by Reweighted
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>ℓ</mo><mn>1</mn></msub><annotation encoding="application/x-tex">\ell_1</annotation></semantics></math>
+Minimization.”</span> <em>Journal of Fourier Analysis and
+Applications</em> 14 (5): 877–905. <a href="https://doi.org/10.1007/s00041-008-9045-x" class="external-link">https://doi.org/10.1007/s00041-008-9045-x</a>.
+</div>
 <div id="ref-fan2009network" class="csl-entry">
 Fan, Jianqing, Yang Feng, and Yichao Wu. 2009. <span>“Network
 Exploration via the Adaptive <span>LASSO</span> and <span>SCAD</span>
@@ -194,15 +304,37 @@ Nonconcave Penalized Likelihood and Its Oracle Properties.”</span>
 <em>Journal of the American Statistical Association</em> 96 (456):
 1348–60. <a href="https://doi.org/10.1198/016214501753382273" class="external-link">https://doi.org/10.1198/016214501753382273</a>.
 </div>
+<div id="ref-frank1993statistical" class="csl-entry">
+Frank, Lldiko E., and Jerome H. Friedman. 1993. <span>“A Statistical
+View of Some Chemometrics Regression Tools.”</span>
+<em>Technometrics</em> 35 (2): 109–35. <a href="https://doi.org/10.1080/00401706.1993.10485033" class="external-link">https://doi.org/10.1080/00401706.1993.10485033</a>.
+</div>
 <div id="ref-friedman2008sparse" class="csl-entry">
 Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008.
 <span>“Sparse Inverse Covariance Estimation with the Graphical
 Lasso.”</span> <em>Biostatistics</em> 9 (3): 432–41. <a href="https://doi.org/10.1093/biostatistics/kxm045" class="external-link">https://doi.org/10.1093/biostatistics/kxm045</a>.
 </div>
+<div id="ref-fu1998penalized" class="csl-entry">
+Fu, Wenjiang J. 1998. <span>“Penalized Regressions: <span>T</span>he
+Bridge Versus the Lasso.”</span> <em>Journal of Computational and
+Graphical Statistics</em> 7 (3): 397–416. <a href="https://doi.org/10.1080/10618600.1998.10474784" class="external-link">https://doi.org/10.1080/10618600.1998.10474784</a>.
+</div>
 <div id="ref-tibshirani1996regression" class="csl-entry">
 Tibshirani, Robert. 1996. <span>“Regression Shrinkage and Selection via
 the <span>L</span>asso.”</span> <em>Journal of the Royal Statistical
 Society: Series B (Methodological)</em> 58 (1): 267–88. <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" class="external-link">https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</a>.
+</div>
+<div id="ref-wang2018variable" class="csl-entry">
+Wang, Yanxin, Qibin Fan, and Li Zhu. 2018. <span>“Variable Selection and
+Estimation Using a Continuous Approximation to the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>0</mn></msub><annotation encoding="application/x-tex">L_0</annotation></semantics></math>
+Penalty.”</span> <em>Annals of the Institute of Statistical
+Mathematics</em> 70 (1): 191–214. <a href="https://doi.org/10.1007/s10463-016-0588-3" class="external-link">https://doi.org/10.1007/s10463-016-0588-3</a>.
+</div>
+<div id="ref-wang2016variable" class="csl-entry">
+Wang, Yanxin, and Li Zhu. 2016. <span>“Variable Selection and Parameter
+Estimation with the <span>Atan</span> Regularization Method.”</span>
+<em>Journal of Probability and Statistics</em> 2016: 6495417. <a href="https://doi.org/10.1155/2016/6495417" class="external-link">https://doi.org/10.1155/2016/6495417</a>.
 </div>
 <div id="ref-zhang2010nearly" class="csl-entry">
 Zhang, Cun-Hui. 2010. <span>“Nearly Unbiased Variable Selection Under
