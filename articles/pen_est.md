@@ -21,7 +21,7 @@ Consider the following setting:
 \operatorname\*{arg\\min}\_{\Omega \succ 0} \Bigl\\ - \log\det(\Omega) +
 \operatorname{tr}(S\Omega) + P\_{\lambda,\alpha,\gamma}(\Omega) \Bigr\\,
 \$\$
-$$P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),$$$$P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),$$$$P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right),$$
+$$P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),$$$$P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),$$$$P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).$$
 
 where:
 
@@ -71,7 +71,7 @@ $$p_{\lambda}\left( \omega_{ij} \right) = \lambda|\omega_{ij}|.$$
 2.  Adaptive lasso ([Zou 2006](#ref-zou2006adaptive); [Fan, Feng, and Wu
     2009](#ref-fan2009network))
 
-$$p_{\lambda}\left( \omega_{ij} \right) = \lambda\frac{|\omega_{ij}|}{v_{ij}},$$
+$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\frac{|\omega_{ij}|}{v_{ij}},$$
 where
 $V = \left( v_{ij} \right)_{d \times d} = \left( |{\widetilde{\omega}}_{ij}|^{\gamma} \right)_{d \times d}$
 is a matrix of adaptive weights, and ${\widetilde{\omega}}_{ij}$ is the
