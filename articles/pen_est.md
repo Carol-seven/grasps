@@ -18,7 +18,7 @@ Consider the following setting:
 ## Sparse-Group Estimator
 
 \$\$ \hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}\_{\Omega \succ 0}
-\Bigl\\ - \log\det(\Omega) + \operatorname{tr}(S\Omega) +
+\Bigl\\ - \log\det(\Omega) + \text{tr}(S\Omega) +
 P\_{\lambda,\alpha,\gamma}(\Omega) \Bigr\\, \$\$
 $$P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),$$$$P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),$$$$P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).$$
 
