@@ -4,27 +4,29 @@
 
 Consider the following setting:
 
-- Gaussian graphical model (GGM) assumption:  
+- **Gaussian graphical model (GGM) assumption:**  
   The data $X_{n \times d}$ consists of independent and identically
   distributed samples $X_{1},\ldots,X_{n} \sim N_{d}(\mu,\Sigma)$.
 
-- Disjoint group structure:  
+- **Disjoint group structure:**  
   The $d$ variables can be partitioned into disjoint groups.
 
-- Goal:  
+- **Goal:**  
   Estimate the precision matrix
-  $\Omega = \Sigma^{- 1} = \left( \omega_{ij} \right)_{d \times d}$.
+  $\Omega = \Sigma^{-1} = \left( \omega_{ij} \right)_{d \times d}$.
 
 ## Sparse-Group Estimator
 
-$$\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{ - \log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega)\},$$  
-$$P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),$$  
-$$P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),$$  
-$$P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).$$
+$$\begin{matrix}
+{\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{-\log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega)\},} \\
+{P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),} \\
+{P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),} \\
+{P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).}
+\end{matrix}$$
 
 where:
 
-- $S = n^{- 1}\sum_{i = 1}^{n}\left( X_{i} - \bar{X} \right)\left( X_{i} - \bar{X} \right)^{\top}$
+- $S = n^{-1}\sum_{i = 1}^{n}\left( X_{i} - \bar{X} \right)\left( X_{i} - \bar{X} \right)^{\top}$
   is the empirical covariance matrix.
 
 - $\lambda \geq 0$ is the global regularization parameter controlling
@@ -46,7 +48,7 @@ where:
 - $P_{\lambda,\gamma}^{\text{group}}(\Omega)$ is the block-wise group
   penalty term.
 
-- $p_{\lambda,\gamma}( \cdot )$ is a penalty function parameterized by
+- $p_{\lambda,\gamma}(\cdot)$ is a penalty function parameterized by
   $\lambda$ and $\gamma$.
 
 - $\Omega_{gg^{\prime}}$ is the submatrix of $\Omega$ with the rows from
@@ -56,8 +58,8 @@ where:
   $\|\Omega\|_{F} = \left( \sum_{i,j}|\omega_{ij}|^{2} \right)^{1/2} = \left\lbrack \operatorname{tr}\left( \Omega^{\top}\Omega \right) \right\rbrack^{1/2}$.
 
 **Note**: For convex penalties, the parameter $\gamma$ is not required,
-and the penalty function $p_{\lambda,\gamma}( \cdot )$ simplifies to
-$p_{\lambda}( \cdot )$.
+and the penalty function $p_{\lambda,\gamma}(\cdot)$ simplifies to
+$p_{\lambda}(\cdot)$.
 
 ## Penalties
 
@@ -84,7 +86,7 @@ $$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\left( \gamma + \frac{2}
 4.  Exp: Exponential type penalty ([Wang, Fan, and Zhu
     2018](#ref-wang2018variable))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\left\lbrack 1 - \exp\left( - \frac{|\omega_{ij}|}{\gamma} \right) \right\rbrack,\quad\gamma > 0.$$
+$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\left\lbrack 1 - \exp\left( -\frac{|\omega_{ij}|}{\gamma} \right) \right\rbrack,\quad\gamma > 0.$$
 
 5.  Lq ([Frank and Friedman 1993](#ref-frank1993statistical); [Fu
     1998](#ref-fu1998penalized); [Fan and Li
@@ -120,10 +122,9 @@ Figure 1 illustrates a comparison of various penalty functions
 $p(\omega)$ evaluated over a range of $\omega$ values. The main panel
 (right) provides a wider view of the penalty functions’ behavior for
 larger $|\omega|$, while the inset panel (left) magnifies the region
-near zero $\lbrack - 1,1\rbrack$.
+near zero $\lbrack-1,1\rbrack$.
 
-![Figure 1: Illustrative penalty
-functions.](pen_est_files/figure-html/pen-1.png)
+![](pen_est_files/figure-html/pen-1.png)
 
 Figure 1: Illustrative penalty functions.
 
@@ -137,8 +138,7 @@ penalties show smoothly diminishing derivatives as $|\omega|$ increases,
 reflecting their tendency to shrink small $|\omega|$ strongly while
 exerting little to no shrinkage on large ones.
 
-![Figure 2: Illustrative penalty
-derivatives.](pen_est_files/figure-html/unnamed-chunk-2-1.png)
+![](pen_est_files/figure-html/unnamed-chunk-1-1.png)
 
 Figure 2: Illustrative penalty derivatives.
 
