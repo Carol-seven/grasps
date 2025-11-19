@@ -1,21 +1,20 @@
 ---
 title: "Penalized Precision Matrix Estimation in grasps"
-output: rmarkdown::html_vignette
 bibliography: ../inst/REFERENCES.bib
-link-citations: yes
 vignette: >
   %\VignetteIndexEntry{pen_est}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk: 
+    collapse: true
+    comment: '#>'
+    echo: false
+    fig.align: "center"
+    message: false
+    results: 'hide'
+    warning: false
 ---
-
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE, echo = FALSE, message = FALSE, warning = FALSE, results='hide',
-  comment = "#>", fig.align = "center"
-)
-```
 
 
 ## Preliminary
@@ -24,42 +23,36 @@ knitr::opts_chunk$set(
 Consider the following setting:
 
 
-- Gaussian graphical model (GGM) assumption: \
+- **Gaussian graphical model (GGM) assumption:** \
   The data $X_{n \times d}$ consists of independent and identically distributed
   samples $X_1, \dots, X_n \sim N_d(\mu,\Sigma)$.
 
 
-- Disjoint group structure: \
+- **Disjoint group structure:** \
   The $d$ variables can be partitioned into disjoint groups.
 
 
-- Goal: \
+- **Goal:** \
   Estimate the precision matrix $\Omega = \Sigma^{-1} = (\omega_{ij})_{d \times d}$.
 
 
 ## Sparse-Group Estimator
 
 
-$$
+\begin{gather}
 \hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
 \{ -\log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \},
-$$
-<br>
-$$
+\\[10pt]
 P_{\lambda,\alpha,\gamma}(\Omega)
 = \alpha P^\text{individual}_{\lambda,\gamma}(\Omega) +
 (1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),
-$$
-<br>
-$$
+\\[10pt]
 P^\text{individual}_{\lambda,\gamma}(\Omega)
 = \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert),
-$$
-<br>
-$$
+\\[5pt]
 P^\text{group}_{\lambda,\gamma}(\Omega)
 = \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
-$$
+\end{gather}
 
 
 where:

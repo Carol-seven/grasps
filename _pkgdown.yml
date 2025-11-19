@@ -6,6 +6,7 @@ url: https://shiying-xiao.com/grasps
 
 template:
   bootstrap: 5
+  light-switch: true
   opengraph:
     image:
       src: https://raw.githubusercontent.com/Carol-seven/grasps/blob/main/man/figures/logo.png

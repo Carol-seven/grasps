@@ -44,5 +44,8 @@ Suggests:
     ggforce,
     knitr,
     MASS,
+    quarto,
     rmarkdown
-VignetteBuilder: knitr
+VignetteBuilder:
+    knitr,
+    quarto
