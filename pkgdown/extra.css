@@ -11,7 +11,7 @@ body {
   max-width: 85%;
 }
 
-.figcaption {
+figure.quarto-figure figcaption {
   margin: auto;
   text-align: center;
 }
