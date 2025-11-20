@@ -39,20 +39,18 @@ matrix, making them user-friendly and useful for researchers and practitioners.
 
 $$
 \hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \},
+\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},
 $$
 $$
-P_{\lambda,\alpha,\gamma}(\Omega)
-= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega) +
-(1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),
+P_{\alpha,\gamma}(\Omega)
+= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),
 $$
 $$
-P^\text{individual}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert),
+P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),
 $$
 $$
-P^\text{group}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
+P^\text{grp}_\gamma(\Omega)
+= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).
 $$
 
 

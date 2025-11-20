@@ -11,5 +11,3 @@
 .httr-oauth
 /.quarto/
 inst/doc
-/doc/
-/Meta/

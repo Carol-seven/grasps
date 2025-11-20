@@ -40,18 +40,17 @@ Consider the following setting:
 
 
 \begin{gather}
-\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega) \},
+\hat{\Omega}(\lambda,\alpha,\gamma)
+= {\arg\min}_{\Omega \succ 0} \left\{ -\log\det(\Omega) + \text{tr}(S\Omega)
++ \lambda P_{\alpha,\gamma}(\Omega) \right\},
 \\[10pt]
-P_{\lambda,\alpha,\gamma}(\Omega)
-= \alpha P^\text{individual}_{\lambda,\gamma}(\Omega) +
-(1-\alpha) P^\text{group}_{\lambda,\gamma}(\Omega),
+P_{\alpha,\gamma}(\Omega)
+= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),
 \\[10pt]
-P^\text{individual}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} p_{\lambda,\gamma}(\vert\omega_{ij}\vert),
+P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),
 \\[5pt]
-P^\text{group}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} p_{\lambda,\gamma}(\Vert\Omega_{gg^\prime}\Vert_F).
+P^\text{grp}_\gamma(\Omega)
+= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).
 \end{gather}
 
 
@@ -73,20 +72,18 @@ where:
   degree of nonconvexity of the penalty.
 
 
-- $P_{\lambda,\alpha,\gamma}(\Omega)$ is a generic bi-level penalty template
-  that can incorporate convex or non-convex regularizers while preserving
-  the intrinsic group structure among variables.
+- $P_{\alpha,\gamma}(\Omega)$ is a generic bi-level penalty template that can
+  incorporate convex or non-convex regularizers while preserving the intrinsic
+  group structure among variables.
 
 
-- $P^\text{individual}_{\lambda,\gamma}(\Omega)$ is the element-wise individual
-  penalty term.
+- $P^\text{idv}_\gamma(\Omega)$ is the element-wise individual penalty component.
 
 
-- $P^\text{group}_{\lambda,\gamma}(\Omega)$ is the block-wise group penalty term.
+- $P^\text{grp}_\gamma(\Omega)$ is the block-wise group penalty component.
 
 
-- $p_{\lambda,\gamma}(\cdot)$ is a penalty function parameterized by $\lambda$
-  and $\gamma$.
+- $p_\gamma(\cdot)$ is a penalty kernel parameterized by $\gamma$.
 
 
 - $\Omega_{gg^\prime}$ is the submatrix of $\Omega$ with the rows from group $g$
@@ -94,12 +91,18 @@ where:
 
 
 - The Frobenius norm $\Vert\Omega\Vert_F$ is defined as
-  $\Vert\Omega\Vert_F = (\sum_{i,j} \vert\omega_{ij}\vert^2)^{1/2} = [\operatorname{tr}(\Omega^\top\Omega)]^{1/2}$.
+  $\Vert\Omega\Vert_F = (\sum_{i,j} \vert\omega_{ij}\vert^2)^{1/2} = [\text{tr}(\Omega^\top\Omega)]^{1/2}$.
 
 
 <div class="note">
-**Note**: For convex penalties, the parameter $\gamma$ is not required, and
-the penalty function $p_{\lambda,\gamma}(\cdot)$ simplifies to $p_\lambda(\cdot)$. </div>
+**Note**:
+
++ The regularization parameter $\lambda$ acts as the scale factor for the entire
+  penalty term $\lambda P_{\alpha,\gamma}(\Omega)$.
+
+
++ The penalty kernel $p_\gamma(\cdot)$ is the shape function that governs
+  the fundamental characteristics of the regularization. </div>
 
 
 ## Penalties
@@ -109,14 +112,14 @@ the penalty function $p_{\lambda,\gamma}(\cdot)$ simplifies to $p_\lambda(\cdot)
 [@tibshirani1996regression; @friedman2008sparse]
 
 
-$$p_\lambda(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.$$
+$$\lambda p(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.$$
 
 
 2. Adaptive lasso [@zou2006adaptive; @fan2009network]
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
+\lambda p_\gamma(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
 $$
 where $V = (v_{ij})_{d \times d} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{d \times d}$
 is a matrix of adaptive weights, and $\tilde{\omega}_{ij}$ is the initial estimate
@@ -127,7 +130,7 @@ obtained using `penalty = "lasso"`.
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \lambda(\gamma+\frac{2}{\pi})
 \arctan\left(\frac{\vert\omega_{ij}\vert}{\gamma}\right),
 \quad \gamma > 0.
@@ -138,7 +141,7 @@ $$
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \lambda\left[1-\exp\left(-\frac{\vert\omega_{ij}\vert}{\gamma}\right)\right],
 \quad \gamma > 0.
 $$
@@ -148,7 +151,7 @@ $$
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
+\lambda p_\gamma(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
 \quad 0 < \gamma < 1.
 $$
 
@@ -157,7 +160,7 @@ $$
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \lambda\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
 \quad \gamma > 0.
 $$
@@ -167,7 +170,7 @@ $$
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \begin{cases}
 \lambda\vert\omega_{ij}\vert - \dfrac{\omega_{ij}^2}{2\gamma},
 & \text{if } \vert\omega_{ij}\vert \leq \gamma\lambda, \\
@@ -182,7 +185,7 @@ $$
 
 
 $$
-p_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \begin{cases}
 \lambda\vert\omega_{ij}\vert
 & \text{if } \vert\omega_{ij}\vert \leq \lambda, \\
@@ -195,10 +198,22 @@ p_{\lambda,\gamma}(\omega_{ij})
 $$
 
 
+<div class="note">
+**Note**:
+
++ For Lasso, which is convex, the additional parameter $\gamma$ is not required,
+  and the penalty kernel $p_\gamma(\cdot)$ simplifies to $p(\cdot)$.
+
+
++ For MCP and SCAD, $\lambda$ plays a dual role: it is the global regularization
+  parameter, but it is also implicitly contained within the kernel
+  $p_\gamma(\cdot)$. </div>
+
+
 ## Illustrative Visualization
 
 
-Figure 1 illustrates a comparison of various penalty functions $p(\omega)$
+Figure 1 illustrates a comparison of various penalty functions $\lambda p(\omega)$
 evaluated over a range of $\omega$ values. The main panel (right) provides
 a wider view of the penalty functions' behavior for larger $\vert\omega\vert$,
 while the inset panel (left) magnifies the region near zero $[-1, 1]$.

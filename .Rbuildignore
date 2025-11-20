@@ -1,11 +1,9 @@
 ^.*\.Rproj$
 ^LICENSE\.md$
+^README\.Rmd$
 ^\.Rproj\.user$
 ^\.github$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^README\.Rmd$
 ^vignettes/\.quarto$
-^doc$
-^Meta$
