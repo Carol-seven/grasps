@@ -141,11 +141,10 @@ the region near zero $\lbrack-1,1\rbrack$.
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
-omegas <- seq(-4, 4, by = 0.01)
 penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad")
 
-df <- grasps::pen(omegas, penalties, lambda = 1)
-plot(df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
+pen_df <- grasps::pen(seq(-4, 4, by = 0.01), penalties, lambda = 1)
+plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE))
 ```
 
@@ -165,32 +164,15 @@ small $|\omega|$ strongly while exerting little to no shrinkage on large
 ones.
 
 ``` r
-df <- grasps::deriv(omegas, penalties, lambda = 1)
-ggplot(df, aes(x = omega, y = value, color = penalty)) +
-  geom_line() +
-  scale_x_continuous(limits = c(0, 4)) +
+deriv_df <- grasps::deriv(seq(0, 4, by = 0.01), penalties, lambda = 1)
+plot(deriv_df) +
   scale_y_continuous(limits = c(0, 1.5)) +
-  xlab(expression(italic(omega))) +
-  ylab(expression("Derivative Function" ~ italic(p) * "'(" * italic(omega) * ")")) +
-  scale_color_discrete(name = "Penalty Type",
-                       labels = c(expression(atan ~ "(" * gamma == 0.005 * ")"),
-                                  expression(exp ~ "(" * gamma == 0.01 * ")"),
-                                  "lasso",
-                                  expression(lq ~ "(" * gamma == 0.5 * ")"),
-                                  expression(lsp ~ "(" * gamma == 0.1 * ")"),
-                                  expression(mcp ~ "(" * gamma == 3 * ")"),
-                                  expression(scad ~ "(" * gamma == 3.7 * ")"))) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
-  theme_bw() +
-  theme(aspect.ratio = 1,
-        legend.position = "bottom")
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
 ```
 
-![](pen_est_files/figure-html/unnamed-chunk-4-1.png)
+![](pen_est_files/figure-html/unnamed-chunk-6-1.png)
 
-Figure 2: Illustrative penalty derivatives.
-
-Figure 2
+Figure 2: Illustrative penalty derivatives.
 
 ## Reference
 
