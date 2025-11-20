@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 knitr:
   opts_chunk: 
-    collapse: true
+    collapse: false
     comment: '#>'
     echo: true
     fig.align: "center"
@@ -219,8 +219,7 @@ a wider view of the penalty functions' behavior for larger $\vert\omega\vert$,
 while the inset panel (left) magnifies the region near zero $[-1, 1]$.
 
 
-::: {#fig-pen}
-```{r pen, fig.cap="Figure 1: Illustrative penalty functions."}
+```{r fig.show='hide'}
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
@@ -231,6 +230,19 @@ df <- grasps::pen(omegas, penalties, lambda = 1)
 plot(df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE))
 ```
+
+
+```{r echo=false fig.show='hide'}
+plot <- plot(df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+```
+
+
+::: {#fig-pen}
+```{r echo=false}
+print(plot)
+```
+Illustrative penalty functions.
 :::
 
 
@@ -266,10 +278,6 @@ ggplot(df, aes(x = omega, y = value, color = penalty)) +
   theme_bw() +
   theme(aspect.ratio = 1,
         legend.position = "bottom")
-
-# pen_plot + deriv_plot +
-#   plot_layout(widths = c(2.2,1), guides = "collect") &
-#   theme(legend.position = "bottom")
 ```
 :::
 
