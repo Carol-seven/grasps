@@ -131,29 +131,75 @@ $$\lambda p_{\gamma}\left( \omega_{ij} \right) = \begin{cases}
 
 ## Illustrative Visualization
 
-Figure 1 illustrates a comparison of various penalty functions
-$\lambda p(\omega)$ evaluated over a range of $\omega$ values. The main
-panel (right) provides a wider view of the penalty functions’ behavior
-for larger $|\omega|$, while the inset panel (left) magnifies the region
-near zero $\lbrack-1,1\rbrack$.
+[Figure 1](#fig-pen) illustrates a comparison of various penalty
+functions $\lambda p(\omega)$ evaluated over a range of $\omega$ values.
+The main panel (right) provides a wider view of the penalty functions’
+behavior for larger $|\omega|$, while the inset panel (left) magnifies
+the region near zero $\lbrack-1,1\rbrack$.
+
+``` r
+library(grasps) ## for penalty computation
+library(ggplot2) ## for visualization
+
+omegas <- seq(-4, 4, by = 0.01)
+penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad")
+
+df <- grasps::pen(omegas, penalties, lambda = 1)
+plot(df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+```
 
 ![](pen_est_files/figure-html/pen-1.png)
 
 Figure 1: Illustrative penalty functions.
 
-Figure 2 displays the derivative function $p^{\prime}(\omega)$
-associated with a range of penalty types. The Lasso exhibits a constant
-derivative, corresponding to uniform shrinkage. For MCP and SCAD, the
-derivatives are piecewise: initially equal to the Lasso derivative, then
-decreasing over an intermediate region, and eventually dropping to zero,
-indicating that large $|\omega|$ receive no shrinkage. Other non-convex
-penalties show smoothly diminishing derivatives as $|\omega|$ increases,
-reflecting their tendency to shrink small $|\omega|$ strongly while
-exerting little to no shrinkage on large ones.
+Figure 1
+
+[Figure 2](#fig-deriv) displays the derivative function
+$p^{\prime}(\omega)$ associated with a range of penalty types. The Lasso
+exhibits a constant derivative, corresponding to uniform shrinkage. For
+MCP and SCAD, the derivatives are piecewise: initially equal to the
+Lasso derivative, then decreasing over an intermediate region, and
+eventually dropping to zero, indicating that large $|\omega|$ receive no
+shrinkage. Other non-convex penalties show smoothly diminishing
+derivatives as $|\omega|$ increases, reflecting their tendency to shrink
+small $|\omega|$ strongly while exerting little to no shrinkage on large
+ones.
+
+``` r
+df <- grasps::deriv(omegas, penalties, lambda = 1)
+ggplot(df, aes(x = omega, y = value, color = penalty)) +
+  geom_line() +
+  scale_x_continuous(limits = c(0, 4)) +
+  scale_y_continuous(limits = c(0, 1.5)) +
+  xlab(expression(italic(omega))) +
+  ylab(expression("Derivative Function" ~ italic(p) * "'(" * italic(omega) * ")")) +
+  scale_color_discrete(name = "Penalty Type",
+                       labels = c(expression(atan ~ "(" * gamma == 0.005 * ")"),
+                                  expression(exp ~ "(" * gamma == 0.01 * ")"),
+                                  "lasso",
+                                  expression(lq ~ "(" * gamma == 0.5 * ")"),
+                                  expression(lsp ~ "(" * gamma == 0.1 * ")"),
+                                  expression(mcp ~ "(" * gamma == 3 * ")"),
+                                  expression(scad ~ "(" * gamma == 3.7 * ")"))) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
+  theme_bw() +
+  theme(aspect.ratio = 1,
+        legend.position = "bottom")
+```
 
 ![](pen_est_files/figure-html/unnamed-chunk-1-1.png)
 
 Figure 2: Illustrative penalty derivatives.
+
+``` r
+
+# pen_plot + deriv_plot +
+#   plot_layout(widths = c(2.2,1), guides = "collect") &
+#   theme(legend.position = "bottom")
+```
+
+Figure 2
 
 ## Reference
 

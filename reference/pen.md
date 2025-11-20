@@ -5,7 +5,7 @@ Compute the penalty function.
 ## Usage
 
 ``` r
-pen(omega, penalty, lambda, gamma = NULL)
+pen(omega, penalty, lambda, gamma = NA)
 ```
 
 ## Arguments
@@ -38,8 +38,8 @@ pen(omega, penalty, lambda, gamma = NULL)
 
 - lambda:
 
-  A non-negative scalar or vector of the same length as `penalty`
-  specifying the regularization parameter.
+  A non-negative scalar or a numeric vector of the same length as
+  `penalty` specifying the regularization parameter.
 
 - gamma:
 
@@ -60,7 +60,7 @@ pen(omega, penalty, lambda, gamma = NULL)
 
 ## Value
 
-A data frame containing:
+A data with S3 class "pen" ocontaining:
 
 - omega:
 

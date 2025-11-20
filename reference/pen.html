@@ -47,7 +47,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pen</span><span class="op">(</span><span class="va">omega</span>, <span class="va">penalty</span>, <span class="va">lambda</span>, gamma <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pen</span><span class="op">(</span><span class="va">omega</span>, <span class="va">penalty</span>, <span class="va">lambda</span>, gamma <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,7 +79,7 @@ Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and s
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A non-negative scalar or vector of the same length as
+<dd><p>A non-negative scalar or a numeric vector of the same length as
 <code>penalty</code> specifying the regularization parameter.</p></dd>
 
 
@@ -97,7 +97,7 @@ The defaults are:</p><ol><li><p>"atan": 0.005</p></li>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame containing:</p><dl><dt>omega</dt>
+    <p>A data  with S3 class "pen" ocontaining:</p><dl><dt>omega</dt>
 <dd><p>The input <code>omega</code> values.</p></dd>
 
 <dt>penalty</dt>
