@@ -61,7 +61,8 @@ deriv <- function(omega, penalty, lambda, gamma = NULL) {
   res <- do.call(rbind, lapply(seq_len(n), function(k) {
     deriv_internal(omega = omega, penalty = penalty[k], lambda = lambda[k], gamma = gamma[k])
   }))
-  res <- as.data.frame(res)
+  class(res) <- c("deriv", class(res))
+
   return(res)
 }
 

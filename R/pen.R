@@ -18,7 +18,7 @@
 #' \item "scad": Smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
 #' }
 #'
-#' @param lambda A non-negative scalar or vector of the same length as
+#' @param lambda A non-negative scalar or a numeric vector of the same length as
 #' \code{penalty} specifying the regularization parameter.
 #'
 #' @param gamma A scalar or vector of the same length as \code{penalty}
@@ -34,7 +34,7 @@
 #' }
 #'
 #' @return
-#' A data frame containing:
+#' A data  with S3 class "pen" ocontaining:
 #' \describe{
 #' \item{omega}{The input \code{omega} values.}
 #' \item{penalty}{The penalty type for each row.}
@@ -48,20 +48,25 @@
 #'
 #' @export
 
-pen <- function(omega, penalty, lambda, gamma = NULL) {
+pen <- function(omega, penalty, lambda, gamma = NA) {
 
-  n <- length(penalty)
-  if (length(lambda) == 1) {
+  para_len <- lengths(list(penalty, lambda, gamma))
+  n <- max(para_len)
+  if(para_len[1] == 1) {
+    penalty <- rep(penalty, n)
+  }
+  if (para_len[2] == 1) {
     lambda <- rep(lambda, n)
   }
-  if (length(gamma) == 1) {
+  if (para_len[3] == 1) {
     gamma <- rep(gamma, n)
   }
 
   res <- do.call(rbind, lapply(seq_len(n), function(k) {
     pen_internal(omega = omega, penalty = penalty[k], lambda = lambda[k], gamma = gamma[k])
   }))
-  res <- as.data.frame(res)
+  class(res) <- c("pen", class(res))
+
   return(res)
 }
 
@@ -79,7 +84,7 @@ pen_internal <- function(omega, penalty, lambda, gamma) {
   }
 
   ## default gamma by penalty
-  if (missing(gamma) || is.null(gamma)) {
+  if (missing(gamma) || is.na(gamma)) {
     gamma <- switch(penalty,
                     "atan" = 0.005, "exp"  = 0.01, "lq"   = 0.5,
                     "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7, NA)

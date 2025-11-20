@@ -4,7 +4,7 @@
 \alias{pen}
 \title{Penalty Function Computation}
 \usage{
-pen(omega, penalty, lambda, gamma = NULL)
+pen(omega, penalty, lambda, gamma = NA)
 }
 \arguments{
 \item{omega}{A numeric scalar or vector at which the penalty is evaluated.}
@@ -22,7 +22,7 @@ Available options include:
 \item "scad": Smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
 }}
 
-\item{lambda}{A non-negative scalar or vector of the same length as
+\item{lambda}{A non-negative scalar or a numeric vector of the same length as
 \code{penalty} specifying the regularization parameter.}
 
 \item{gamma}{A scalar or vector of the same length as \code{penalty}
@@ -38,7 +38,7 @@ The defaults are:
 }}
 }
 \value{
-A data frame containing:
+A data  with S3 class "pen" ocontaining:
 \describe{
 \item{omega}{The input \code{omega} values.}
 \item{penalty}{The penalty type for each row.}

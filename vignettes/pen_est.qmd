@@ -9,7 +9,7 @@ knitr:
   opts_chunk: 
     collapse: true
     comment: '#>'
-    echo: false
+    echo: true
     fig.align: "center"
     message: false
     results: 'hide'
@@ -213,42 +213,28 @@ $$
 ## Illustrative Visualization
 
 
-Figure 1 illustrates a comparison of various penalty functions $\lambda p(\omega)$
+@fig-pen illustrates a comparison of various penalty functions $\lambda p(\omega)$
 evaluated over a range of $\omega$ values. The main panel (right) provides
 a wider view of the penalty functions' behavior for larger $\vert\omega\vert$,
 while the inset panel (left) magnifies the region near zero $[-1, 1]$.
 
 
+::: {#fig-pen}
 ```{r pen, fig.cap="Figure 1: Illustrative penalty functions."}
-library(ggforce) ## for facet_zoom
+library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
-library(grasps) ## for deriv, pen
-# library(patchwork) ## for plot_layout
 
 omegas <- seq(-4, 4, by = 0.01)
 penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad")
 
 df <- grasps::pen(omegas, penalties, lambda = 1)
-ggplot(df, aes(x = omega, y = value, color = penalty)) +
-  geom_line() +
-  facet_zoom(xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
-  xlab(expression(italic(omega))) +
-  ylab(expression("Penalty Function" ~ italic(p) ~ "(" * italic(omega) * ")")) +
-  scale_color_discrete(name = "Penalty Type",
-                       labels = c(expression(atan ~ "(" * gamma == 0.005 * ")"),
-                                  expression(exp ~ "(" * gamma == 0.01 * ")"),
-                                  "lasso",
-                                  expression(lq ~ "(" * gamma == 0.5 * ")"),
-                                  expression(lsp ~ "(" * gamma == 0.1 * ")"),
-                                  expression(mcp ~ "(" * gamma == 3 * ")"),
-                                  expression(scad ~ "(" * gamma == 3.7 * ")"))) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
-  theme_bw() +
-  theme(legend.position = "bottom")
+plot(df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
 ```
+:::
 
 
-Figure 2 displays the derivative function $p^\prime(\omega)$ associated with
+@fig-deriv displays the derivative function $p^\prime(\omega)$ associated with
 a range of penalty types.
 The Lasso exhibits a constant derivative, corresponding to uniform shrinkage.
 For MCP and SCAD, the derivatives are piecewise: initially equal to the Lasso
@@ -259,6 +245,7 @@ $\vert\omega\vert$ increases, reflecting their tendency to shrink small
 $\vert\omega\vert$ strongly while exerting little to no shrinkage on large ones.
 
 
+::: {#fig-deriv}
 ```{r fig.cap="Figure 2: Illustrative penalty derivatives."}
 df <- grasps::deriv(omegas, penalties, lambda = 1)
 ggplot(df, aes(x = omega, y = value, color = penalty)) +
@@ -284,6 +271,7 @@ ggplot(df, aes(x = omega, y = value, color = penalty)) +
 #   plot_layout(widths = c(2.2,1), guides = "collect") &
 #   theme(legend.position = "bottom")
 ```
+:::
 
 
 ## Reference {-}
