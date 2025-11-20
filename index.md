@@ -7,13 +7,13 @@ that incorporate both element-wise and group-wise penalties to estimate
 a precision matrix, making them user-friendly and useful for researchers
 and practitioners.
 
-$$\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{ - \log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega)\},$$
+$$\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{ - \log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega)\},$$
 
-$$P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),$$
+$$P_{\alpha,\gamma}(\Omega) = \alpha P_{\gamma}^{\text{idv}}(\Omega) + (1 - \alpha)P_{\gamma}^{\text{grp}}(\Omega),$$
 
-$$P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),$$
+$$P_{\gamma}^{\text{idv}}(\Omega) = \sum\limits_{i,j}p_{\gamma}\left( |\omega_{ij}| \right),$$
 
-$$P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).$$
+$$P_{\gamma}^{\text{grp}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).$$
 
 For more details, see the vignette [Penalized Precision Matrix
 Estimation in

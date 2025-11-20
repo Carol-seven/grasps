@@ -18,10 +18,10 @@ Consider the following setting:
 ## Sparse-Group Estimator
 
 $$\begin{matrix}
-{\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{-\log\det(\Omega) + \text{tr}(S\Omega) + P_{\lambda,\alpha,\gamma}(\Omega)\},} \\
-{P_{\lambda,\alpha,\gamma}(\Omega) = \alpha P_{\lambda,\gamma}^{\text{individual}}(\Omega) + (1 - \alpha)P_{\lambda,\gamma}^{\text{group}}(\Omega),} \\
-{P_{\lambda,\gamma}^{\text{individual}}(\Omega) = \sum\limits_{i,j}p_{\lambda,\gamma}\left( |\omega_{ij}| \right),} \\
-{P_{\lambda,\gamma}^{\text{group}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\lambda,\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).}
+{\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\left\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \right\},} \\
+{P_{\alpha,\gamma}(\Omega) = \alpha P_{\gamma}^{\text{idv}}(\Omega) + (1 - \alpha)P_{\gamma}^{\text{grp}}(\Omega),} \\
+{P_{\gamma}^{\text{idv}}(\Omega) = \sum\limits_{i,j}p_{\gamma}\left( |\omega_{ij}| \right),} \\
+{P_{\gamma}^{\text{grp}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).}
 \end{matrix}$$
 
 where:
@@ -38,28 +38,31 @@ where:
 - $\gamma$ is the additional parameter controlling the curvature and
   effective degree of nonconvexity of the penalty.
 
-- $P_{\lambda,\alpha,\gamma}(\Omega)$ is a generic bi-level penalty
-  template that can incorporate convex or non-convex regularizers while
+- $P_{\alpha,\gamma}(\Omega)$ is a generic bi-level penalty template
+  that can incorporate convex or non-convex regularizers while
   preserving the intrinsic group structure among variables.
 
-- $P_{\lambda,\gamma}^{\text{individual}}(\Omega)$ is the element-wise
-  individual penalty term.
+- $P_{\gamma}^{\text{idv}}(\Omega)$ is the element-wise individual
+  penalty component.
 
-- $P_{\lambda,\gamma}^{\text{group}}(\Omega)$ is the block-wise group
-  penalty term.
+- $P_{\gamma}^{\text{grp}}(\Omega)$ is the block-wise group penalty
+  component.
 
-- $p_{\lambda,\gamma}(\cdot)$ is a penalty function parameterized by
-  $\lambda$ and $\gamma$.
+- $p_{\gamma}(\cdot)$ is a penalty kernel parameterized by $\gamma$.
 
 - $\Omega_{gg^{\prime}}$ is the submatrix of $\Omega$ with the rows from
   group $g$ and columns from group $g^{\prime}$.
 
 - The Frobenius norm $\|\Omega\|_{F}$ is defined as
-  $\|\Omega\|_{F} = \left( \sum_{i,j}|\omega_{ij}|^{2} \right)^{1/2} = \left\lbrack \operatorname{tr}\left( \Omega^{\top}\Omega \right) \right\rbrack^{1/2}$.
+  $\|\Omega\|_{F} = \left( \sum_{i,j}|\omega_{ij}|^{2} \right)^{1/2} = \left\lbrack \text{tr}\left( \Omega^{\top}\Omega \right) \right\rbrack^{1/2}$.
 
-**Note**: For convex penalties, the parameter $\gamma$ is not required,
-and the penalty function $p_{\lambda,\gamma}(\cdot)$ simplifies to
-$p_{\lambda}(\cdot)$.
+**Note**:
+
+- The regularization parameter $\lambda$ acts as the scale factor for
+  the entire penalty term $\lambda P_{\alpha,\gamma}(\Omega)$.
+
+- The penalty kernel $p_{\gamma}(\cdot)$ is the shape function that
+  governs the fundamental characteristics of the regularization.
 
 ## Penalties
 
@@ -67,12 +70,12 @@ $p_{\lambda}(\cdot)$.
     1996](#ref-tibshirani1996regression); [Friedman, Hastie, and
     Tibshirani 2008](#ref-friedman2008sparse))
 
-$$p_{\lambda}\left( \omega_{ij} \right) = \lambda|\omega_{ij}|.$$
+$$\lambda p\left( \omega_{ij} \right) = \lambda|\omega_{ij}|.$$
 
 2.  Adaptive lasso ([Zou 2006](#ref-zou2006adaptive); [Fan, Feng, and Wu
     2009](#ref-fan2009network))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\frac{|\omega_{ij}|}{v_{ij}},$$
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \lambda\frac{|\omega_{ij}|}{v_{ij}},$$
 where
 $V = \left( v_{ij} \right)_{d \times d} = \left( |{\widetilde{\omega}}_{ij}|^{\gamma} \right)_{d \times d}$
 is a matrix of adaptive weights, and ${\widetilde{\omega}}_{ij}$ is the
@@ -81,27 +84,27 @@ initial estimate obtained using `penalty = "lasso"`.
 3.  Atan: Arctangent type penalty ([Wang and Zhu
     2016](#ref-wang2016variable))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\left( \gamma + \frac{2}{\pi} \right)\arctan\left( \frac{|\omega_{ij}|}{\gamma} \right),\quad\gamma > 0.$$
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \lambda\left( \gamma + \frac{2}{\pi} \right)\arctan\left( \frac{|\omega_{ij}|}{\gamma} \right),\quad\gamma > 0.$$
 
 4.  Exp: Exponential type penalty ([Wang, Fan, and Zhu
     2018](#ref-wang2018variable))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\left\lbrack 1 - \exp\left( -\frac{|\omega_{ij}|}{\gamma} \right) \right\rbrack,\quad\gamma > 0.$$
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \lambda\left\lbrack 1 - \exp\left( -\frac{|\omega_{ij}|}{\gamma} \right) \right\rbrack,\quad\gamma > 0.$$
 
 5.  Lq ([Frank and Friedman 1993](#ref-frank1993statistical); [Fu
     1998](#ref-fu1998penalized); [Fan and Li
     2001](#ref-fan2001variable))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda|\omega_{ij}|^{\gamma},\quad 0 < \gamma < 1.$$
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \lambda|\omega_{ij}|^{\gamma},\quad 0 < \gamma < 1.$$
 
 6.  LSP: Log-sum penalty ([Candès, Wakin, and Boyd
     2008](#ref-candes2008enhancing))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \lambda\log\left( 1 + \frac{|\omega_{ij}|}{\gamma} \right),\quad\gamma > 0.$$
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \lambda\log\left( 1 + \frac{|\omega_{ij}|}{\gamma} \right),\quad\gamma > 0.$$
 
 7.  MCP: Minimax concave penalty ([Zhang 2010](#ref-zhang2010nearly))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \begin{cases}
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \begin{cases}
 {\lambda|\omega_{ij}| - \frac{\omega_{ij}^{2}}{2\gamma},} & {{\text{if}\mspace{6mu}}|\omega_{ij}| \leq \gamma\lambda,} \\
 {\frac{1}{2}\gamma\lambda^{2},} & {{\text{if}\mspace{6mu}}|\omega_{ij}| > \gamma\lambda.}
 \end{cases}\quad\gamma > 1.$$
@@ -110,18 +113,28 @@ $$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \begin{cases}
     2001](#ref-fan2001variable); [Fan, Feng, and Wu
     2009](#ref-fan2009network))
 
-$$p_{\lambda,\gamma}\left( \omega_{ij} \right) = \begin{cases}
+$$\lambda p_{\gamma}\left( \omega_{ij} \right) = \begin{cases}
 {\lambda|\omega_{ij}|} & {{\text{if}\mspace{6mu}}|\omega_{ij}| \leq \lambda,} \\
 \frac{2\gamma\lambda|\omega_{ij}| - \omega_{ij}^{2} - \lambda^{2}}{2(\gamma - 1)} & {{\text{if}\mspace{6mu}}\lambda < |\omega_{ij}| < \gamma\lambda,} \\
 \frac{\lambda^{2}(\gamma + 1)}{2} & {{\text{if}\mspace{6mu}}|\omega_{ij}| \geq \gamma\lambda.}
 \end{cases}\quad\gamma > 2.$$
 
+**Note**:
+
+- For Lasso, which is convex, the additional parameter $\gamma$ is not
+  required, and the penalty kernel $p_{\gamma}(\cdot)$ simplifies to
+  $p(\cdot)$.
+
+- For MCP and SCAD, $\lambda$ plays a dual role: it is the global
+  regularization parameter, but it is also implicitly contained within
+  the kernel $p_{\gamma}(\cdot)$.
+
 ## Illustrative Visualization
 
 Figure 1 illustrates a comparison of various penalty functions
-$p(\omega)$ evaluated over a range of $\omega$ values. The main panel
-(right) provides a wider view of the penalty functions’ behavior for
-larger $|\omega|$, while the inset panel (left) magnifies the region
+$\lambda p(\omega)$ evaluated over a range of $\omega$ values. The main
+panel (right) provides a wider view of the penalty functions’ behavior
+for larger $|\omega|$, while the inset panel (left) magnifies the region
 near zero $\lbrack-1,1\rbrack$.
 
 ![](pen_est_files/figure-html/pen-1.png)
