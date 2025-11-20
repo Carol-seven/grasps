@@ -11,11 +11,6 @@ body {
   max-width: 85%;
 }
 
-figure.quarto-figure figcaption {
-  margin: auto;
-  text-align: center;
-}
-
 @media (min-width: 1400px) {
   main + .col-md-3 {
     margin-left: 0;
@@ -29,4 +24,9 @@ figure.quarto-figure figcaption {
   border-left: solid 4px #F43F5E;
   padding: 10px;
   margin-bottom: 20px;
+}
+
+.quarto-figure figcaption {
+  margin: auto;
+  text-align: center;
 }
