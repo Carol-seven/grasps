@@ -149,11 +149,9 @@ plot(df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE))
 ```
 
-![](pen_est_files/figure-html/pen-1.png)
+![](pen_est_files/figure-html/unnamed-chunk-3-1.png)
 
-Figure 1: Illustrative penalty functions.
-
-Figure 1
+Figure 1: Illustrative penalty functions.
 
 [Figure 2](#fig-deriv) displays the derivative function
 $p^{\prime}(\omega)$ associated with a range of penalty types. The Lasso
@@ -188,16 +186,9 @@ ggplot(df, aes(x = omega, y = value, color = penalty)) +
         legend.position = "bottom")
 ```
 
-![](pen_est_files/figure-html/unnamed-chunk-1-1.png)
+![](pen_est_files/figure-html/unnamed-chunk-4-1.png)
 
 Figure 2: Illustrative penalty derivatives.
-
-``` r
-
-# pen_plot + deriv_plot +
-#   plot_layout(widths = c(2.2,1), guides = "collect") &
-#   theme(legend.position = "bottom")
-```
 
 Figure 2
 

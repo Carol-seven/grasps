@@ -7,10 +7,6 @@ body {
   justify-content: center;
 }
 
-.caption{
-   text-align: center;
-}
-
 .container {
   max-width: 85%;
 }
@@ -28,4 +24,9 @@ body {
   border-left: solid 4px #F43F5E;
   padding: 10px;
   margin-bottom: 20px;
+}
+
+.quarto-figure figcaption {
+  margin: auto;
+  text-align: center;
 }
