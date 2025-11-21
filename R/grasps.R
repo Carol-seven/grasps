@@ -109,7 +109,7 @@
 #' method to use. Available options include: \enumerate{
 #' \item "AIC": Akaike information criterion \insertCite{akaike1973information}{grasps}.
 #' \item "BIC": Bayesian information criterion \insertCite{schwarz1978estimating}{grasps}.
-#' \item "EBIC": extended Bayesian information criterion \insertCite{foygel2010extended}{grasps}.
+#' \item "EBIC": extended Bayesian information criterion \insertCite{chen2008extended,foygel2010extended}{grasps}.
 #' \item "HBIC": high dimensional Bayesian information criterion \insertCite{wang2013calibrating,fan2017high}{grasps}.
 #' \item "CV": k-fold cross validation with negative log-likelihood loss.
 #' }
