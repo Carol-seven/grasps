@@ -101,7 +101,7 @@ grasps(
 
 - alpha:
 
-  A grid of scalars in \[0,1\] specifying the parameter leveraging the
+  A grid of scalars in 0,1 specifying the parameter leveraging the
   element-wise individual L1 penalty and the block-wise group L2
   penalty. An alpha of 1 corresponds to the element penalty only; an
   alpha of 0 corresponds to the group penalty only. The default values
@@ -203,8 +203,8 @@ grasps(
 
   2.  "BIC": Bayesian information criterion (Schwarz 1978) .
 
-  3.  "EBIC": extended Bayesian information criterion (Foygel and
-      Drton 2010) .
+  3.  "EBIC": extended Bayesian information criterion (Chen and Chen
+      2008; Foygel and Drton 2010) .
 
   4.  "HBIC": high dimensional Bayesian information criterion (Wang et
       al. 2013; Fan et al. 2017) .
@@ -299,6 +299,10 @@ Candès EJ, Wakin MB, Boyd SP (2008). “Enhancing Sparsity by Reweighted
 Applications*, **14**(5), 877–905.
 [doi:10.1007/s00041-008-9045-x](https://doi.org/10.1007/s00041-008-9045-x)
 .  
+  
+Chen J, Chen Z (2008). “Extended Bayesian Information Criteria for Model
+Selection with Large Model Spaces.” *Biometrika*, **95**(3), 759–771.
+[doi:10.1093/biomet/asn034](https://doi.org/10.1093/biomet/asn034) .  
   
 Fan J, Feng Y, Wu Y (2009). “Network Exploration via the Adaptive LASSO
 and SCAD Penalties.” *The Annals of Applied Statistics*, **3**(2),

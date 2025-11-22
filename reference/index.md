@@ -10,5 +10,7 @@
   Groupwise Regularized Adaptive Sparse Precision Solution
 - [`pen()`](https://shiying-xiao.com/grasps/reference/pen.md) : Penalty
   Function Computation
+- [`performance()`](https://shiying-xiao.com/grasps/reference/performance.md)
+  : Performance Measures for Precision Matrix Estimation
 - [`sparsify_block_banded()`](https://shiying-xiao.com/grasps/reference/sparsify_block_banded.md)
   : Groupwise Block-Banded Sparsifier
