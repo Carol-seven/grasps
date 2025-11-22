@@ -7,13 +7,18 @@ that incorporate both element-wise and group-wise penalties to estimate
 a precision matrix, making them user-friendly and useful for researchers
 and practitioners.
 
-$$\widehat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}\{ - \log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega)\},$$
+\\\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}\_{\Omega \succ 0} \\
+-\log\det(\Omega) + \text{tr}(S\Omega) + \lambda
+P\_{\alpha,\gamma}(\Omega) \\,\\
 
-$$P_{\alpha,\gamma}(\Omega) = \alpha P_{\gamma}^{\text{idv}}(\Omega) + (1 - \alpha)P_{\gamma}^{\text{grp}}(\Omega),$$
+\\P\_{\alpha,\gamma}(\Omega) = \alpha P^\text{idv}\_\gamma(\Omega) +
+(1-\alpha) P^\text{grp}\_\gamma(\Omega),\\
 
-$$P_{\gamma}^{\text{idv}}(\Omega) = \sum\limits_{i,j}p_{\gamma}\left( |\omega_{ij}| \right),$$
+\\P^\text{idv}\_\gamma(\Omega) = \sum\_{i,j}
+p\_\gamma(\vert\omega\_{ij}\vert),\\
 
-$$P_{\gamma}^{\text{grp}}(\Omega) = \sum\limits_{g,g^{\prime}}p_{\gamma}\left( \|\Omega_{gg^{\prime}}\|_{F} \right).$$
+\\P^\text{grp}\_\gamma(\Omega) = \sum\_{g,g^\prime}
+p\_\gamma(\Vert\Omega\_{gg^\prime}\Vert_F).\\
 
 For more details, see the vignette [Penalized Precision Matrix
 Estimation in
@@ -85,7 +90,7 @@ plot(res)
 ## Reference
 
 Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008.
-“Enhancing Sparsity by Reweighted $\ell_{1}$ Minimization.” *Journal of
+“Enhancing Sparsity by Reweighted \\\ell_1\\ Minimization.” *Journal of
 Fourier Analysis and Applications* 14 (5): 877–905.
 <https://doi.org/10.1007/s00041-008-9045-x>.
 
@@ -116,7 +121,7 @@ Lasso.” *Journal of the Royal Statistical Society: Series B
 <https://doi.org/10.1111/j.2517-6161.1996.tb02080.x>.
 
 Wang, Yanxin, Qibin Fan, and Li Zhu. 2018. “Variable Selection and
-Estimation Using a Continuous Approximation to the $L_{0}$ Penalty.”
+Estimation Using a Continuous Approximation to the \\L_0\\ Penalty.”
 *Annals of the Institute of Statistical Mathematics* 70 (1): 191–214.
 <https://doi.org/10.1007/s10463-016-0588-3>.
 

@@ -11,7 +11,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" sizes="any" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
-<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -77,13 +83,13 @@
 <!-- badges: start -->
 
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Ω</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>λ</mi><mo>,</mo><mi>α</mi><mo>,</mo><mi>γ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mrow><mo>arg</mo><mo>min</mo></mrow><mrow><mi>Ω</mi><mo>≻</mo><mn>0</mn></mrow></msub><mo stretchy="false" form="prefix">{</mo><mo>−</mo><mo>log</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mtext mathvariant="normal">tr</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>λ</mi><msub><mi>P</mi><mrow><mi>α</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>α</mi><mo>,</mo><mi>γ</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>α</mi><msubsup><mi>P</mi><mi>γ</mi><mtext mathvariant="normal">idv</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mi>P</mi><mi>γ</mi><mtext mathvariant="normal">grp</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">P_{\alpha,\gamma}(\Omega)
-= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mi>γ</mi><mtext mathvariant="normal">idv</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>p</mi><mi>γ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">|</mo><msub><mi>ω</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="postfix">|</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),</annotation></semantics></math></p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>P</mi><mi>γ</mi><mtext mathvariant="normal">grp</mtext></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><msup><mi>g</mi><mi>′</mi></msup></mrow></munder><msub><mi>p</mi><mi>γ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">‖</mo><msub><mi>Ω</mi><mrow><mi>g</mi><msup><mi>g</mi><mi>′</mi></msup></mrow></msub><msub><mo stretchy="false" form="postfix">‖</mo><mi>F</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">P^\text{grp}_\gamma(\Omega)
-= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).</annotation></semantics></math></p>
+<p><span class="math display">\[\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
+\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},\]</span></p>
+<p><span class="math display">\[P_{\alpha,\gamma}(\Omega)
+= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),\]</span></p>
+<p><span class="math display">\[P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),\]</span></p>
+<p><span class="math display">\[P^\text{grp}_\gamma(\Omega)
+= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).\]</span></p>
 <p>For more details, see the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator">Penalized Precision Matrix Estimation in grasps</a>.</p>
 </div>
 <div class="section level2">
@@ -180,7 +186,7 @@
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-candes2008enhancing" class="csl-entry">
-Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008. “Enhancing Sparsity by Reweighted <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>ℓ</mo><mn>1</mn></msub><annotation encoding="application/x-tex">\ell_1</annotation></semantics></math> Minimization.” <em>Journal of Fourier Analysis and Applications</em> 14 (5): 877–905. <a href="https://doi.org/10.1007/s00041-008-9045-x" class="external-link uri">https://doi.org/10.1007/s00041-008-9045-x</a>.
+Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008. “Enhancing Sparsity by Reweighted <span class="math inline">\(\ell_1\)</span> Minimization.” <em>Journal of Fourier Analysis and Applications</em> 14 (5): 877–905. <a href="https://doi.org/10.1007/s00041-008-9045-x" class="external-link uri">https://doi.org/10.1007/s00041-008-9045-x</a>.
 </div>
 <div id="ref-fan2009network" class="csl-entry">
 Fan, Jianqing, Yang Feng, and Yichao Wu. 2009. “Network Exploration via the Adaptive LASSO and SCAD Penalties.” <em>The Annals of Applied Statistics</em> 3 (2): 521–41. <a href="https://doi.org/10.1214/08-aoas215" class="external-link uri">https://doi.org/10.1214/08-aoas215</a>.
@@ -201,7 +207,7 @@ Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge Versus the Lasso.” 
 Tibshirani, Robert. 1996. “Regression Shrinkage and Selection via the Lasso.” <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 58 (1): 267–88. <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" class="external-link uri">https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</a>.
 </div>
 <div id="ref-wang2018variable" class="csl-entry">
-Wang, Yanxin, Qibin Fan, and Li Zhu. 2018. “Variable Selection and Estimation Using a Continuous Approximation to the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>0</mn></msub><annotation encoding="application/x-tex">L_0</annotation></semantics></math> Penalty.” <em>Annals of the Institute of Statistical Mathematics</em> 70 (1): 191–214. <a href="https://doi.org/10.1007/s10463-016-0588-3" class="external-link uri">https://doi.org/10.1007/s10463-016-0588-3</a>.
+Wang, Yanxin, Qibin Fan, and Li Zhu. 2018. “Variable Selection and Estimation Using a Continuous Approximation to the <span class="math inline">\(L_0\)</span> Penalty.” <em>Annals of the Institute of Statistical Mathematics</em> 70 (1): 191–214. <a href="https://doi.org/10.1007/s10463-016-0588-3" class="external-link uri">https://doi.org/10.1007/s10463-016-0588-3</a>.
 </div>
 <div id="ref-wang2016variable" class="csl-entry">
 Wang, Yanxin, and Li Zhu. 2016. “Variable Selection and Parameter Estimation with the Atan Regularization Method.” <em>Journal of Probability and Statistics</em> 2016: 6495417. <a href="https://doi.org/10.1155/2016/6495417" class="external-link uri">https://doi.org/10.1155/2016/6495417</a>.
