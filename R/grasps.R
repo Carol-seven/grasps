@@ -5,52 +5,64 @@
 #' element-wise and group-wise penalties to estimate a precision matrix.
 #'
 #' @param X \enumerate{
-#' \item An n-by-d data matrix with sample size n and dimension d.
-#' \item A d-by-d sample covariance/correlation matrix with dimension d.
+#' \item An \eqn{n \times d} data matrix with sample size \eqn{n} and
+#' dimension \eqn{d}.
+#' \item A \eqn{d \times d} sample covariance matrix with dimension \eqn{d}.
 #' }
 #'
 #' @param n An integer (default = \code{nrow(X)}) specifying the sample size.
-#' This is only required when the input matrix \code{X} is a d-by-d sample
-#' covariance/correlation matrix with dimension d.
+#' This is only required when the input matrix \code{X} is a \eqn{d \times d}
+#' sample covariance matrix with dimension \eqn{d}.
 #'
 #' @param membership An integer vector specifying the group membership.
-#' The length of \code{membership} must be consistent with the dimension d.
+#' The length of \code{membership} must be consistent with the dimension \eqn{d}.
 #'
 #' @param penalty A character string specifying the penalty for estimating
-#' precision matrix. Available options include: \enumerate{
+#' precision matrix. Available options include:
+#' \enumerate{
 #' \item "lasso": Least absolute shrinkage and selection operator
 #' \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
-#' \item "adapt": Adaptive lasso \insertCite{zou2006adaptive,fan2009network}{grasps}.
-#' \item "atan": Arctangent type penalty \insertCite{wang2016variable}{grasps}.
-#' \item "exp": Exponential type penalty \insertCite{wang2018variable}{grasps}.
-#' \item "lq": Lq penalty \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
-#' \item "lsp": Log-sum penalty \insertCite{candes2008enhancing}{grasps}.
-#' \item "mcp": Minimax concave penalty \insertCite{zhang2010nearly}{grasps}.
-#' \item "scad": Smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
+#' \item "adapt": Adaptive lasso
+#' \insertCite{zou2006adaptive,fan2009network}{grasps}.
+#' \item "atan": Arctangent type penalty
+#' \insertCite{wang2016variable}{grasps}.
+#' \item "exp": Exponential type penalty
+#' \insertCite{wang2018variable}{grasps}.
+#' \item "lq": Lq penalty
+#' \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
+#' \item "lsp": Log-sum penalty
+#' \insertCite{candes2008enhancing}{grasps}.
+#' \item "mcp": Minimax concave penalty
+#' \insertCite{zhang2010nearly}{grasps}.
+#' \item "scad": Smoothly clipped absolute deviation
+#' \insertCite{fan2001variable,fan2009network}{grasps}.
 #' }
 #'
-#' @param diag.ind A boolean (default = TRUE) specifying whether to penalize
-#' the diagonal elements.
+#' @param diag.ind A logical value (default = TRUE) specifying whether to
+#' penalize the diagonal elements.
 #'
-#' @param diag.grp A boolean (default = TRUE) specifying whether to penalize
-#' the within-group blocks.
+#' @param diag.grp A logical value (default = TRUE) specifying whether to
+#' penalize the within-group blocks.
 #'
-#' @param diag.include A boolean (default = FALSE) specifying whether to include
-#' the diagonal entries in the penalty for within-group blocks when
+#' @param diag.include A logical value (default = FALSE) specifying whether to
+#' include the diagonal entries in the penalty for within-group blocks when
 #' \code{diag.grp = TRUE}.
 #'
-#' @param lambda A grid of non-negative scalars for the regularization parameter.
-#' The default is \code{NULL}, which generates its own \code{lambda} sequence
-#' based on \code{nlambda} and \code{lambda.min.ratio}.
+#' @param lambda A non-negative numeric vector specifying the grid for
+#' the regularization parameter. The default is \code{NULL}, which generates
+#' its own \code{lambda} sequence based on \code{nlambda} and
+#' \code{lambda.min.ratio}.
 #'
-#' @param alpha A grid of scalars in [0,1] specifying the parameter leveraging
-#' the element-wise individual L1 penalty and the block-wise group L2 penalty.
-#' An alpha of 1 corresponds to the element penalty only; an alpha of 0
-#' corresponds to the group penalty only. The default values is a sequence from
-#' 0.05 to 0.95 with increments of 0.05.
+#' @param alpha A numeric vector in [0, 1] specifying the grid for
+#' the mixing parameter balancing the element-wise individual L1 penalty and
+#' the block-wise group L2 penalty.
+#' An alpha of 1 corresponds to the individual penalty only; an alpha of 0
+#' corresponds to the group penalty only.
+#' The default value is a sequence from 0.1 to 0.9 with increments of 0.1.
 #'
-#' @param gamma A scalar specifying the additional parameter for the chosen
-#' \code{penalty}. Default values: \enumerate{
+#' @param gamma A numeric value specifying the additional parameter fo
+#' the chosen \code{penalty}. The default value depends on the penalty:
+#' \enumerate{
 #' \item "adapt": 0.5
 #' \item "atan": 0.005
 #' \item "exp": 0.01
@@ -61,78 +73,80 @@
 #' }
 #'
 #' @param nlambda An integer (default = 10) specifying the number of
-#' \code{lambda} values to be generated when \code{lambda = NULL}.
+#' \code{lambda} values to generate when \code{lambda = NULL}.
 #'
-#' @param lambda.min.ratio A scalar (default = 0.01) specifying the fraction of
-#' the maximum \code{lambda} value \eqn{\lambda_{max}} to generate the minimum
-#' \code{lambda} \eqn{\lambda_{min}}. If \code{lambda = NULL}, the program
-#' automatically generates a \code{lambda} grid as a sequence of length
-#' \code{nlambda} in log scale, starting from \eqn{\lambda_{min}} to
-#' \eqn{\lambda_{max}}.
+#' @param lambda.min.ratio A numeric value > 0 (default = 0.01) specifying
+#' the fraction of the maximum \code{lambda} value \eqn{\lambda_{max}} to
+#' generate the minimum \code{lambda} \eqn{\lambda_{min}}.
+#' If \code{lambda = NULL}, a \code{lambda} grid of length \code{nlambda} is
+#' automatically generated on a log scale, ranging from \eqn{\lambda_{max}}
+#' down to \eqn{\lambda_{min}}.
 #'
 #' @param growiter.lambda An integer (default = 30) specifying the maximum
 #' number of exponential growth steps during the initial search for an
 #' admissible upper bound \eqn{\lambda_{\max}}.
 #'
-#' @param tol.lambda A scalar (default = 1e-03) specifying the relative
-#' tolerance for the bisection stopping rule on the interval width.
+#' @param tol.lambda A numeric value > 0 (default = 1e-03) specifying
+#' the relative tolerance for the bisection stopping rule on the interval width.
 #'
 #' @param maxiter.lambda An integer (default = 50) specifying the maximum number
 #' of bisection iterations in the line search for  \eqn{\lambda_{\max}}.
 #'
-#' @param rho A scalar > 0 (default = 2) specifying the ADMM
+#' @param rho A numeric value > 0 (default = 2) specifying the ADMM
 #' augmented-Lagrangian penalty parameter (often called the ADMM step size).
 #' Larger values typically put more weight on enforcing the consensus
-#' constraints each iteration; smaller values yield more conservative updates.
+#' constraints at each iteration; smaller values yield more conservative updates.
 #'
-#' @param tau.incr A scalar > 1 (default = 2) specifying the multiplicative
-#' factor used to increase \code{rho} when the primal residual dominates the
-#' dual residual in ADMM.
+#' @param tau.incr A numeric value > 1 (default = 2) specifying
+#' the multiplicative factor used to increase \code{rho} when the primal
+#' residual dominates the dual residual in ADMM.
 #'
-#' @param tau.decr A scalar > 1 (default = 2) specifying the multiplicative
-#' factor used to decrease \code{rho} when the dual residual dominates the
-#' primal residual in ADMM.
+#' @param tau.decr A numeric value > 1 (default = 2) specifying
+#' the multiplicative factor used to decrease \code{rho} when the dual residual
+#' dominates the primal residual in ADMM.
 #'
-#' @param nu A scalar > 1 (default = 10) controlling how aggressively \code{rho}
-#' is rescaled in the adaptive-\code{rho} scheme (residual balancing).
+#' @param nu A numeric value > 1 (default = 10) controlling how aggressively
+#' \code{rho} is rescaled in the adaptive-\code{rho} scheme (residual balancing).
 #'
-#' @param tol.abs A scalar > 0 (default = 1e-04) specifying the absolute
+#' @param tol.abs A numeric value > 0 (default = 1e-04) specifying the absolute
 #' tolerance for ADMM stopping (applied to primal/dual residual norms).
 #'
-#' @param tol.rel A scalar > 0 (default = 1e-04) specifying the relative
+#' @param tol.rel A numeric value > 0 (default = 1e-04) specifying the relative
 #' tolerance for ADMM stopping (applied to primal/dual residual norms).
 #'
 #' @param maxiter An integer (default = 1e+04) specifying the maximum number of
 #' ADMM iterations.
 #'
-#' @param crit A string (default = "BIC") specifying the parameter selection
-#' method to use. Available options include: \enumerate{
-#' \item "AIC": Akaike information criterion \insertCite{akaike1973information}{grasps}.
-#' \item "BIC": Bayesian information criterion \insertCite{schwarz1978estimating}{grasps}.
-#' \item "EBIC": extended Bayesian information criterion \insertCite{chen2008extended,foygel2010extended}{grasps}.
-#' \item "HBIC": high dimensional Bayesian information criterion \insertCite{wang2013calibrating,fan2017high}{grasps}.
+#' @param crit A character string (default = "BIC") specifying the parameter
+#' selection criterion to use. Available options include:
+#' \enumerate{
+#' \item "AIC": Akaike information criterion
+#' \insertCite{akaike1973information}{grasps}.
+#' \item "BIC": Bayesian information criterion
+#' \insertCite{schwarz1978estimating}{grasps}.
+#' \item "EBIC": extended Bayesian information criterion
+#' \insertCite{chen2008extended,foygel2010extended}{grasps}.
+#' \item "HBIC": high dimensional Bayesian information criterion
+#' \insertCite{wang2013calibrating,fan2017high}{grasps}.
 #' \item "CV": k-fold cross validation with negative log-likelihood loss.
 #' }
 #'
 #' @param kfold An integer (default = 5) specifying the number of folds used for
 #' \code{crit = "CV"}.
 #'
-#' @param ebic.tuning A scalar (default = 0.5) specifying the tuning parameter to
-#' calculate for \code{crit = "EBIC"}.
-#'
-#' @importFrom stats cov
-#' @importFrom Rdpack reprompt
+#' @param ebic.tuning A numeric value in [0, 1] (default = 0.5) specifying
+#' the tuning parameter to calculate for \code{crit = "EBIC"}.
 #'
 #' @return
 #' An object with S3 class "grasps" containing the following components:
 #' \describe{
 #' \item{hatOmega}{The estimated precision matrix.}
 #' \item{lambda}{The optimal regularization parameter.}
-#' \item{alpha}{The optimal penalty balancing parameter.}
-#' \item{initial}{The initial estimate of \code{hatOmega} when \code{penalty} is
-#' set to \code{"adapt"}, \code{"mcp"}, or \code{"scad"}.}
-#' \item{gamma}{The optimal hyperparameter when \code{penalty} is set to
-#' \code{"adapt"}, \code{"mcp"}, or \code{"scad"}.}
+#' \item{alpha}{The optimal mixing parameter.}
+#' \item{initial}{The initial estimate of \code{hatOmega} when a non-convex
+#' penalty is chosen via \code{penalty}.}
+#' \item{gamma}{The optimal addtional parameter when a non-convex penalty
+#' is chosen via \code{penalty}.}
 #' \item{iterations}{The number of ADMM iterations.}
 #' \item{lambda.grid}{The actual lambda grid used in the program.}
 #' \item{alpha.grid}{The actual alpha grid used in the program.}
@@ -154,6 +168,9 @@
 #'
 #' @example
 #' inst/example/ex-grasps.R
+#'
+#' @importFrom stats cov
+#' @importFrom Rdpack reprompt
 #'
 #' @export
 
@@ -229,7 +246,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   lambda_null <- is.null(lambda)
 
   if (alpha_null) {
-    alpha <- seq(0.05, 0.95, 0.05)
+    alpha <- seq(0.1, 0.9, 0.1)
   }
 
   if (lambda_null) {

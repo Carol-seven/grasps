@@ -2,43 +2,42 @@
 #'
 #' @description
 #' Given a list of off-diagonal blocks \code{blockList} from the sample
-#' covariance (or a related matrix), this routine finds a **sharp**
+#' covariance (or a related matrix), this routine finds a \strong{sharp}
 #' \eqn{\lambda_{\max}} by bisection so that the KKT condition
 #' \deqn{\Vert\text{soft}(B, \lambda\alpha)\Vert_F \leq \lambda(1-\alpha)}
 #' holds for every block \eqn{B} in \code{blockList}, where
-#' \eqn{\text{soft}(\cdot, t)} denotes elementwise soft-thresholding with
+#' \eqn{\text{soft}(\cdot, t)} denotes element-wise soft-thresholding with
 #' threshold \eqn{t}.
 #'
 #' @param blockList A list of numeric matrices where each element is a block
 #' used in the group KKT check.
 #'
-#' @param lambda.safe A numeric scalar representing a safe (but possibly loose)
+#' @param lambda.safe A numeric value representing a safe (but possibly loose)
 #' upper bound for \eqn{\lambda_{\max}}. If the value is negative, the search
 #' starts from 1.
 #'
-#' @param alpha A numeric scalar in (0, 1) specifying the mixture weight between
+#' @param alpha A numeric value in (0, 1) specifying the mixture weight between
 #' the individual (L1) and group (L2) penalties in sparse-group formulations.
 #'
 #' @param growiter An integer specifying the maximum number of exponential
 #' growth steps during the initial search for an admissible upper bound
 #' \eqn{\lambda_{\max}}.
 #'
-#' @param tol A positive numeric scalar specifying the relative tolerance for
+#' @param tol A numeric value > 0 specifying the relative tolerance for
 #' the bisection stopping rule on the interval width.
 #'
 #' @param maxiter An integer specifying the maximum number of bisection
 #' iterations.
 #'
+#' @return
+#' A numeric value giving the bisection-refined upper bound \eqn{\lambda_{\max}}.
+#'
 #' @details
 #' The procedure first grows an upper bound starting from \code{lambda.safe}
-#' (or 1 if that is non-positive), doubling until the KKT check passes or a
-#' growth cap is reached, and then performs bisection between the current
+#' (or 1 if that is non-positive), doubling until the KKT check passes or
+#' a growth cap is reached, and then performs bisection between the current
 #' lower/upper bounds until the interval width is below
 #' \code{tol * max(1, lambda_upper)} or \code{maxiter} is hit.
-#'
-#' @return
-#' A numeric scalar representing the bisection-refined upper bound
-#' \eqn{\lambda_{\max}}.
 #'
 #' @noRd
 
