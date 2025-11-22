@@ -101,7 +101,7 @@ grasps(
 
 - alpha:
 
-  A grid of scalars in 0,1 specifying the parameter leveraging the
+  A grid of scalars in \[0,1\] specifying the parameter leveraging the
   element-wise individual L1 penalty and the block-wise group L2
   penalty. An alpha of 1 corresponds to the element penalty only; an
   alpha of 0 corresponds to the group penalty only. The default values

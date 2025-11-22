@@ -46,13 +46,13 @@ gen_prec_sbm(
 
 - within.prob:
 
-  A scalar in 0,1 (default = 0.25) specifying the probability of
+  A scalar in \[0,1\] (default = 0.25) specifying the probability of
   creating an edge between vertices within the same group. This argument
   is used only when `prob.mat = NULL`.
 
 - between.prob:
 
-  A scalar in 0,1 (default = 0.05) specifying the probability of
+  A scalar in \[0,1\] (default = 0.05) specifying the probability of
   creating an edge between vertices from different groups. This argument
   is used only when `prob.mat = NULL`.
 
