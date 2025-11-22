@@ -39,20 +39,21 @@ grasps(
 
 - X:
 
-  1.  An n-by-d data matrix with sample size n and dimension d.
+  1.  An \\n \times d\\ data matrix with sample size \\n\\ and dimension
+      \\d\\.
 
-  2.  A d-by-d sample covariance/correlation matrix with dimension d.
+  2.  A \\d \times d\\ sample covariance matrix with dimension \\d\\.
 
 - n:
 
   An integer (default = `nrow(X)`) specifying the sample size. This is
-  only required when the input matrix `X` is a d-by-d sample
-  covariance/correlation matrix with dimension d.
+  only required when the input matrix `X` is a \\d \times d\\ sample
+  covariance matrix with dimension \\d\\.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension d.
+  `membership` must be consistent with the dimension \\d\\.
 
 - penalty:
 
@@ -80,37 +81,39 @@ grasps(
 
 - diag.ind:
 
-  A boolean (default = TRUE) specifying whether to penalize the diagonal
-  elements.
+  A logical value (default = TRUE) specifying whether to penalize the
+  diagonal elements.
 
 - diag.grp:
 
-  A boolean (default = TRUE) specifying whether to penalize the
+  A logical value (default = TRUE) specifying whether to penalize the
   within-group blocks.
 
 - diag.include:
 
-  A boolean (default = FALSE) specifying whether to include the diagonal
-  entries in the penalty for within-group blocks when `diag.grp = TRUE`.
+  A logical value (default = FALSE) specifying whether to include the
+  diagonal entries in the penalty for within-group blocks when
+  `diag.grp = TRUE`.
 
 - lambda:
 
-  A grid of non-negative scalars for the regularization parameter. The
-  default is `NULL`, which generates its own `lambda` sequence based on
-  `nlambda` and `lambda.min.ratio`.
+  A non-negative numeric vector specifying the grid for the
+  regularization parameter. The default is `NULL`, which generates its
+  own `lambda` sequence based on `nlambda` and `lambda.min.ratio`.
 
 - alpha:
 
-  A grid of scalars in \[0,1\] specifying the parameter leveraging the
-  element-wise individual L1 penalty and the block-wise group L2
-  penalty. An alpha of 1 corresponds to the element penalty only; an
-  alpha of 0 corresponds to the group penalty only. The default values
-  is a sequence from 0.05 to 0.95 with increments of 0.05.
+  A numeric vector in \[0, 1\] specifying the grid for the mixing
+  parameter balancing the element-wise individual L1 penalty and the
+  block-wise group L2 penalty. An alpha of 1 corresponds to the
+  individual penalty only; an alpha of 0 corresponds to the group
+  penalty only. The default value is a sequence from 0.1 to 0.9 with
+  increments of 0.1.
 
 - gamma:
 
-  A scalar specifying the additional parameter for the chosen `penalty`.
-  Default values:
+  A numeric value specifying the additional parameter fo the chosen
+  `penalty`. The default value depends on the penalty:
 
   1.  "adapt": 0.5
 
@@ -129,15 +132,15 @@ grasps(
 - nlambda:
 
   An integer (default = 10) specifying the number of `lambda` values to
-  be generated when `lambda = NULL`.
+  generate when `lambda = NULL`.
 
 - lambda.min.ratio:
 
-  A scalar (default = 0.01) specifying the fraction of the maximum
-  `lambda` value \\\lambda\_{max}\\ to generate the minimum `lambda`
-  \\\lambda\_{min}\\. If `lambda = NULL`, the program automatically
-  generates a `lambda` grid as a sequence of length `nlambda` in log
-  scale, starting from \\\lambda\_{min}\\ to \\\lambda\_{max}\\.
+  A numeric value \> 0 (default = 0.01) specifying the fraction of the
+  maximum `lambda` value \\\lambda\_{max}\\ to generate the minimum
+  `lambda` \\\lambda\_{min}\\. If `lambda = NULL`, a `lambda` grid of
+  length `nlambda` is automatically generated on a log scale, ranging
+  from \\\lambda\_{max}\\ down to \\\lambda\_{min}\\.
 
 - growiter.lambda:
 
@@ -147,8 +150,8 @@ grasps(
 
 - tol.lambda:
 
-  A scalar (default = 1e-03) specifying the relative tolerance for the
-  bisection stopping rule on the interval width.
+  A numeric value \> 0 (default = 1e-03) specifying the relative
+  tolerance for the bisection stopping rule on the interval width.
 
 - maxiter.lambda:
 
@@ -157,37 +160,38 @@ grasps(
 
 - rho:
 
-  A scalar \> 0 (default = 2) specifying the ADMM augmented-Lagrangian
-  penalty parameter (often called the ADMM step size). Larger values
-  typically put more weight on enforcing the consensus constraints each
-  iteration; smaller values yield more conservative updates.
+  A numeric value \> 0 (default = 2) specifying the ADMM
+  augmented-Lagrangian penalty parameter (often called the ADMM step
+  size). Larger values typically put more weight on enforcing the
+  consensus constraints at each iteration; smaller values yield more
+  conservative updates.
 
 - tau.incr:
 
-  A scalar \> 1 (default = 2) specifying the multiplicative factor used
-  to increase `rho` when the primal residual dominates the dual residual
-  in ADMM.
+  A numeric value \> 1 (default = 2) specifying the multiplicative
+  factor used to increase `rho` when the primal residual dominates the
+  dual residual in ADMM.
 
 - tau.decr:
 
-  A scalar \> 1 (default = 2) specifying the multiplicative factor used
-  to decrease `rho` when the dual residual dominates the primal residual
-  in ADMM.
+  A numeric value \> 1 (default = 2) specifying the multiplicative
+  factor used to decrease `rho` when the dual residual dominates the
+  primal residual in ADMM.
 
 - nu:
 
-  A scalar \> 1 (default = 10) controlling how aggressively `rho` is
-  rescaled in the adaptive-`rho` scheme (residual balancing).
+  A numeric value \> 1 (default = 10) controlling how aggressively `rho`
+  is rescaled in the adaptive-`rho` scheme (residual balancing).
 
 - tol.abs:
 
-  A scalar \> 0 (default = 1e-04) specifying the absolute tolerance for
-  ADMM stopping (applied to primal/dual residual norms).
+  A numeric value \> 0 (default = 1e-04) specifying the absolute
+  tolerance for ADMM stopping (applied to primal/dual residual norms).
 
 - tol.rel:
 
-  A scalar \> 0 (default = 1e-04) specifying the relative tolerance for
-  ADMM stopping (applied to primal/dual residual norms).
+  A numeric value \> 0 (default = 1e-04) specifying the relative
+  tolerance for ADMM stopping (applied to primal/dual residual norms).
 
 - maxiter:
 
@@ -196,8 +200,8 @@ grasps(
 
 - crit:
 
-  A string (default = "BIC") specifying the parameter selection method
-  to use. Available options include:
+  A character string (default = "BIC") specifying the parameter
+  selection criterion to use. Available options include:
 
   1.  "AIC": Akaike information criterion (Akaike 1973) .
 
@@ -218,8 +222,8 @@ grasps(
 
 - ebic.tuning:
 
-  A scalar (default = 0.5) specifying the tuning parameter to calculate
-  for `crit = "EBIC"`.
+  A numeric value in \[0, 1\] (default = 0.5) specifying the tuning
+  parameter to calculate for `crit = "EBIC"`.
 
 ## Value
 
@@ -235,17 +239,17 @@ An object with S3 class "grasps" containing the following components:
 
 - alpha:
 
-  The optimal penalty balancing parameter.
+  The optimal mixing parameter.
 
 - initial:
 
-  The initial estimate of `hatOmega` when `penalty` is set to `"adapt"`,
-  `"mcp"`, or `"scad"`.
+  The initial estimate of `hatOmega` when a non-convex penalty is chosen
+  via `penalty`.
 
 - gamma:
 
-  The optimal hyperparameter when `penalty` is set to `"adapt"`,
-  `"mcp"`, or `"scad"`.
+  The optimal addtional parameter when a non-convex penalty is chosen
+  via `penalty`.
 
 - iterations:
 

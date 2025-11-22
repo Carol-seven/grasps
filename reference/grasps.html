@@ -90,20 +90,21 @@ element-wise and group-wise penalties to estimate a precision matrix.</p>
 
 
 <dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><ol><li><p>An n-by-d data matrix with sample size n and dimension d.</p></li>
-<li><p>A d-by-d sample covariance/correlation matrix with dimension d.</p></li>
+<dd><ol><li><p>An \(n \times d\) data matrix with sample size \(n\) and
+dimension \(d\).</p></li>
+<li><p>A \(d \times d\) sample covariance matrix with dimension \(d\).</p></li>
 </ol></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>An integer (default = <code>nrow(X)</code>) specifying the sample size.
-This is only required when the input matrix <code>X</code> is a d-by-d sample
-covariance/correlation matrix with dimension d.</p></dd>
+This is only required when the input matrix <code>X</code> is a \(d \times d\)
+sample covariance matrix with dimension \(d\).</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
 <dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension d.</p></dd>
+The length of <code>membership</code> must be consistent with the dimension \(d\).</p></dd>
 
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
@@ -111,56 +112,65 @@ The length of <code>membership</code> must be consistent with the dimension d.</
 precision matrix. Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and selection operator
 (Tibshirani 1996; Friedman et al. 2008)
 .</p></li>
-<li><p>"adapt": Adaptive lasso (Zou 2006; Fan et al. 2009)
+<li><p>"adapt": Adaptive lasso
+(Zou 2006; Fan et al. 2009)
 .</p></li>
-<li><p>"atan": Arctangent type penalty (Wang and Zhu 2016)
+<li><p>"atan": Arctangent type penalty
+(Wang and Zhu 2016)
 .</p></li>
-<li><p>"exp": Exponential type penalty (Wang et al. 2018)
+<li><p>"exp": Exponential type penalty
+(Wang et al. 2018)
 .</p></li>
-<li><p>"lq": Lq penalty (Frank and Friedman 1993; Fu 1998; Fan and Li 2001)
+<li><p>"lq": Lq penalty
+(Frank and Friedman 1993; Fu 1998; Fan and Li 2001)
 .</p></li>
-<li><p>"lsp": Log-sum penalty (Candès et al. 2008)
+<li><p>"lsp": Log-sum penalty
+(Candès et al. 2008)
 .</p></li>
-<li><p>"mcp": Minimax concave penalty (Zhang 2010)
+<li><p>"mcp": Minimax concave penalty
+(Zhang 2010)
 .</p></li>
-<li><p>"scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan et al. 2009)
+<li><p>"scad": Smoothly clipped absolute deviation
+(Fan and Li 2001; Fan et al. 2009)
 .</p></li>
 </ol></dd>
 
 
 <dt id="arg-diag-ind">diag.ind<a class="anchor" aria-label="anchor" href="#arg-diag-ind"></a></dt>
-<dd><p>A boolean (default = TRUE) specifying whether to penalize
-the diagonal elements.</p></dd>
+<dd><p>A logical value (default = TRUE) specifying whether to
+penalize the diagonal elements.</p></dd>
 
 
 <dt id="arg-diag-grp">diag.grp<a class="anchor" aria-label="anchor" href="#arg-diag-grp"></a></dt>
-<dd><p>A boolean (default = TRUE) specifying whether to penalize
-the within-group blocks.</p></dd>
+<dd><p>A logical value (default = TRUE) specifying whether to
+penalize the within-group blocks.</p></dd>
 
 
 <dt id="arg-diag-include">diag.include<a class="anchor" aria-label="anchor" href="#arg-diag-include"></a></dt>
-<dd><p>A boolean (default = FALSE) specifying whether to include
-the diagonal entries in the penalty for within-group blocks when
+<dd><p>A logical value (default = FALSE) specifying whether to
+include the diagonal entries in the penalty for within-group blocks when
 <code>diag.grp = TRUE</code>.</p></dd>
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A grid of non-negative scalars for the regularization parameter.
-The default is <code>NULL</code>, which generates its own <code>lambda</code> sequence
-based on <code>nlambda</code> and <code>lambda.min.ratio</code>.</p></dd>
+<dd><p>A non-negative numeric vector specifying the grid for
+the regularization parameter. The default is <code>NULL</code>, which generates
+its own <code>lambda</code> sequence based on <code>nlambda</code> and
+<code>lambda.min.ratio</code>.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>A grid of scalars in [0,1] specifying the parameter leveraging
-the element-wise individual L1 penalty and the block-wise group L2 penalty.
-An alpha of 1 corresponds to the element penalty only; an alpha of 0
-corresponds to the group penalty only. The default values is a sequence from
-0.05 to 0.95 with increments of 0.05.</p></dd>
+<dd><p>A numeric vector in [0, 1] specifying the grid for
+the mixing parameter balancing the element-wise individual L1 penalty and
+the block-wise group L2 penalty.
+An alpha of 1 corresponds to the individual penalty only; an alpha of 0
+corresponds to the group penalty only.
+The default value is a sequence from 0.1 to 0.9 with increments of 0.1.</p></dd>
 
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
-<dd><p>A scalar specifying the additional parameter for the chosen
-<code>penalty</code>. Default values:</p><ol><li><p>"adapt": 0.5</p></li>
+<dd><p>A numeric value specifying the additional parameter fo
+the chosen <code>penalty</code>. The default value depends on the penalty:</p><ol><li><p>"adapt": 0.5</p></li>
 <li><p>"atan": 0.005</p></li>
 <li><p>"exp": 0.01</p></li>
 <li><p>"lq": 0.5</p></li>
@@ -172,16 +182,16 @@ corresponds to the group penalty only. The default values is a sequence from
 
 <dt id="arg-nlambda">nlambda<a class="anchor" aria-label="anchor" href="#arg-nlambda"></a></dt>
 <dd><p>An integer (default = 10) specifying the number of
-<code>lambda</code> values to be generated when <code>lambda = NULL</code>.</p></dd>
+<code>lambda</code> values to generate when <code>lambda = NULL</code>.</p></dd>
 
 
 <dt id="arg-lambda-min-ratio">lambda.min.ratio<a class="anchor" aria-label="anchor" href="#arg-lambda-min-ratio"></a></dt>
-<dd><p>A scalar (default = 0.01) specifying the fraction of
-the maximum <code>lambda</code> value \(\lambda_{max}\) to generate the minimum
-<code>lambda</code> \(\lambda_{min}\). If <code>lambda = NULL</code>, the program
-automatically generates a <code>lambda</code> grid as a sequence of length
-<code>nlambda</code> in log scale, starting from \(\lambda_{min}\) to
-\(\lambda_{max}\).</p></dd>
+<dd><p>A numeric value &gt; 0 (default = 0.01) specifying
+the fraction of the maximum <code>lambda</code> value \(\lambda_{max}\) to
+generate the minimum <code>lambda</code> \(\lambda_{min}\).
+If <code>lambda = NULL</code>, a <code>lambda</code> grid of length <code>nlambda</code> is
+automatically generated on a log scale, ranging from \(\lambda_{max}\)
+down to \(\lambda_{min}\).</p></dd>
 
 
 <dt id="arg-growiter-lambda">growiter.lambda<a class="anchor" aria-label="anchor" href="#arg-growiter-lambda"></a></dt>
@@ -191,8 +201,8 @@ admissible upper bound \(\lambda_{\max}\).</p></dd>
 
 
 <dt id="arg-tol-lambda">tol.lambda<a class="anchor" aria-label="anchor" href="#arg-tol-lambda"></a></dt>
-<dd><p>A scalar (default = 1e-03) specifying the relative
-tolerance for the bisection stopping rule on the interval width.</p></dd>
+<dd><p>A numeric value &gt; 0 (default = 1e-03) specifying
+the relative tolerance for the bisection stopping rule on the interval width.</p></dd>
 
 
 <dt id="arg-maxiter-lambda">maxiter.lambda<a class="anchor" aria-label="anchor" href="#arg-maxiter-lambda"></a></dt>
@@ -201,36 +211,36 @@ of bisection iterations in the line search for  \(\lambda_{\max}\).</p></dd>
 
 
 <dt id="arg-rho">rho<a class="anchor" aria-label="anchor" href="#arg-rho"></a></dt>
-<dd><p>A scalar &gt; 0 (default = 2) specifying the ADMM
+<dd><p>A numeric value &gt; 0 (default = 2) specifying the ADMM
 augmented-Lagrangian penalty parameter (often called the ADMM step size).
 Larger values typically put more weight on enforcing the consensus
-constraints each iteration; smaller values yield more conservative updates.</p></dd>
+constraints at each iteration; smaller values yield more conservative updates.</p></dd>
 
 
 <dt id="arg-tau-incr">tau.incr<a class="anchor" aria-label="anchor" href="#arg-tau-incr"></a></dt>
-<dd><p>A scalar &gt; 1 (default = 2) specifying the multiplicative
-factor used to increase <code>rho</code> when the primal residual dominates the
-dual residual in ADMM.</p></dd>
+<dd><p>A numeric value &gt; 1 (default = 2) specifying
+the multiplicative factor used to increase <code>rho</code> when the primal
+residual dominates the dual residual in ADMM.</p></dd>
 
 
 <dt id="arg-tau-decr">tau.decr<a class="anchor" aria-label="anchor" href="#arg-tau-decr"></a></dt>
-<dd><p>A scalar &gt; 1 (default = 2) specifying the multiplicative
-factor used to decrease <code>rho</code> when the dual residual dominates the
-primal residual in ADMM.</p></dd>
+<dd><p>A numeric value &gt; 1 (default = 2) specifying
+the multiplicative factor used to decrease <code>rho</code> when the dual residual
+dominates the primal residual in ADMM.</p></dd>
 
 
 <dt id="arg-nu">nu<a class="anchor" aria-label="anchor" href="#arg-nu"></a></dt>
-<dd><p>A scalar &gt; 1 (default = 10) controlling how aggressively <code>rho</code>
-is rescaled in the adaptive-<code>rho</code> scheme (residual balancing).</p></dd>
+<dd><p>A numeric value &gt; 1 (default = 10) controlling how aggressively
+<code>rho</code> is rescaled in the adaptive-<code>rho</code> scheme (residual balancing).</p></dd>
 
 
 <dt id="arg-tol-abs">tol.abs<a class="anchor" aria-label="anchor" href="#arg-tol-abs"></a></dt>
-<dd><p>A scalar &gt; 0 (default = 1e-04) specifying the absolute
+<dd><p>A numeric value &gt; 0 (default = 1e-04) specifying the absolute
 tolerance for ADMM stopping (applied to primal/dual residual norms).</p></dd>
 
 
 <dt id="arg-tol-rel">tol.rel<a class="anchor" aria-label="anchor" href="#arg-tol-rel"></a></dt>
-<dd><p>A scalar &gt; 0 (default = 1e-04) specifying the relative
+<dd><p>A numeric value &gt; 0 (default = 1e-04) specifying the relative
 tolerance for ADMM stopping (applied to primal/dual residual norms).</p></dd>
 
 
@@ -240,14 +250,18 @@ ADMM iterations.</p></dd>
 
 
 <dt id="arg-crit">crit<a class="anchor" aria-label="anchor" href="#arg-crit"></a></dt>
-<dd><p>A string (default = "BIC") specifying the parameter selection
-method to use. Available options include:</p><ol><li><p>"AIC": Akaike information criterion (Akaike 1973)
+<dd><p>A character string (default = "BIC") specifying the parameter
+selection criterion to use. Available options include:</p><ol><li><p>"AIC": Akaike information criterion
+(Akaike 1973)
 .</p></li>
-<li><p>"BIC": Bayesian information criterion (Schwarz 1978)
+<li><p>"BIC": Bayesian information criterion
+(Schwarz 1978)
 .</p></li>
-<li><p>"EBIC": extended Bayesian information criterion (Chen and Chen 2008; Foygel and Drton 2010)
+<li><p>"EBIC": extended Bayesian information criterion
+(Chen and Chen 2008; Foygel and Drton 2010)
 .</p></li>
-<li><p>"HBIC": high dimensional Bayesian information criterion (Wang et al. 2013; Fan et al. 2017)
+<li><p>"HBIC": high dimensional Bayesian information criterion
+(Wang et al. 2013; Fan et al. 2017)
 .</p></li>
 <li><p>"CV": k-fold cross validation with negative log-likelihood loss.</p></li>
 </ol></dd>
@@ -259,8 +273,8 @@ method to use. Available options include:</p><ol><li><p>"AIC": Akaike informatio
 
 
 <dt id="arg-ebic-tuning">ebic.tuning<a class="anchor" aria-label="anchor" href="#arg-ebic-tuning"></a></dt>
-<dd><p>A scalar (default = 0.5) specifying the tuning parameter to
-calculate for <code>crit = "EBIC"</code>.</p></dd>
+<dd><p>A numeric value in [0, 1] (default = 0.5) specifying
+the tuning parameter to calculate for <code>crit = "EBIC"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -272,15 +286,15 @@ calculate for <code>crit = "EBIC"</code>.</p></dd>
 <dd><p>The optimal regularization parameter.</p></dd>
 
 <dt>alpha</dt>
-<dd><p>The optimal penalty balancing parameter.</p></dd>
+<dd><p>The optimal mixing parameter.</p></dd>
 
 <dt>initial</dt>
-<dd><p>The initial estimate of <code>hatOmega</code> when <code>penalty</code> is
-set to <code>"adapt"</code>, <code>"mcp"</code>, or <code>"scad"</code>.</p></dd>
+<dd><p>The initial estimate of <code>hatOmega</code> when a non-convex
+penalty is chosen via <code>penalty</code>.</p></dd>
 
 <dt>gamma</dt>
-<dd><p>The optimal hyperparameter when <code>penalty</code> is set to
-<code>"adapt"</code>, <code>"mcp"</code>, or <code>"scad"</code>.</p></dd>
+<dd><p>The optimal addtional parameter when a non-convex penalty
+is chosen via <code>penalty</code>.</p></dd>
 
 <dt>iterations</dt>
 <dd><p>The number of ADMM iterations.</p></dd>
