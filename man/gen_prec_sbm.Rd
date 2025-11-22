@@ -33,11 +33,11 @@ creating an edge between vertices from groups i and j. If \code{NULL},
 a matrix with \code{within.prob} on the diagonal and \code{between.prob}
 off-diagonal is used.}
 
-\item{within.prob}{A scalar in [0,1] (default = 0.25) specifying
+\item{within.prob}{A scalar in \link{0,1} (default = 0.25) specifying
 the probability of creating an edge between vertices within the same group.
 This argument is used only when \code{prob.mat = NULL}.}
 
-\item{between.prob}{A scalar in [0,1] (default = 0.05) specifying
+\item{between.prob}{A scalar in \link{0,1} (default = 0.05) specifying
 the probability of creating an edge between vertices from different groups.
 This argument is used only when \code{prob.mat = NULL}.}
 

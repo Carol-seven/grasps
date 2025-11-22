@@ -72,7 +72,7 @@ the diagonal entries in the penalty for within-group blocks when
 The default is \code{NULL}, which generates its own \code{lambda} sequence
 based on \code{nlambda} and \code{lambda.min.ratio}.}
 
-\item{alpha}{A grid of scalars in [0,1] specifying the parameter leveraging
+\item{alpha}{A grid of scalars in \link{0,1} specifying the parameter leveraging
 the element-wise individual L1 penalty and the block-wise group L2 penalty.
 An alpha of 1 corresponds to the element penalty only; an alpha of 0
 corresponds to the group penalty only. The default values is a sequence from
