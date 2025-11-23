@@ -11,7 +11,8 @@
 #' (typically true) precision matrix.
 #'
 #' @return
-#' A data frame with one row per performance metric and two columns:
+#' A data frame of S3 class \code{"performance"}, with one row per performance
+#' metric and two columns:
 #' \describe{
 #' \item{measure}{The name of each performance metric. The reported metrics
 #' include: sparsity, Frobenius norm loss, Kullback-Leibler divergence,
@@ -89,6 +90,9 @@
 #' \tab Negative predictive value (NPV) = TN / (TN + FN) = 1 - FOR \tab \tab \cr
 #' }
 #'
+#' @example
+#' inst/example/ex-performance.R
+#'
 #' @export
 
 performance <- function(hatOmega, Omega) {
@@ -143,7 +147,7 @@ performance <- function(hatOmega, Omega) {
   ## FPR <- FP / sum(Omega_edge == 0)
   F1 <- 2 * TP / (2*TP + FN + FP)
   ## F1 <- 2 * precision * recall / (precision + recall)
-  MCC <- (TP * TN - FP * FN) / sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN))
+  MCC <- (TP * TN - FP * FN) / (sqrt(TP + FP) * sqrt(TP + FN) * sqrt(TN + FP) * sqrt(TN + FN))
   ## MCC <- (TP * TN - FP * FN) / sqrt(
   ##   sum(hatOmega_edge != 0) * sum(Omega_edge != 0) * sum(Omega_edge == 0) * sum(hatOmega_edge == 0)
   ## )
@@ -154,5 +158,14 @@ performance <- function(hatOmega, Omega) {
     value = c(sparsity, FL, KL, QL, SL,
               TP, TN, FP, FN, TPR, FPR, F1, MCC)
   )
+  class(result) <- c("performance", class(result))
   return(result)
+}
+
+
+#' @noRd
+
+print.performance <- function(x, ...) {
+  x$value <- round(x$value, 4)
+  NextMethod("print", x)
 }

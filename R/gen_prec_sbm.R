@@ -66,7 +66,7 @@
 #' }
 #'
 #' @param weight.paras A list
-#' (default = \code{list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))})
+#' (default = \code{list(c(shape = 100, rate = 10), c(min = 0, max = 5))})
 #' specifying the parameters associated with \code{weight.dists}. It must follow
 #' the same length rules as \code{weight.dists}. Each element should be a named
 #' vector or list suitable for the corresponding sampler.
@@ -144,7 +144,7 @@ gen_prec_sbm <- function(d,
                          prob.mat = NULL, within.prob = 0.25, between.prob = 0.05,
                          weight.mat = NULL,
                          weight.dists = list("gamma", "unif"),
-                         weight.paras = list(c(shape = 1e4, rate = 1e2),
+                         weight.paras = list(c(shape = 100, rate = 10),
                                              c(min = 0, max = 5)),
                          cond.target = 100) {
 
