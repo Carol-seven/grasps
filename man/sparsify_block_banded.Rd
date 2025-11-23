@@ -7,18 +7,19 @@
 sparsify_block_banded(mat, membership, neighbor.range = 1)
 }
 \arguments{
-\item{mat}{A p-by-p precision-like matrix specifying the base matrix to be
-masked.}
+\item{mat}{A \eqn{d \times d} precision-like matrix specifying the base
+matrix to be masked.}
 
 \item{membership}{An integer vector specifying the group membership.
-The length of \code{membership} must be consistent with the dimension p.}
+The length of \code{membership} must be consistent with the dimension \eqn{d}.}
 
 \item{neighbor.range}{An integer (default = 1) specifying the neighbor range,
 where groups whose labels differ by at most \code{neighbor.range} are
 considered neighbors and kept in the mask.}
 }
 \value{
-An object with S3 class "grasps" containing the following components:
+An object with S3 class "sparsify_block_banded" containing
+the following components:
 \describe{
 \item{Omega}{The masked precision matrix.}
 \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}

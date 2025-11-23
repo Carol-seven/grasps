@@ -4,17 +4,18 @@
 #' Make a precision-like matrix block-banded according to group membership,
 #' keeping only entries within specified group neighborhoods.
 #'
-#' @param mat A p-by-p precision-like matrix specifying the base matrix to be
-#' masked.
+#' @param mat A \eqn{d \times d} precision-like matrix specifying the base
+#' matrix to be masked.
 #'
 #' @param membership An integer vector specifying the group membership.
-#' The length of \code{membership} must be consistent with the dimension p.
+#' The length of \code{membership} must be consistent with the dimension \eqn{d}.
 #'
 #' @param neighbor.range An integer (default = 1) specifying the neighbor range,
 #' where groups whose labels differ by at most \code{neighbor.range} are
 #' considered neighbors and kept in the mask.
 #'
-#' @return An object with S3 class "grasps" containing the following components:
+#' @return An object with S3 class "sparsify_block_banded" containing
+#' the following components:
 #' \describe{
 #' \item{Omega}{The masked precision matrix.}
 #' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
@@ -29,10 +30,10 @@
 
 sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
 
-  p <- ncol(mat)
-  if (length(membership) != p) {
-    stop(sprintf("Length of 'membership' (%d) must equal the matrix dimension p (%d).",
-                 length(membership), p))
+  d <- ncol(mat)
+  if (length(membership) != d) {
+    stop(sprintf("Length of 'membership' (%d) must equal the matrix dimension d (%d).",
+                 length(membership), d))
   }
 
   ## determine which entries to keep: membership within 'neighbor.range'
@@ -46,6 +47,6 @@ sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
   result <- list(Omega = Omega, Sigma = Sigma,
                  sparsity = sum(Omega == 0) / length(Omega),
                  membership = membership)
-  class(result) <- "grasps"
+  class(result) <- "sparsify_block_banded"
   return(result)
 }
