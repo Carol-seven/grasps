@@ -163,6 +163,7 @@ performance <- function(hatOmega, Omega) {
 }
 
 
+#' @export
 #' @noRd
 
 print.performance <- function(x, ...) {

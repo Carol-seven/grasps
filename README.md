@@ -63,34 +63,50 @@ You can install the development version of **grasps** from
 
 ``` r
 library(grasps)
-#> 
-#> Attaching package: 'grasps'
-#> The following object is masked from 'package:stats':
-#> 
-#>     deriv
 
 ## reproducibility for everything
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 100, K = 5,
-                    within.prob = 0.5, between.prob = 0.05,
+sim <- gen_prec_sbm(d = 30, K = 3,
+                    within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
-                    weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
+                    weight.paras = list(c(shape = 100, rate = 10),
+                                        c(min = 0, max = 5)),
                     cond.target = 100)
 
 ## synthetic data
 library(MASS)
-X <- MASS::mvrnorm(n = 50, mu = rep(0, 100), Sigma = sim$Sigma)
+X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
 ## solution
-res <- grasps(X = X, membership = sim$membership, penalty = "lasso", crit = "BIC")
+res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
 
 ## visualization
 plot(res)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
+``` r
+
+## performance
+performance(hatOmega = res$hatOmega, Omega = sim$Omega)
+#>      measure    value
+#> 1   sparsity   0.8414
+#> 2  Frobenius  86.8888
+#> 3         KL  10.1162
+#> 4  quadratic 139.5146
+#> 5   spectral  39.1448
+#> 6         TP  24.0000
+#> 7         TN 342.0000
+#> 8         FP  45.0000
+#> 9         FN  24.0000
+#> 10       TPR   0.5000
+#> 11       FPR   0.1163
+#> 12        F1   0.4103
+#> 13       MCC   0.3291
+```
 
 ## Reference
 

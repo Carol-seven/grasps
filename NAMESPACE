@@ -2,6 +2,7 @@
 
 S3method(plot,blkmat)
 S3method(plot,penderiv)
+S3method(print,performance)
 export(compute_derivative)
 export(compute_penalty)
 export(gen_prec_sbm)
