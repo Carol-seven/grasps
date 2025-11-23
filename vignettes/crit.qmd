@@ -95,8 +95,7 @@ $$
 ::: {#fig-cv}
 ![](../man/figures/cv-diagram.png){width=100%}
 
-$K$-fold cross-validation procedure for tuning ($\lambda$, $\alpha$)
-using negative log-likelihood loss.
+$K$-fold cross-validation procedure for tuning ($\lambda$, $\alpha$).
 :::
 
 
