@@ -21,9 +21,6 @@
 #' correspond to within-group blocks, and the remaining \eqn{K(K-1)/2}
 #' correspond to between-group blocks.
 #'
-#' @example
-#' inst/example/ex-expand_spec.R
-#'
 #' @noRd
 
 expand_spec <- function(spec, K) {

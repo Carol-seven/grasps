@@ -13,21 +13,21 @@
 #' @param K An integer (default = 3) specifying the number of groups.
 #' Ignored if \code{block.sizes} is provided; then \code{K <- length(block.sizes)}.
 #'
-#' @param prob.mat A \eqn{K}-by-\eqn{K} symmetric matrix (default = \code{NULL})
-#' specifying the Bernoulli rates. Element (i,j) gives the probability of
-#' creating an edge between vertices from groups i and j. If \code{NULL},
-#' a matrix with \code{within.prob} on the diagonal and \code{between.prob}
-#' off-diagonal is used.
+#' @param prob.mat A \eqn{K \times K} symmetric matrix (default = \code{NULL})
+#' specifying the Bernoulli rates. Element \eqn{(i, j)} gives the probability of
+#' creating an edge between vertices from groups \eqn{i} and \eqn{j}.
+#' If \code{NULL}, a matrix with \code{within.prob} on the diagonal and
+#' \code{between.prob} on the off-diagonal is used.
 #'
-#' @param within.prob A scalar in [0,1] (default = 0.25) specifying
+#' @param within.prob A numeric value in [0, 1] (default = 0.25) specifying
 #' the probability of creating an edge between vertices within the same group.
 #' This argument is used only when \code{prob.mat = NULL}.
 #'
-#' @param between.prob A scalar in [0,1] (default = 0.05) specifying
+#' @param between.prob A numeric value in [0, 1] (default = 0.05) specifying
 #' the probability of creating an edge between vertices from different groups.
 #' This argument is used only when \code{prob.mat = NULL}.
 #'
-#' @param weight.mat A \eqn{d}-by-\eqn{d} symmetric matrix (default = \code{NULL})
+#' @param weight.mat A \eqn{d \times d} symmetric matrix (default = \code{NULL})
 #' specifying the edge weights. If \code{NULL}, weights are generated block-wise
 #' according to \code{weight.dists} and \code{weight.paras}.
 #'
@@ -39,15 +39,18 @@
 #' \item length = 2: First for within-group blocks, second for between-group
 #' blocks.
 #' \item length = \eqn{K + K(K-1)/2}: Full specification for each block.
-#' The first \eqn{K} elements correspond to within-group blocks with indices 1,
-#' \dots, K, and the remaining \eqn{K(K-1)/2} elements correspond to
-#' between-group blocks ordered as (1,2), (1,3), \dots, (1,K), (2,3), \dots,
-#' (K-1,K).
+#' The first \eqn{K} elements correspond to within-group blocks with indices
+#' \eqn{1, \dots, K}, and the remaining \eqn{K(K-1)/2} elements correspond to
+#' between-group blocks ordered as \eqn{(1,2)}, \eqn{(1,3)}, \eqn{(1,4)}, \dots,
+#' \eqn{(1,K)}, \eqn{(2,3)}, \dots, \eqn{(K-1,K)}.
 #' }
 #' Each element of \code{weight.dists} can be:
 #' \enumerate{
-#' \item A string specifying the distribution family. Accepted distributions
-#' (base R samplers in parentheses) include: \itemize{
+#' \item A user-supplied sampling function. The function must accept an argument
+#' \code{n} specifying the number of samples.
+#' \item A character string specifying the distribution family.
+#' Accepted distributions (base R samplers in parentheses) include:
+#' \itemize{
 #' \item "beta": Beta distribution (\code{\link[stats]{rbeta}})
 #' \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
 #' \item "chisq": Chi-squared distribution (\code{\link[stats]{rchisq}}).
@@ -60,21 +63,26 @@
 #' \item "unif": Uniform distribution (\code{\link[stats]{runif}}).
 #' \item "weibull": Weibull distribution (\code{\link[stats]{rweibull}}).
 #' }
-#' \item A user-supplied function used for sampling. The function must accept
-#' an argument \code{n} specifying the number of samples.
 #' }
 #'
-#' @param weight.paras A list (default =
-#' \code{list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))}) specifying
-#' the parameters associated with \code{weight.dists}. It must follow the same
-#' length rules as \code{weight.dists}. Each element should be a named vector
-#' or list suitable for the corresponding sampler.
+#' @param weight.paras A list
+#' (default = \code{list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))})
+#' specifying the parameters associated with \code{weight.dists}. It must follow
+#' the same length rules as \code{weight.dists}. Each element should be a named
+#' vector or list suitable for the corresponding sampler.
 #'
-#' @param cond.target A scalar (default = 100) specifying the target condition
-#' number for the precision matrix. A diagonal shift is applied so that
-#' the smallest eigenvalue satisfies
-#' \eqn{\lambda_{\min} \geq \lambda_{\max}/\code{cond.target}},
-#' ensuring both positive definiteness and numerical stability.
+#' @param cond.target A numeric value > 1 (default = 100) specifying the target
+#' condition number for the precision matrix. When necessary, a diagonal shift
+#' is applied to ensure positive definiteness and numerical stability.
+#'
+#' @return
+#' An object with S3 class "gen_prec_sbm" containing the following components:
+#' \describe{
+#' \item{Omega}{The precision matrix with SBM block structure.}
+#' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
+#' \item{sparsity}{Proportion of zero entries in \code{Omega}.}
+#' \item{membership}{An integer vector specifying the group membership.}
+#' }
 #'
 #' @details
 #' \strong{Edge sampling.}
@@ -91,15 +99,15 @@
 #' \item length = 1: Same specification for all blocks.
 #' \item length = 2: first for within-group blocks, second for between-group
 #' blocks.
-#' \item length = \eqn{K + K(K - 1)/2}: Full specification for each block.
+#' \item length = \eqn{K + K(K-1)/2}: Full specification for each block.
 #' }
 #'
 #' \strong{Block indexing.}
 #' The order for blocks is:
 #' \itemize{
-#' \item Within-group blocks: Indices 1, \dots, K.
-#' \item Between-group blocks: \eqn{K(K-1)/2} blocks in order (1,2), (1,3),
-#' \dots, (1,K), (2,3), \dots, (K-1,K).
+#' \item Within-group blocks: Indices \eqn{1, \dots, K}.
+#' \item Between-group blocks: \eqn{K(K-1)/2} blocks in order \eqn{(1,2)},
+#' \eqn{(1,3)}, \eqn{(1,4)}, \dots, \eqn{(1,K)}, \eqn{(2,3)}, \dots, \eqn{(K-1,K)}.
 #' }
 #'
 #' \strong{Positive definiteness.}
@@ -107,28 +115,26 @@
 #' \eqn{\Omega_0}. Since arbitrary block-structured weights may not be positive
 #' definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
 #' Specifically, let \eqn{\lambda_{\max}} and \eqn{\lambda_{\min}} denote
-#' the largest and smallest eigenvalues of the initial matrix. A scalar
-#' \eqn{\tau} is added to the diagonal so that
-#' \deqn{\lambda_{\min}(\Omega_0 + \tau I) \;\geq\;
-#' \lambda_{\max} / \code{cond.target},
+#' the largest and smallest eigenvalues of a matrix. A non-negative numeric
+#' value \eqn{\tau} is added to the diagonal so that
+#' \deqn{
+#' \left\{
+#' \begin{array}{l}
+#' \dfrac{\lambda_{\max}(\Omega_0 + \tau I)}{\lambda_{\min}(\Omega_0 + \tau I)}
+#' \leq \texttt{cond.target} \\[1em]
+#' \lambda_{\min}(\Omega_0 + \tau I) > 0 \\[.5em]
+#' \tau \geq 0
+#' \end{array}
+#' \right.
 #' }
-#' which ensures both positive definiteness and that the condition number
-#' does not exceed \code{cond.target}. This guarantees numerical stability even
-#' in high-dimensional settings.
-#'
-#' @importFrom igraph as_adjacency_matrix sample_sbm
-#'
-#' @return
-#' An object with S3 class "grasps" containing the following components:
-#' \describe{
-#' \item{Omega}{The precision matrix with SBM block structure.}
-#' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
-#' \item{sparsity}{Proportion of zero entries in \code{Omega}.}
-#' \item{membership}{An integer vector specifying the group membership.}
-#' }
+#' which ensures both positive definiteness and guarantees that the condition
+#' number does not exceed \code{cond.target}, providing numerical stability
+#' even in high-dimensional settings.
 #'
 #' @example
 #' inst/example/ex-gen_prec_sbm.R
+#'
+#' @importFrom igraph as_adjacency_matrix sample_sbm
 #'
 #' @export
 
@@ -212,15 +218,15 @@ gen_prec_sbm <- function(d,
   Omega <- (Omega + t(Omega)) / 2 ## symmetric; diag still 0
 
   ## ensure positive definiteness and control the condition number
-  ## add a scalar tau to the diagonal so that lambda_min(Omega + tau*I) >= target_min,
-  ## where target_min = lambda_max / cond.target
-  ## this guarantees the condition number satisfies kappa(Omega) <= cond.target
-  ## (shift all eigenvalues by the same tau)
+  ## add a scalar tau to the diagonal so that
+  ## lambda_max(Omega + tau*I) / lambda_min(Omega + tau*I) <= cond.target
+  ## (diagonal loading shifts all eigenvalues by the same tau)
   eigvals <- eigen(Omega, only.values = TRUE)$values
   eigval_max <- max(eigvals)
   eigval_min <- min(eigvals)
-  target_min <- eigval_max / cond.target
-  tau <- ifelse(eigval_min < target_min, target_min - eigval_min, 0)
+  tau <- max(0, ## no adjustment
+             -eigval_min, ## ensure positive definiteness
+             (eigval_max - cond.target * eigval_min) / (cond.target - 1)) ## enforce kappa <= cond.target
   diag(Omega) <- diag(Omega) + tau
 
   ## covariance matrix

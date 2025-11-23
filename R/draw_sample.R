@@ -6,8 +6,11 @@
 #'
 #' @param sampler A specification of the sampling distribution, either:
 #' \enumerate{
-#' \item A string specifying the distribution family. Supported distribution
-#' families (corresponding base R generators in parentheses) include:
+#' \item A user-supplied sampling function. The function must accept an argument
+#' \code{n} specifying the number of samples.
+#' \item A character string specifying the distribution family.
+#' Supported distribution families (corresponding base R generators
+#' in parentheses) include:
 #' \itemize{
 #' \item "beta": Beta distribution (\code{\link[stats]{rbeta}})
 #' \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
@@ -21,8 +24,6 @@
 #' \item "unif": Uniform distribution (\code{\link[stats]{runif}}).
 #' \item "weibull": Weibull distribution (\code{\link[stats]{rweibull}}).
 #' }
-#' \item A user-supplied function used for sampling. The function must accept
-#' an argument \code{n} specifying the number of samples.
 #' }
 #'
 #' @param para A list (default = \code{list()}) specifying the required
@@ -32,9 +33,6 @@
 #'
 #' @return
 #' A numeric vector of length \eqn{n} containing simulated data.
-#'
-#' @example
-#' inst/example/ex-draw_sample.R
 #'
 #' @noRd
 
