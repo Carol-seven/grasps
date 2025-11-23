@@ -1,28 +1,33 @@
-#' Plot for Object of Class "deriv"
+#' Plot Function for S3 Class "penderiv"
 #'
 #' @description
-#' Generate a visualization of penalty derivatives produced by \code{deriv()}.
+#' Generate a visualization of penalty functions produced by
+#' \code{\link[grasps]{compute_penalty}}, or penalty derivatives produced by
+#' \code{\link[grasps]{compute_derivative}}.
 #' The plot automatically summarizes multiple configurations of penalty type,
 #' \eqn{\lambda}, and \eqn{\gamma}. Optional zooming is supported through
 #' \code{\link[ggforce]{facet_zoom}}.
 #'
-#' @param x An object of S3 class "deriv".
+#' @param x An object inheriting from S3 class \code{"penderiv"}, typically
+#' returned by \code{\link[grasps]{compute_penalty}}, or
+#' \code{\link[grasps]{compute_derivative}}.
 #'
 #' @param ... Optional arguments passed to \code{\link[ggforce]{facet_zoom}}
 #' to zoom in on a subset of the data, while keeping the view of the full
 #' dataset as a separate panel.
 #'
-#' @import ggplot2
-#' @import ggforce
-#'
 #' @return
 #' An object of class \code{ggplot}.
 #'
-#' @export
+#' @example
+#' inst/example/ex-plot.penderiv.R
 #'
-#' @noRd
+#' @import ggplot2
+#' @import ggforce
+#'
+#' @export
 
-plot.deriv <- function(x, ...) {
+plot.penderiv <- function(x, ...) {
 
   ## identify which configuration columns vary across rows
   target <- c("penalty", "lambda", "gamma")
@@ -51,7 +56,13 @@ plot.deriv <- function(x, ...) {
       geom_line() +
       fz +
       labs(x = expression(italic(omega)),
-           y = expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")) +
+           y = if (inherits(x, "penalty")) {
+             expression("Penalty Function" ~ italic(lambda) * italic(p) ~ "(" * italic(omega) * ")")
+           } else if (inherits(x, "derivative")) {
+             expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")
+           } else {
+             NULL
+           }) +
       theme_bw() +
       theme(legend.position = "bottom")
 
@@ -86,7 +97,13 @@ plot.deriv <- function(x, ...) {
       geom_line() +
       fz +
       labs(x = expression(italic(omega)),
-           y = expression("Derivative Function Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")"),
+           y = if (inherits(x, "penalty")) {
+             expression("Penalty Function" ~ italic(lambda) * italic(p) ~ "(" * italic(omega) * ")")
+           } else if (inherits(x, "derivative")) {
+             expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")
+           } else {
+             NULL
+           },
            color = legend_name) +
       theme_bw() +
       theme(legend.position = "bottom")

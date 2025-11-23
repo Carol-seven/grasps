@@ -18,8 +18,9 @@ the fill aesthetics.}
 \item{...}{Additional arguments passed to \code{\link[ggplot2]{ggplot}}.}
 }
 \value{
-A \code{ggplot2} heatmap showing the matrix entries. Dashed lines indicate
-group boundaries. The plot title also reports matrix dimension and sparsity.
+A heatmap of class \code{ggplot} showing the matrix entries.
+Dashed lines indicate group boundaries.
+The plot title also reports matrix dimension and sparsity.
 }
 \description{
 Visualize a precision matrix as a heatmap with dashed boundary lines

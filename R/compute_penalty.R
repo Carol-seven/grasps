@@ -1,29 +1,42 @@
 #' Penalty Function Computation
 #'
 #' @description
-#' Compute the penalty function.
+#' Compute one or more penalty values for a given \code{omega}, allowing
+#' vectorized specifications of \code{penalty}, \code{lambda}, and \code{gamma}.
 #'
-#' @param omega A numeric scalar or vector at which the penalty is evaluated.
+#' @param omega A numeric value or vector at which the penalty is evaluated.
 #'
-#' @param penalty A character vector specifying one or more penalty types.
-#' Available options include:
+#' @param penalty A character string or vector specifying one or more penalty
+#' types. Available options include:
 #' \enumerate{
 #' \item "lasso": Least absolute shrinkage and selection operator
 #' \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
-#' \item "atan": Arctangent type penalty \insertCite{wang2016variable}{grasps}.
-#' \item "exp": Exponential type penalty \insertCite{wang2018variable}{grasps}.
-#' \item "lq": Lq penalty \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
-#' \item "lsp": Log-sum penalty \insertCite{candes2008enhancing}{grasps}.
-#' \item "mcp": Minimax concave penalty \insertCite{zhang2010nearly}{grasps}.
-#' \item "scad": Smoothly clipped absolute deviation \insertCite{fan2001variable,fan2009network}{grasps}.
+#' \item "atan": Arctangent type penalty
+#' \insertCite{wang2016variable}{grasps}.
+#' \item "exp": Exponential type penalty
+#' \insertCite{wang2018variable}{grasps}.
+#' \item "lq": Lq penalty
+#' \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
+#' \item "lsp": Log-sum penalty
+#' \insertCite{candes2008enhancing}{grasps}.
+#' \item "mcp": Minimax concave penalty
+#' \insertCite{zhang2010nearly}{grasps}.
+#' \item "scad": Smoothly clipped absolute deviation
+#' \insertCite{fan2001variable,fan2009network}{grasps}.
 #' }
+#' If \code{penalty} has length 1, it is recycled to the common length
+#' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
 #'
-#' @param lambda A non-negative scalar or a numeric vector of the same length as
-#' \code{penalty} specifying the regularization parameter.
+#' @param lambda A non-negative numeric value or vector specifying
+#' the regularization parameter.
+#' If \code{lambda} has length 1, it is recycled to the common length
+#' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
 #'
-#' @param gamma A scalar or vector of the same length as \code{penalty}
-#' specifying the additional parameter for the penalty function.
-#' The defaults are:
+#' @param gamma A numeric value or vector specifying the additional parameter
+#' for the penalty function.
+#' If \code{lambda} has length 1, it is recycled to the common length
+#' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
+#' The penalty-specific defaults are:
 #' \enumerate{
 #' \item "atan": 0.005
 #' \item "exp": 0.01
@@ -32,9 +45,10 @@
 #' \item "mcp": 3
 #' \item "scad": 3.7
 #' }
+#' For \code{"lasso"}, \code{gamma} is ignored.
 #'
 #' @return
-#' A data  with S3 class "pen" ocontaining:
+#' A data frame with S3 class \code{"penalty"} containing:
 #' \describe{
 #' \item{omega}{The input \code{omega} values.}
 #' \item{penalty}{The penalty type for each row.}
@@ -42,13 +56,20 @@
 #' \item{gamma}{The additional penalty parameter used.}
 #' \item{value}{The computed penalty value.}
 #' }
+#' The number of rows equals
+#' \code{max(length(penalty), length(lambda), length(gamma))}.
+#' Any of \code{penalty}, \code{lambda}, or \code{gamma} with length 1
+#' is recycled to this common length.
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @example
+#' inst/example/ex-compute_penalty.R
+#'
 #' @export
 
-pen <- function(omega, penalty, lambda, gamma = NA) {
+compute_penalty <- function(omega, penalty, lambda, gamma = NA) {
 
   para_len <- lengths(list(penalty, lambda, gamma))
   n <- max(para_len)
@@ -65,7 +86,7 @@ pen <- function(omega, penalty, lambda, gamma = NA) {
   res <- do.call(rbind, lapply(seq_len(n), function(k) {
     pen_internal(omega = omega, penalty = penalty[k], lambda = lambda[k], gamma = gamma[k])
   }))
-  class(res) <- c("pen", class(res))
+  class(res) <- c("penalty", "penderiv", class(res))
 
   return(res)
 }

@@ -18,8 +18,9 @@
 #' @param ... Additional arguments passed to \code{\link[ggplot2]{ggplot}}.
 #'
 #' @return
-#' A \code{ggplot2} heatmap showing the matrix entries. Dashed lines indicate
-#' group boundaries. The plot title also reports matrix dimension and sparsity.
+#' A heatmap of class \code{ggplot} showing the matrix entries.
+#' Dashed lines indicate group boundaries.
+#' The plot title also reports matrix dimension and sparsity.
 #'
 #' @example
 #' inst/example/ex-plot.blkmat.R
