@@ -15,10 +15,6 @@ template:
 authors:
   Shiying Xiao:
     href: http://shiying-xiao.com
-  Jun Yan:
-    href: https://statcomp.org
-  Panpan Zhang:
-    href: https://panpan-zhang.com
 
 development:
   mode: auto
