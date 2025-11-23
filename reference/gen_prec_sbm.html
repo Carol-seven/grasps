@@ -65,7 +65,7 @@ a stochastic block model (SBM).</p>
 <span>  between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  weight.mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span>
-<span>  weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">10000</span>, rate <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">100</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  cond.target <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -146,7 +146,7 @@ Accepted distributions (base R samplers in parentheses) include:</p><ul><li><p>"
 
 <dt id="arg-weight-paras">weight.paras<a class="anchor" aria-label="anchor" href="#arg-weight-paras"></a></dt>
 <dd><p>A list
-(default = <code>list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))</code>)
+(default = <code>list(c(shape = 100, rate = 10), c(min = 0, max = 5))</code>)
 specifying the parameters associated with <code>weight.dists</code>. It must follow
 the same length rules as <code>weight.dists</code>. Each element should be a named
 vector or list suitable for the corresponding sampler.</p></dd>
@@ -225,10 +225,10 @@ even in high-dimensional settings.</p>
 <span class="r-in"><span><span class="co">## block-structured precision matrix based on SBM</span></span></span>
 <span class="r-in"><span><span class="co">#### case 1: base R distribution</span></span></span>
 <span class="r-in"><span><span class="va">sim1</span> <span class="op">&lt;-</span> <span class="fu">gen_prec_sbm</span><span class="op">(</span>d <span class="op">=</span> <span class="fl">100</span>, K <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>                     within.prob <span class="op">=</span> <span class="fl">0.5</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>                     within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>                     weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                     weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, scale <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                         <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">100</span>, scale <span class="op">=</span> <span class="fl">1e2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                         <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                     cond.target <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">#### visualization</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim1</span><span class="op">)</span></span></span>
@@ -236,10 +236,10 @@ even in high-dimensional settings.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#### case 2: user-defined sampler</span></span></span>
 <span class="r-in"><span><span class="va">my_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="va">n</span>, shape <span class="op">=</span> <span class="fl">10</span>, scale <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="va">n</span>, shape <span class="op">=</span> <span class="fl">1e4</span>, scale <span class="op">=</span> <span class="fl">1e2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="va">sim2</span> <span class="op">&lt;-</span> <span class="fu">gen_prec_sbm</span><span class="op">(</span>d <span class="op">=</span> <span class="fl">100</span>, K <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>                     within.prob <span class="op">=</span> <span class="fl">0.5</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>                     within.prob <span class="op">=</span> <span class="fl">0.2</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>                     weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">my_gamma</span>, <span class="st">"unif"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                     weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                                         <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>

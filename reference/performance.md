@@ -22,7 +22,8 @@ performance(hatOmega, Omega)
 
 ## Value
 
-A data frame with one row per performance metric and two columns:
+A data frame of S3 class `"performance"`, with one row per performance
+metric and two columns:
 
 - measure:
 
@@ -105,3 +106,51 @@ The following table summarizes the confusion matrix and related rates:
 | **Real Negative** (N) | False positive (FP)                                                   | True negative (TN)                                         | False positive rate (FPR) = FP / N = 1 - TNR                     | True negative rate (TNR), specificity = TN / N = 1 - FPR |
 |                       | Positive predictive value (PPV), precision = TP / (TP + FP) = 1 - FDR | False omission rate (FOR) = FN / (TN + FN) = 1 - NPV       |                                                                  |                                                          |
 |                       | False discovery rate (FDR) = FP / (TP + FP) = 1 - PPV                 | Negative predictive value (NPV) = TN / (TN + FN) = 1 - FOR |                                                                  |                                                          |
+
+## Examples
+
+``` r
+library(grasps)
+
+## reproducibility for everything
+set.seed(1234)
+
+## block-structured precision matrix based on SBM
+sim <- gen_prec_sbm(d = 30, K = 3,
+                    within.prob = 0.25, between.prob = 0.05,
+                    weight.dists = list("gamma", "unif"),
+                    weight.paras = list(c(shape = 10, scale = 5),
+                                        c(min = 0, max = 5)),
+                    cond.target = 100)
+## visualization
+plot(sim)
+
+
+## n-by-d data matrix
+library(MASS)
+X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
+
+## adapt, BIC
+res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
+
+## visualization
+plot(res)
+
+
+## performance
+performance(hatOmega = res$hatOmega, Omega = sim$Omega)
+#>      measure       value
+#> 1   sparsity   0.8367816
+#> 2  Frobenius 460.8652395
+#> 3         KL   8.4102049
+#> 4  quadratic 132.4546925
+#> 5   spectral 171.4447382
+#> 6         TP  25.0000000
+#> 7         TN 341.0000000
+#> 8         FP  46.0000000
+#> 9         FN  23.0000000
+#> 10       TPR   0.5208333
+#> 11       FPR   0.1188630
+#> 12        F1   0.4201681
+#> 13       MCC   0.3407926
+```

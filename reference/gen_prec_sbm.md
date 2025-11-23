@@ -15,7 +15,7 @@ gen_prec_sbm(
   between.prob = 0.05,
   weight.mat = NULL,
   weight.dists = list("gamma", "unif"),
-  weight.paras = list(c(shape = 10000, rate = 100), c(min = 0, max = 5)),
+  weight.paras = list(c(shape = 100, rate = 10), c(min = 0, max = 5)),
   cond.target = 100
 )
 ```
@@ -124,8 +124,8 @@ gen_prec_sbm(
 - weight.paras:
 
   A list (default =
-  `list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))`) specifying
-  the parameters associated with `weight.dists`. It must follow the same
+  `list(c(shape = 100, rate = 10), c(min = 0, max = 5))`) specifying the
+  parameters associated with `weight.dists`. It must follow the same
   length rules as `weight.dists`. Each element should be a named vector
   or list suitable for the corresponding sampler.
 
@@ -207,10 +207,10 @@ set.seed(1234)
 ## block-structured precision matrix based on SBM
 #### case 1: base R distribution
 sim1 <- gen_prec_sbm(d = 100, K = 5,
-                     within.prob = 0.5, between.prob = 0.05,
+                     within.prob = 0.25, between.prob = 0.1,
                      weight.dists = list("gamma", "unif"),
-                     weight.paras = list(c(shape = 20, scale = 5),
-                                         c(min = 0, max = 1)),
+                     weight.paras = list(c(shape = 100, scale = 1e2),
+                                         c(min = 0, max = 10)),
                      cond.target = 100)
 #### visualization
 plot(sim1)
@@ -218,10 +218,10 @@ plot(sim1)
 
 #### case 2: user-defined sampler
 my_gamma <- function(n) {
-  rgamma(n, shape = 10, scale = 5)
+  rgamma(n, shape = 1e4, scale = 1e2)
 }
 sim2 <- gen_prec_sbm(d = 100, K = 5,
-                     within.prob = 0.5, between.prob = 0.05,
+                     within.prob = 0.2, between.prob = 0.05,
                      weight.dists = list(my_gamma, "unif"),
                      weight.paras = list(NULL,
                                          c(min = 0, max = 1)),

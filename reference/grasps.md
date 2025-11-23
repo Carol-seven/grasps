@@ -390,10 +390,11 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 60, K = 3,
-                    within.prob = 0.5, between.prob = 0.05,
+sim <- gen_prec_sbm(d = 30, K = 3,
+                    within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
-                    weight.paras = list(c(shape = 20, scale = 5), c(min = 0, max = 1)),
+                    weight.paras = list(c(shape = 100, rate = 10),
+                                        c(min = 0, max = 5)),
                     cond.target = 100)
 ## visualization
 plot(sim)
@@ -401,11 +402,29 @@ plot(sim)
 
 ## n-by-d data matrix
 library(MASS)
-X <- mvrnorm(n = 30, mu = rep(0, 60), Sigma = sim$Sigma)
+X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
-## lasso, BIC
-res <- grasps(X = X, membership = sim$membership, penalty = "lasso", crit = "BIC")
+## adapt, BIC
+res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
 
 ## visualization
 plot(res)
+
+
+## performance
+performance(hatOmega = res$hatOmega, Omega = sim$Omega)
+#>      measure       value
+#> 1   sparsity   0.8528736
+#> 2  Frobenius  85.4097993
+#> 3         KL   9.5902691
+#> 4  quadratic 128.7124709
+#> 5   spectral  39.8860562
+#> 6         TP  24.0000000
+#> 7         TN 347.0000000
+#> 8         FP  40.0000000
+#> 9         FN  24.0000000
+#> 10       TPR   0.5000000
+#> 11       FPR   0.1033592
+#> 12        F1   0.4285714
+#> 13       MCC   0.3508299
 ```

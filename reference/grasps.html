@@ -408,10 +408,11 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## block-structured precision matrix based on SBM</span></span></span>
-<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">60</span>, K <span class="op">=</span> <span class="fl">3</span>,</span></span>
-<span class="r-in"><span>                    within.prob <span class="op">=</span> <span class="fl">0.5</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                    within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, scale <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">100</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    cond.target <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## visualization</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
@@ -419,14 +420,31 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## n-by-d data matrix</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">MASS</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">30</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## lasso, BIC</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">grasps</span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"lasso"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## adapt, BIC</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">grasps</span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## visualization</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="grasps-2.png" alt="" width="2188" height="1352"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## performance</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      measure       value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8528736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  85.4097993</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.5902691</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 128.7124709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  39.8860562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  24.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 347.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  40.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  24.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1033592</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4285714</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3508299</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
