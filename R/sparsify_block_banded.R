@@ -47,6 +47,6 @@ sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
   result <- list(Omega = Omega, Sigma = Sigma,
                  sparsity = sum(Omega == 0) / length(Omega),
                  membership = membership)
-  class(result) <- "sparsify_block_banded"
+  class(result) <- c("sparsify_block_banded", "blkmat")
   return(result)
 }

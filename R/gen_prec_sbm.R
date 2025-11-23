@@ -76,7 +76,8 @@
 #' is applied to ensure positive definiteness and numerical stability.
 #'
 #' @return
-#' An object with S3 class "gen_prec_sbm" containing the following components:
+#' An object with S3 class \code{"gen_prec_sbm"} containing the following
+#' components:
 #' \describe{
 #' \item{Omega}{The precision matrix with SBM block structure.}
 #' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
@@ -235,6 +236,6 @@ gen_prec_sbm <- function(d,
   result <- list(Omega = Omega, Sigma = Sigma,
                  sparsity = sum(Omega == 0) / length(Omega),
                  membership = membership)
-  class(result) <- "grasps"
+  class(result) <- c("gen_prec_sbm", "blkmat")
   return(result)
 }

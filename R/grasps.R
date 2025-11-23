@@ -138,7 +138,7 @@
 #' the tuning parameter to calculate for \code{crit = "EBIC"}.
 #'
 #' @return
-#' An object with S3 class "grasps" containing the following components:
+#' An object with S3 class \code{"grasps"} containing the following components:
 #' \describe{
 #' \item{hatOmega}{The estimated precision matrix.}
 #' \item{lambda}{The optimal regularization parameter.}
@@ -364,7 +364,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   }
 
   result$membership <- membership
-  class(result) <- "grasps"
+  class(result) <- c("grasps", "blkmat")
   return(result)
 
 }

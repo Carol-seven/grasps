@@ -1,42 +1,51 @@
-#' Plot Function for "grasps" (Visualize a Matrix with Group Boundaries)
+#' Plot Function for Block-Structured Precision Matrices
+#' (Visualize a Matrix with Group Boundaries)
 #'
 #' @description
 #' Visualize a precision matrix as a heatmap with dashed boundary lines
-#' separating group blocks.
+#' separating group blocks. This function is shared by objects returned from
+#' \code{\link[grasps]{grasps}}, \code{\link[grasps]{gen_prec_sbm}}, and
+#' \code{\link[grasps]{sparsify_block_banded}}, all of which inherit from
+#' the S3 class \code{"blkmat"}.
 #'
-#' @param x An object with S3 class "grasps".
+#' @param x An object inheriting from S3 class \code{"blkmat"}, typically
+#' returned by \code{\link[grasps]{grasps}}, \code{\link[grasps]{gen_prec_sbm}}
+#' or \code{\link[grasps]{sparsify_block_banded}}.
 #'
 #' @param colors A vector of colors specifying an n-color gradient scale for
 #' the fill aesthetics.
 #'
-#' @import ggplot2
-#' @importFrom grDevices colorRampPalette
-#' @importFrom scales rescale
+#' @param ... Additional arguments passed to \code{\link[ggplot2]{ggplot}}.
 #'
 #' @return
 #' A \code{ggplot2} heatmap showing the matrix entries. Dashed lines indicate
 #' group boundaries. The plot title also reports matrix dimension and sparsity.
 #'
 #' @example
-#' inst/example/ex-plot.grasps.R
+#' inst/example/ex-plot.blkmat.R
+#'
+#' @import ggplot2
+#' @importFrom grDevices colorRampPalette
+#' @importFrom scales rescale
 #'
 #' @export
-#' @noRd
 
-plot.grasps <- function(x, colors = NULL, ...) {
+plot.blkmat <- function(x, colors = NULL, ...) {
 
-  if(is.null(x$hatOmega)) {
-    mat <- x$Omega
-  } else {
-    mat <- x$hatOmega
-  }
-
-  d <- ncol(mat)
   if (is.null(colors)) {
     colors <- colorRampPalette(
       c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F",
         "yellow", "#FF7F00", "red", "#7F0000"))(256)
   }
+
+  ## choose which matrix to plot
+  if (inherits(x, "grasps")) {
+    mat <- x$hatOmega
+  } else if (inherits(x, c("gen_prec_sbm", "sparsify_block_banded"))) {
+    mat <- x$Omega
+  }
+
+  d <- ncol(mat)
 
   ## compute group sizes and boundary positions for dashed lines
   grp_sizes <- table(x$membership)
@@ -67,6 +76,10 @@ plot.grasps <- function(x, colors = NULL, ...) {
   ## color scaling range
   vmin <- min(plotData$value, na.rm = TRUE)
   vmax <- max(plotData$value, na.rm = TRUE)
+
+  ## sparsity
+  mat_edge <- mat[upper.tri(mat)]
+  sparsity <- sum(mat_edge == 0) /length(mat_edge)
 
   ggplot(plotData, aes(x = Col, y = Row, fill = value)) +
     coord_fixed() +
