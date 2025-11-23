@@ -39,26 +39,27 @@ gen_prec_sbm(
 
 - prob.mat:
 
-  A \\K\\-by-\\K\\ symmetric matrix (default = `NULL`) specifying the
-  Bernoulli rates. Element (i,j) gives the probability of creating an
-  edge between vertices from groups i and j. If `NULL`, a matrix with
-  `within.prob` on the diagonal and `between.prob` off-diagonal is used.
+  A \\K \times K\\ symmetric matrix (default = `NULL`) specifying the
+  Bernoulli rates. Element \\(i, j)\\ gives the probability of creating
+  an edge between vertices from groups \\i\\ and \\j\\. If `NULL`, a
+  matrix with `within.prob` on the diagonal and `between.prob` on the
+  off-diagonal is used.
 
 - within.prob:
 
-  A scalar in \[0,1\] (default = 0.25) specifying the probability of
-  creating an edge between vertices within the same group. This argument
-  is used only when `prob.mat = NULL`.
+  A numeric value in \[0, 1\] (default = 0.25) specifying the
+  probability of creating an edge between vertices within the same
+  group. This argument is used only when `prob.mat = NULL`.
 
 - between.prob:
 
-  A scalar in \[0,1\] (default = 0.05) specifying the probability of
-  creating an edge between vertices from different groups. This argument
-  is used only when `prob.mat = NULL`.
+  A numeric value in \[0, 1\] (default = 0.05) specifying the
+  probability of creating an edge between vertices from different
+  groups. This argument is used only when `prob.mat = NULL`.
 
 - weight.mat:
 
-  A \\d\\-by-\\d\\ symmetric matrix (default = `NULL`) specifying the
+  A \\d \times d\\ symmetric matrix (default = `NULL`) specifying the
   edge weights. If `NULL`, weights are generated block-wise according to
   `weight.dists` and `weight.paras`.
 
@@ -75,13 +76,16 @@ gen_prec_sbm(
 
   - length = \\K + K(K-1)/2\\: Full specification for each block. The
     first \\K\\ elements correspond to within-group blocks with indices
-    1, ..., K, and the remaining \\K(K-1)/2\\ elements correspond to
-    between-group blocks ordered as (1,2), (1,3), ..., (1,K), (2,3),
-    ..., (K-1,K).
+    \\1, \dots, K\\, and the remaining \\K(K-1)/2\\ elements correspond
+    to between-group blocks ordered as \\(1,2)\\, \\(1,3)\\, \\(1,4)\\,
+    ..., \\(1,K)\\, \\(2,3)\\, ..., \\(K-1,K)\\.
 
   Each element of `weight.dists` can be:
 
-  1.  A string specifying the distribution family. Accepted
+  1.  A user-supplied sampling function. The function must accept an
+      argument `n` specifying the number of samples.
+
+  2.  A character string specifying the distribution family. Accepted
       distributions (base R samplers in parentheses) include:
 
       - "beta": Beta distribution
@@ -117,9 +121,6 @@ gen_prec_sbm(
       - "weibull": Weibull distribution
         ([`rweibull`](https://rdrr.io/r/stats/Weibull.html)).
 
-  2.  A user-supplied function used for sampling. The function must
-      accept an argument `n` specifying the number of samples.
-
 - weight.paras:
 
   A list (default =
@@ -130,15 +131,14 @@ gen_prec_sbm(
 
 - cond.target:
 
-  A scalar (default = 100) specifying the target condition number for
-  the precision matrix. A diagonal shift is applied so that the smallest
-  eigenvalue satisfies \\\lambda\_{\min} \geq
-  \lambda\_{\max}/\code{cond.target}\\, ensuring both positive
-  definiteness and numerical stability.
+  A numeric value \> 1 (default = 100) specifying the target condition
+  number for the precision matrix. When necessary, a diagonal shift is
+  applied to ensure positive definiteness and numerical stability.
 
 ## Value
 
-An object with S3 class "grasps" containing the following components:
+An object with S3 class "gen_prec_sbm" containing the following
+components:
 
 - Omega:
 
@@ -173,26 +173,28 @@ determines how weight distributions are assigned:
 - length = 2: first for within-group blocks, second for between-group
   blocks.
 
-- length = \\K + K(K - 1)/2\\: Full specification for each block.
+- length = \\K + K(K-1)/2\\: Full specification for each block.
 
 **Block indexing.** The order for blocks is:
 
-- Within-group blocks: Indices 1, ..., K.
+- Within-group blocks: Indices \\1, \dots, K\\.
 
-- Between-group blocks: \\K(K-1)/2\\ blocks in order (1,2), (1,3), ...,
-  (1,K), (2,3), ..., (K-1,K).
+- Between-group blocks: \\K(K-1)/2\\ blocks in order \\(1,2)\\,
+  \\(1,3)\\, \\(1,4)\\, ..., \\(1,K)\\, \\(2,3)\\, ..., \\(K-1,K)\\.
 
 **Positive definiteness.** The weighted adjacency matrix is symmetrized
 and used as the precision matrix \\\Omega_0\\. Since arbitrary
 block-structured weights may not be positive definite, a diagonal
 adjustment is applied to control the eigenvalue spectrum. Specifically,
 let \\\lambda\_{\max}\\ and \\\lambda\_{\min}\\ denote the largest and
-smallest eigenvalues of the initial matrix. A scalar \\\tau\\ is added
-to the diagonal so that \$\$\lambda\_{\min}(\Omega_0 + \tau I) \\\geq\\
-\lambda\_{\max} / \code{cond.target}, \$\$ which ensures both positive
-definiteness and that the condition number does not exceed
-`cond.target`. This guarantees numerical stability even in
-high-dimensional settings.
+smallest eigenvalues of a matrix. A non-negative numeric value \\\tau\\
+is added to the diagonal so that \$\$ \left\\ \begin{array}{l}
+\dfrac{\lambda\_{\max}(\Omega_0 + \tau I)}{\lambda\_{\min}(\Omega_0 +
+\tau I)} \leq \texttt{cond.target} \\\[1em\] \lambda\_{\min}(\Omega_0 +
+\tau I) \> 0 \\\[.5em\] \tau \geq 0 \end{array} \right. \$\$ which
+ensures both positive definiteness and guarantees that the condition
+number does not exceed `cond.target`, providing numerical stability even
+in high-dimensional settings.
 
 ## Examples
 

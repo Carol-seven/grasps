@@ -90,27 +90,27 @@ Ignored if <code>block.sizes</code> is provided; then <code>K &lt;- length(block
 
 
 <dt id="arg-prob-mat">prob.mat<a class="anchor" aria-label="anchor" href="#arg-prob-mat"></a></dt>
-<dd><p>A \(K\)-by-\(K\) symmetric matrix (default = <code>NULL</code>)
-specifying the Bernoulli rates. Element (i,j) gives the probability of
-creating an edge between vertices from groups i and j. If <code>NULL</code>,
-a matrix with <code>within.prob</code> on the diagonal and <code>between.prob</code>
-off-diagonal is used.</p></dd>
+<dd><p>A \(K \times K\) symmetric matrix (default = <code>NULL</code>)
+specifying the Bernoulli rates. Element \((i, j)\) gives the probability of
+creating an edge between vertices from groups \(i\) and \(j\).
+If <code>NULL</code>, a matrix with <code>within.prob</code> on the diagonal and
+<code>between.prob</code> on the off-diagonal is used.</p></dd>
 
 
 <dt id="arg-within-prob">within.prob<a class="anchor" aria-label="anchor" href="#arg-within-prob"></a></dt>
-<dd><p>A scalar in [0,1] (default = 0.25) specifying
+<dd><p>A numeric value in [0, 1] (default = 0.25) specifying
 the probability of creating an edge between vertices within the same group.
 This argument is used only when <code>prob.mat = NULL</code>.</p></dd>
 
 
 <dt id="arg-between-prob">between.prob<a class="anchor" aria-label="anchor" href="#arg-between-prob"></a></dt>
-<dd><p>A scalar in [0,1] (default = 0.05) specifying
+<dd><p>A numeric value in [0, 1] (default = 0.05) specifying
 the probability of creating an edge between vertices from different groups.
 This argument is used only when <code>prob.mat = NULL</code>.</p></dd>
 
 
 <dt id="arg-weight-mat">weight.mat<a class="anchor" aria-label="anchor" href="#arg-weight-mat"></a></dt>
-<dd><p>A \(d\)-by-\(d\) symmetric matrix (default = <code>NULL</code>)
+<dd><p>A \(d \times d\) symmetric matrix (default = <code>NULL</code>)
 specifying the edge weights. If <code>NULL</code>, weights are generated block-wise
 according to <code>weight.dists</code> and <code>weight.paras</code>.</p></dd>
 
@@ -122,12 +122,14 @@ Its length determines how the distributions are assigned:</p><ul><li><p>length =
 <li><p>length = 2: First for within-group blocks, second for between-group
 blocks.</p></li>
 <li><p>length = \(K + K(K-1)/2\): Full specification for each block.
-The first \(K\) elements correspond to within-group blocks with indices 1,
-..., K, and the remaining \(K(K-1)/2\) elements correspond to
-between-group blocks ordered as (1,2), (1,3), ..., (1,K), (2,3), ...,
-(K-1,K).</p></li>
-</ul><p>Each element of <code>weight.dists</code> can be:</p><ol><li><p>A string specifying the distribution family. Accepted distributions
-(base R samplers in parentheses) include:</p><ul><li><p>"beta": Beta distribution (<code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></code>)</p></li>
+The first \(K\) elements correspond to within-group blocks with indices
+\(1, \dots, K\), and the remaining \(K(K-1)/2\) elements correspond to
+between-group blocks ordered as \((1,2)\), \((1,3)\), \((1,4)\), ...,
+\((1,K)\), \((2,3)\), ..., \((K-1,K)\).</p></li>
+</ul><p>Each element of <code>weight.dists</code> can be:</p><ol><li><p>A user-supplied sampling function. The function must accept an argument
+<code>n</code> specifying the number of samples.</p></li>
+<li><p>A character string specifying the distribution family.
+Accepted distributions (base R samplers in parentheses) include:</p><ul><li><p>"beta": Beta distribution (<code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></code>)</p></li>
 <li><p>"cauchy": Cauchy distribution (<code><a href="https://rdrr.io/r/stats/Cauchy.html" class="external-link">rcauchy</a></code>).</p></li>
 <li><p>"chisq": Chi-squared distribution (<code><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">rchisq</a></code>).</p></li>
 <li><p>"exp": Exponential distribution (<code><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></code>).</p></li>
@@ -139,30 +141,26 @@ between-group blocks ordered as (1,2), (1,3), ..., (1,K), (2,3), ...,
 <li><p>"unif": Uniform distribution (<code><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></code>).</p></li>
 <li><p>"weibull": Weibull distribution (<code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">rweibull</a></code>).</p></li>
 </ul></li>
-<li><p>A user-supplied function used for sampling. The function must accept
-an argument <code>n</code> specifying the number of samples.</p></li>
 </ol></dd>
 
 
 <dt id="arg-weight-paras">weight.paras<a class="anchor" aria-label="anchor" href="#arg-weight-paras"></a></dt>
-<dd><p>A list (default =
-<code>list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))</code>) specifying
-the parameters associated with <code>weight.dists</code>. It must follow the same
-length rules as <code>weight.dists</code>. Each element should be a named vector
-or list suitable for the corresponding sampler.</p></dd>
+<dd><p>A list
+(default = <code>list(c(shape = 1e4, rate = 1e2), c(min = 0, max = 5))</code>)
+specifying the parameters associated with <code>weight.dists</code>. It must follow
+the same length rules as <code>weight.dists</code>. Each element should be a named
+vector or list suitable for the corresponding sampler.</p></dd>
 
 
 <dt id="arg-cond-target">cond.target<a class="anchor" aria-label="anchor" href="#arg-cond-target"></a></dt>
-<dd><p>A scalar (default = 100) specifying the target condition
-number for the precision matrix. A diagonal shift is applied so that
-the smallest eigenvalue satisfies
-\(\lambda_{\min} \geq \lambda_{\max}/\code{cond.target}\),
-ensuring both positive definiteness and numerical stability.</p></dd>
+<dd><p>A numeric value &gt; 1 (default = 100) specifying the target
+condition number for the precision matrix. When necessary, a diagonal shift
+is applied to ensure positive definiteness and numerical stability.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object with S3 class "grasps" containing the following components:</p><dl><dt>Omega</dt>
+    <p>An object with S3 class "gen_prec_sbm" containing the following components:</p><dl><dt>Omega</dt>
 <dd><p>The precision matrix with SBM block structure.</p></dd>
 
 <dt>Sigma</dt>
@@ -189,24 +187,31 @@ The length of <code>weight.dists</code> (and <code>weight.paras</code>) determin
 weight distributions are assigned:</p><ul><li><p>length = 1: Same specification for all blocks.</p></li>
 <li><p>length = 2: first for within-group blocks, second for between-group
 blocks.</p></li>
-<li><p>length = \(K + K(K - 1)/2\): Full specification for each block.</p></li>
+<li><p>length = \(K + K(K-1)/2\): Full specification for each block.</p></li>
 </ul><p><strong>Block indexing.</strong>
-The order for blocks is:</p><ul><li><p>Within-group blocks: Indices 1, ..., K.</p></li>
-<li><p>Between-group blocks: \(K(K-1)/2\) blocks in order (1,2), (1,3),
-..., (1,K), (2,3), ..., (K-1,K).</p></li>
+The order for blocks is:</p><ul><li><p>Within-group blocks: Indices \(1, \dots, K\).</p></li>
+<li><p>Between-group blocks: \(K(K-1)/2\) blocks in order \((1,2)\),
+\((1,3)\), \((1,4)\), ..., \((1,K)\), \((2,3)\), ..., \((K-1,K)\).</p></li>
 </ul><p><strong>Positive definiteness.</strong>
 The weighted adjacency matrix is symmetrized and used as the precision matrix
 \(\Omega_0\). Since arbitrary block-structured weights may not be positive
 definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
 Specifically, let \(\lambda_{\max}\) and \(\lambda_{\min}\) denote
-the largest and smallest eigenvalues of the initial matrix. A scalar
-\(\tau\) is added to the diagonal so that
-$$\lambda_{\min}(\Omega_0 + \tau I) \;\geq\;
-\lambda_{\max} / \code{cond.target},
+the largest and smallest eigenvalues of a matrix. A non-negative numeric
+value \(\tau\) is added to the diagonal so that
 $$
-which ensures both positive definiteness and that the condition number
-does not exceed <code>cond.target</code>. This guarantees numerical stability even
-in high-dimensional settings.</p>
+\left\{
+\begin{array}{l}
+\dfrac{\lambda_{\max}(\Omega_0 + \tau I)}{\lambda_{\min}(\Omega_0 + \tau I)}
+\leq \texttt{cond.target} \\[1em]
+\lambda_{\min}(\Omega_0 + \tau I) &gt; 0 \\[.5em]
+\tau \geq 0
+\end{array}
+\right.
+$$
+which ensures both positive definiteness and guarantees that the condition
+number does not exceed <code>cond.target</code>, providing numerical stability
+even in high-dimensional settings.</p>
     </div>
 
     <div class="section level2">
