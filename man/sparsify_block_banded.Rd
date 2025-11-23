@@ -18,7 +18,7 @@ where groups whose labels differ by at most \code{neighbor.range} are
 considered neighbors and kept in the mask.}
 }
 \value{
-An object with S3 class "sparsify_block_banded" containing
+An object with S3 class \code{"sparsify_block_banded"} containing
 the following components:
 \describe{
 \item{Omega}{The masked precision matrix.}
