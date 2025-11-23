@@ -126,6 +126,7 @@ deriv_internal <- function(omega, penalty, lambda, gamma) {
     res <- (lambda / gamma) * exp(-a / gamma)
 
   } else if (penalty == "lasso") {
+    gamma <- NA
     res <- lambda
 
   } else if (penalty == "lq") {

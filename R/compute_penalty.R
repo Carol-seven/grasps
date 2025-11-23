@@ -126,6 +126,7 @@ pen_internal <- function(omega, penalty, lambda, gamma) {
     res <- lambda * (1 - exp(-a / gamma))
 
   } else if (penalty == "lasso") {
+    gamma <- NA
     res <- lambda * a
 
   } else if (penalty == "lq") {

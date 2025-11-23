@@ -50,61 +50,67 @@ plot.penderiv <- function(x, ...) {
   ## declare
   group <- omega <- value <- NULL
 
+  ## y-axis label
+  y_lab <- if (inherits(x, "penalty")) {
+    expression("Penalty Function" ~ italic(lambda) * italic(p) ~ "(" * italic(omega) * ")")
+  } else if (inherits(x, "derivative")) {
+    expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")
+  } else {
+    NULL
+  }
+
   ## all configurations identical (only one curve)
   if (key == "") {
     ggplot(df, aes(x = omega, y = value)) +
       geom_line() +
       fz +
-      labs(x = expression(italic(omega)),
-           y = if (inherits(x, "penalty")) {
-             expression("Penalty Function" ~ italic(lambda) * italic(p) ~ "(" * italic(omega) * ")")
-           } else if (inherits(x, "derivative")) {
-             expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")
-           } else {
-             NULL
-           }) +
+      labs(x = expression(italic(omega)), y = y_lab) +
       theme_bw() +
       theme(legend.position = "bottom")
 
   ## multiple configurations, use color grouping and legend
   } else {
 
-    ## nicely formatted labels for lambda and gamma
-    lambda_fmt <- paste0("\u03BB = ", df$lambda)
-    gamma_fmt <- ifelse(is.na(df$gamma), "", paste0("\u03B3 = ", df$gamma))
-
     ## group labels based on which parameter(s) vary
     df$group <- switch(
       key,
       "penalty" = df$penalty,
-      "lambda" = lambda_fmt,
-      "gamma" = gamma_fmt,
-      "penalty_lambda" = paste0(df$penalty, " (", lambda_fmt, ")"),
-      "penalty_gamma" = paste0(df$penalty, " (", gamma_fmt, ")"),
-      "lambda_gamma" = paste0(lambda_fmt, ", ", gamma_fmt),
-      "penalty_lambda_gamma" = paste0(df$penalty, " (", lambda_fmt, ", ", gamma_fmt, ")")
+      "lambda" = sprintf("paste(lambda, ' = ', %s)", df$lambda),
+      "gamma" = sprintf("paste(gamma,  ' = ', %s)", df$gamma),
+      "penalty_lambda" = sprintf(
+        "paste('%s', ' (', lambda, ' = ', %s, ')')", df$penalty, df$lambda
+      ),
+      "penalty_gamma" = ifelse(
+        df$penalty == "lasso",
+        df$penalty,
+        sprintf("paste('%s', ' (', gamma, ' = ', %s, ')')", df$penalty, df$gamma)
+      ),
+      "lambda_gamma" = ifelse(
+        df$penalty == "lasso",
+        sprintf("paste(lambda, ' = ', %s)", df$lambda),
+        sprintf("paste(lambda, ' = ', %s, ', ', gamma, ' = ', %s)", df$lambda, df$gamma)
+      ),
+      "penalty_lambda_gamma" = ifelse(
+        df$penalty == "lasso",
+        sprintf("paste('%s', ' (', lambda, ' = ', %s, ')')", df$penalty, df$lambda),
+        sprintf("paste('%s', ' (', lambda, ' = ', %s, ', ', gamma, ' = ', %s, ')')",
+                df$penalty, df$lambda, df$gamma)
+      )
     )
 
     ## legend label based on which parameter(s) vary
     legend_name <- switch(
       key,
-      lambda = "\u03BB",
-      gamma  = "\u03B3",
+      lambda = expression(lambda),
+      gamma  = expression(gamma),
       "Penalty Type"
     )
 
     ggplot(df, aes(x = omega, y = value, color = group)) +
       geom_line() +
       fz +
-      labs(x = expression(italic(omega)),
-           y = if (inherits(x, "penalty")) {
-             expression("Penalty Function" ~ italic(lambda) * italic(p) ~ "(" * italic(omega) * ")")
-           } else if (inherits(x, "derivative")) {
-             expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")
-           } else {
-             NULL
-           },
-           color = legend_name) +
+      labs(x = expression(italic(omega)), y = y_lab, color = legend_name) +
+      scale_color_discrete(labels = function(z) parse(text = z)) +
       theme_bw() +
       theme(legend.position = "bottom")
   }
