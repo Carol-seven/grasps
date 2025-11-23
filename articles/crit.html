@@ -134,8 +134,9 @@
 \]</span></p>
 <ol start="5" type="1">
 <li>
-<span class="math inline">\(k\)</span>-fold cross validation with negative log-likelihood loss.</li>
+<span class="math inline">\(K\)</span>-fold cross validation with negative log-likelihood loss.</li>
 </ol>
+<p><a href="#fig-cv" class="quarto-xref">Figure 1</a> illustrates the <span class="math inline">\(K\)</span>-fold cross-validation procedure used for tuning the parameters <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\alpha\)</span>. The notation <span class="math inline">\(\#\lambda\)</span> and <span class="math inline">\(\#\alpha\)</span> denotes the number of candidate values considered for <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\alpha\)</span>, respectively, forming a grid of <span class="math inline">\(\mathrm{\#}\lambda \times \mathrm{\#}\alpha\)</span> total parameter combinations. For each of the <span class="math inline">\(K\)</span> iterations, negative log-likelihood loss is evaluated for all parameter combinations, yielding <span class="math inline">\(K\)</span> performance values per combination. The optimal parameter pair is selected as the one achieving the lowest average loss across the <span class="math inline">\(K\)</span> iterations.</p>
 <div id="fig-cv" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../reference/figures/cv-diagram.png" style="width:100.0%">

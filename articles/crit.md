@@ -56,7 +56,18 @@ reduces EBIC to the classic BIC.
 2\\\mathrm{nll}(\Omega) + \log\[\log(n)\]\\\log(d)\\\lvert E(\Omega)
 \rvert \right\\. \\
 
-5.  \\k\\-fold cross validation with negative log-likelihood loss.
+5.  \\K\\-fold cross validation with negative log-likelihood loss.
+
+[Figure 1](#fig-cv) illustrates the \\K\\-fold cross-validation
+procedure used for tuning the parameters \\\lambda\\ and \\\alpha\\. The
+notation \\\\\lambda\\ and \\\\\alpha\\ denotes the number of candidate
+values considered for \\\lambda\\ and \\\alpha\\, respectively, forming
+a grid of \\\mathrm{\\}\lambda \times \mathrm{\\}\alpha\\ total
+parameter combinations. For each of the \\K\\ iterations, negative
+log-likelihood loss is evaluated for all parameter combinations,
+yielding \\K\\ performance values per combination. The optimal parameter
+pair is selected as the one achieving the lowest average loss across the
+\\K\\ iterations.
 
 ![](../reference/figures/cv-diagram.png)
 
