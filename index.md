@@ -66,7 +66,7 @@ set.seed(1234)
 sim <- gen_prec_sbm(d = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
-                    weight.paras = list(c(shape = 100, rate = 10),
+                    weight.paras = list(c(shape = 20, rate = 10),
                                         c(min = 0, max = 5)),
                     cond.target = 100)
 
@@ -75,7 +75,7 @@ library(MASS)
 X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
 ## solution
-res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
+res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "HBIC")
 
 ## visualization
 plot(res)
@@ -88,19 +88,19 @@ plot(res)
 ## performance
 performance(hatOmega = res$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8414
-#> 2  Frobenius  86.8888
-#> 3         KL  10.1162
-#> 4  quadratic 139.5146
-#> 5   spectral  39.1448
-#> 6         TP  24.0000
-#> 7         TN 342.0000
-#> 8         FP  45.0000
-#> 9         FN  24.0000
-#> 10       TPR   0.5000
-#> 11       FPR   0.1163
-#> 12        F1   0.4103
-#> 13       MCC   0.3291
+#> 1   sparsity   0.9103
+#> 2  Frobenius  24.6796
+#> 3         KL   7.2063
+#> 4  quadratic  54.1949
+#> 5   spectral  13.1336
+#> 6         TP  22.0000
+#> 7         TN 370.0000
+#> 8         FP  17.0000
+#> 9         FN  26.0000
+#> 10       TPR   0.4583
+#> 11       FPR   0.0439
+#> 12        F1   0.5057
+#> 13       MCC   0.4545
 ```
 
 ## Reference

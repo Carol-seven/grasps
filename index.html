@@ -162,7 +162,7 @@
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                    within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span>
-<span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">100</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>                                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                    cond.target <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
@@ -171,7 +171,7 @@
 <span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## solution</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grasps.html">grasps</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grasps.html">grasps</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"HBIC"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## visualization</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
@@ -181,19 +181,19 @@
 <span><span class="co">## performance</span></span>
 <span><span class="fu"><a href="reference/performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      measure    value</span></span>
-<span><span class="co">#&gt; 1   sparsity   0.8414</span></span>
-<span><span class="co">#&gt; 2  Frobenius  86.8888</span></span>
-<span><span class="co">#&gt; 3         KL  10.1162</span></span>
-<span><span class="co">#&gt; 4  quadratic 139.5146</span></span>
-<span><span class="co">#&gt; 5   spectral  39.1448</span></span>
-<span><span class="co">#&gt; 6         TP  24.0000</span></span>
-<span><span class="co">#&gt; 7         TN 342.0000</span></span>
-<span><span class="co">#&gt; 8         FP  45.0000</span></span>
-<span><span class="co">#&gt; 9         FN  24.0000</span></span>
-<span><span class="co">#&gt; 10       TPR   0.5000</span></span>
-<span><span class="co">#&gt; 11       FPR   0.1163</span></span>
-<span><span class="co">#&gt; 12        F1   0.4103</span></span>
-<span><span class="co">#&gt; 13       MCC   0.3291</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   sparsity   0.9103</span></span>
+<span><span class="co">#&gt; 2  Frobenius  24.6796</span></span>
+<span><span class="co">#&gt; 3         KL   7.2063</span></span>
+<span><span class="co">#&gt; 4  quadratic  54.1949</span></span>
+<span><span class="co">#&gt; 5   spectral  13.1336</span></span>
+<span><span class="co">#&gt; 6         TP  22.0000</span></span>
+<span><span class="co">#&gt; 7         TN 370.0000</span></span>
+<span><span class="co">#&gt; 8         FP  17.0000</span></span>
+<span><span class="co">#&gt; 9         FN  26.0000</span></span>
+<span><span class="co">#&gt; 10       TPR   0.4583</span></span>
+<span><span class="co">#&gt; 11       FPR   0.0439</span></span>
+<span><span class="co">#&gt; 12        F1   0.5057</span></span>
+<span><span class="co">#&gt; 13       MCC   0.4545</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
