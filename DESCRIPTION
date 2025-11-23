@@ -45,7 +45,8 @@ Suggests:
     knitr,
     MASS,
     quarto,
-    rmarkdown
+    rmarkdown,
+    svglite
 VignetteBuilder:
     knitr,
     quarto
