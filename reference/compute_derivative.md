@@ -1,23 +1,24 @@
-# Derivative Computation
+# Penalty Derivative Computation
 
-Compute the derivative of the penalty function.
+Compute one or more derivative values for a given `omega`, allowing
+vectorized specifications of `penalty`, `lambda`, and `gamma`.
 
 ## Usage
 
 ``` r
-deriv(omega, penalty, lambda, gamma = NULL)
+compute_derivative(omega, penalty, lambda, gamma = NA)
 ```
 
 ## Arguments
 
 - omega:
 
-  A numeric scalar or vector at which the penalty is evaluated.
+  A numeric value or vector at which the penalty is evaluated.
 
 - penalty:
 
-  A character vector specifying one or more penalty types. Available
-  options include:
+  A character string or vector specifying one or more penalty types.
+  Available options include:
 
   1.  "lasso": Least absolute shrinkage and selection operator
       (Tibshirani 1996; Friedman et al. 2008) .
@@ -36,15 +37,21 @@ deriv(omega, penalty, lambda, gamma = NULL)
   7.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
+  If `penalty` has length 1, it is recycled to the common length
+  determined by `penalty`, `lambda`, and `gamma`.
+
 - lambda:
 
-  A non-negative scalar or vector of the same length as `penalty`
-  specifying the regularization parameter.
+  A non-negative numeric value or vector specifying the regularization
+  parameter. If `lambda` has length 1, it is recycled to the common
+  length determined by `penalty`, `lambda`, and `gamma`.
 
 - gamma:
 
-  A scalar or vector of the same length as `penalty` specifying the
-  additional parameter for the penalty function. The defaults are:
+  A numeric value or vector specifying the additional parameter for the
+  penalty function. If `lambda` has length 1, it is recycled to the
+  common length determined by `penalty`, `lambda`, and `gamma`. The
+  penalty-specific defaults are:
 
   1.  "atan": 0.005
 
@@ -58,9 +65,11 @@ deriv(omega, penalty, lambda, gamma = NULL)
 
   6.  "scad": 3.7
 
+  For `"lasso"`, `gamma` is ignored.
+
 ## Value
 
-A data frame containing:
+A data frame with S3 class `"derivative"` containing:
 
 - omega:
 
@@ -81,6 +90,10 @@ A data frame containing:
 - value:
 
   The computed derivative value.
+
+The number of rows equals
+`max(length(penalty), length(lambda), length(gamma))`. Any of `penalty`,
+`lambda`, or `gamma` with length 1 is recycled to this common length.
 
 ## References
 
@@ -137,3 +150,21 @@ Statistics*, **2016**, 6495417.
 Zhang C (2010). “Nearly Unbiased Variable Selection under Minimax
 Concave Penalty.” *The Annals of Statistics*, **38**(2), 894–942.
 [doi:10.1214/09-AOS729](https://doi.org/10.1214/09-AOS729) .
+
+## Examples
+
+``` r
+library(grasps)
+library(ggplot2)
+
+deriv_df <- compute_derivative(
+  omega = seq(0, 4, by = 0.01),
+  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad"),
+  lambda = 1)
+
+plot(deriv_df) +
+  scale_y_continuous(limits = c(0, 1.5)) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+#> Warning: Removed 79 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
+```

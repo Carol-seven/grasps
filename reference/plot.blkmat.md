@@ -37,9 +37,9 @@ plot(x, colors = NULL, ...)
 
 ## Value
 
-A `ggplot2` heatmap showing the matrix entries. Dashed lines indicate
-group boundaries. The plot title also reports matrix dimension and
-sparsity.
+A heatmap of class `ggplot` showing the matrix entries. Dashed lines
+indicate group boundaries. The plot title also reports matrix dimension
+and sparsity.
 
 ## Examples
 

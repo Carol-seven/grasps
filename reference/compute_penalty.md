@@ -1,23 +1,24 @@
 # Penalty Function Computation
 
-Compute the penalty function.
+Compute one or more penalty values for a given `omega`, allowing
+vectorized specifications of `penalty`, `lambda`, and `gamma`.
 
 ## Usage
 
 ``` r
-pen(omega, penalty, lambda, gamma = NA)
+compute_penalty(omega, penalty, lambda, gamma = NA)
 ```
 
 ## Arguments
 
 - omega:
 
-  A numeric scalar or vector at which the penalty is evaluated.
+  A numeric value or vector at which the penalty is evaluated.
 
 - penalty:
 
-  A character vector specifying one or more penalty types. Available
-  options include:
+  A character string or vector specifying one or more penalty types.
+  Available options include:
 
   1.  "lasso": Least absolute shrinkage and selection operator
       (Tibshirani 1996; Friedman et al. 2008) .
@@ -36,15 +37,21 @@ pen(omega, penalty, lambda, gamma = NA)
   7.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
+  If `penalty` has length 1, it is recycled to the common length
+  determined by `penalty`, `lambda`, and `gamma`.
+
 - lambda:
 
-  A non-negative scalar or a numeric vector of the same length as
-  `penalty` specifying the regularization parameter.
+  A non-negative numeric value or vector specifying the regularization
+  parameter. If `lambda` has length 1, it is recycled to the common
+  length determined by `penalty`, `lambda`, and `gamma`.
 
 - gamma:
 
-  A scalar or vector of the same length as `penalty` specifying the
-  additional parameter for the penalty function. The defaults are:
+  A numeric value or vector specifying the additional parameter for the
+  penalty function. If `lambda` has length 1, it is recycled to the
+  common length determined by `penalty`, `lambda`, and `gamma`. The
+  penalty-specific defaults are:
 
   1.  "atan": 0.005
 
@@ -58,9 +65,11 @@ pen(omega, penalty, lambda, gamma = NA)
 
   6.  "scad": 3.7
 
+  For `"lasso"`, `gamma` is ignored.
+
 ## Value
 
-A data with S3 class "pen" ocontaining:
+A data frame with S3 class `"penalty"` containing:
 
 - omega:
 
@@ -81,6 +90,10 @@ A data with S3 class "pen" ocontaining:
 - value:
 
   The computed penalty value.
+
+The number of rows equals
+`max(length(penalty), length(lambda), length(gamma))`. Any of `penalty`,
+`lambda`, or `gamma` with length 1 is recycled to this common length.
 
 ## References
 
@@ -137,3 +150,18 @@ Statistics*, **2016**, 6495417.
 Zhang C (2010). “Nearly Unbiased Variable Selection under Minimax
 Concave Penalty.” *The Annals of Statistics*, **38**(2), 894–942.
 [doi:10.1214/09-AOS729](https://doi.org/10.1214/09-AOS729) .
+
+## Examples
+
+``` r
+library(grasps)
+library(ggplot2)
+
+pen_df <- compute_penalty(
+  omega = seq(-4, 4, by = 0.01),
+  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad"),
+  lambda = 1)
+
+plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+```

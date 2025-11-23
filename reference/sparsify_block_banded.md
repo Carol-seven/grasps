@@ -29,8 +29,8 @@ sparsify_block_banded(mat, membership, neighbor.range = 1)
 
 ## Value
 
-An object with S3 class "sparsify_block_banded" containing the following
-components:
+An object with S3 class `"sparsify_block_banded"` containing the
+following components:
 
 - Omega:
 
