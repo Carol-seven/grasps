@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 name: R-CMD-check.yaml
 
@@ -43,7 +42,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, local::.
+          extra-packages: any::rcmdcheck
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
