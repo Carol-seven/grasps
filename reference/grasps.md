@@ -413,18 +413,18 @@ plot(res)
 
 ## performance
 performance(hatOmega = res$hatOmega, Omega = sim$Omega)
-#>      measure       value
-#> 1   sparsity   0.8528736
-#> 2  Frobenius  85.4097993
-#> 3         KL   9.5902691
-#> 4  quadratic 128.7124709
-#> 5   spectral  39.8860562
-#> 6         TP  24.0000000
-#> 7         TN 347.0000000
-#> 8         FP  40.0000000
-#> 9         FN  24.0000000
-#> 10       TPR   0.5000000
-#> 11       FPR   0.1033592
-#> 12        F1   0.4285714
-#> 13       MCC   0.3508299
+#>      measure    value
+#> 1   sparsity   0.8529
+#> 2  Frobenius  85.4098
+#> 3         KL   9.5903
+#> 4  quadratic 128.7125
+#> 5   spectral  39.8861
+#> 6         TP  24.0000
+#> 7         TN 347.0000
+#> 8         FP  40.0000
+#> 9         FN  24.0000
+#> 10       TPR   0.5000
+#> 11       FPR   0.1034
+#> 12        F1   0.4286
+#> 13       MCC   0.3508
 ```
