@@ -328,7 +328,8 @@ Statistical Society Series B: Statistical Methodology*, **79**(2),
 Foygel R, Drton M (2010). “Extended Bayesian Information Criteria for
 Gaussian Graphical Models.” In Lafferty J, Williams C, Shawe-Taylor J,
 Zemel R, Culotta A (eds.), *Advances in Neural Information Processing
-Systems 23 (NIPS 2010)*, 604–612.  
+Systems 23 (NIPS 2010)*, 604–612.
+<https://dl.acm.org/doi/10.5555/2997189.2997257>.  
   
 Frank LE, Friedman JH (1993). “A Statistical View of Some Chemometrics
 Regression Tools.” *Technometrics*, **35**(2), 109–135.

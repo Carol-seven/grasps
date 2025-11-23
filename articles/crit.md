@@ -61,7 +61,7 @@ reduces EBIC to the classic BIC.
 ![](../reference/figures/cv-diagram.png)
 
 Figure 1: \\K\\-fold cross-validation procedure for tuning (\\\lambda\\,
-\\\alpha\\) using negative log-likelihood loss.
+\\\alpha\\).
 
 ## Reference
 
@@ -84,6 +84,7 @@ Criteria for Gaussian Graphical Models.” In *Advances in Neural
 Information Processing Systems 23 (NIPS 2010)*, edited by J. Lafferty,
 C. Williams, J. Shawe-Taylor, R. Zemel, and A. Culotta, 604–12. Red
 Hook, NY, USA: Curran Associates, Inc.
+<https://dl.acm.org/doi/10.5555/2997189.2997257>.
 
 Schwarz, Gideon. 1978. “Estimating the Dimension of a Model.” *The
 Annals of Statistics* 6 (2): 461–64.
