@@ -95,8 +95,7 @@ plot.blkmat <- function(x, colors = NULL, ...) {
     geom_vline(xintercept = bnds, linetype = "dashed") +
     geom_hline(yintercept = y_bnds, linetype = "dashed") +
     labs(x = NULL, y = NULL,
-         title = sprintf("Dimension = %d, Sparsity = %s", d,
-                         round(sum(mat == 0) / length(mat), 4))) +
+         title = sprintf("Dimension = %d, Sparsity = %s", d, round(sparsity, 4))) +
     theme_bw() +
     theme(axis.text = element_blank(),
           axis.ticks = element_blank(),
