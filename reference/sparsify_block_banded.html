@@ -64,13 +64,13 @@ keeping only entries within specified group neighborhoods.</p>
 
 
 <dl><dt id="arg-mat">mat<a class="anchor" aria-label="anchor" href="#arg-mat"></a></dt>
-<dd><p>A p-by-p precision-like matrix specifying the base matrix to be
-masked.</p></dd>
+<dd><p>A \(d \times d\) precision-like matrix specifying the base
+matrix to be masked.</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
 <dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension p.</p></dd>
+The length of <code>membership</code> must be consistent with the dimension \(d\).</p></dd>
 
 
 <dt id="arg-neighbor-range">neighbor.range<a class="anchor" aria-label="anchor" href="#arg-neighbor-range"></a></dt>
@@ -81,7 +81,8 @@ considered neighbors and kept in the mask.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object with S3 class "grasps" containing the following components:</p><dl><dt>Omega</dt>
+    <p>An object with S3 class "sparsify_block_banded" containing
+the following components:</p><dl><dt>Omega</dt>
 <dd><p>The masked precision matrix.</p></dd>
 
 <dt>Sigma</dt>

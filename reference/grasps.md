@@ -227,7 +227,7 @@ grasps(
 
 ## Value
 
-An object with S3 class "grasps" containing the following components:
+An object with S3 class `"grasps"` containing the following components:
 
 - hatOmega:
 

@@ -12,5 +12,8 @@
   Function Computation
 - [`performance()`](https://shiying-xiao.com/grasps/reference/performance.md)
   : Performance Measures for Precision Matrix Estimation
+- [`plot(`*`<blkmat>`*`)`](https://shiying-xiao.com/grasps/reference/plot.blkmat.md)
+  : Plot Function for Block-Structured Precision Matrices (Visualize a
+  Matrix with Group Boundaries)
 - [`sparsify_block_banded()`](https://shiying-xiao.com/grasps/reference/sparsify_block_banded.md)
   : Groupwise Block-Banded Sparsifier

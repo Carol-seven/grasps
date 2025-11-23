@@ -13,13 +13,13 @@ sparsify_block_banded(mat, membership, neighbor.range = 1)
 
 - mat:
 
-  A p-by-p precision-like matrix specifying the base matrix to be
-  masked.
+  A \\d \times d\\ precision-like matrix specifying the base matrix to
+  be masked.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension p.
+  `membership` must be consistent with the dimension \\d\\.
 
 - neighbor.range:
 
@@ -29,7 +29,8 @@ sparsify_block_banded(mat, membership, neighbor.range = 1)
 
 ## Value
 
-An object with S3 class "grasps" containing the following components:
+An object with S3 class "sparsify_block_banded" containing the following
+components:
 
 - Omega:
 
