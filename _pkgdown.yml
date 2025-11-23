@@ -22,3 +22,8 @@ authors:
 
 development:
   mode: auto
+
+figures:
+  dev: svglite::svglite
+  dpi: 96
+  fig.ext: svg
