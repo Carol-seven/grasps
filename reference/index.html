@@ -21,11 +21,11 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-solid fa-file-code"></span> Functions</a></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/crit.html">Selection Criteria for Parameters in grasps</a></li>
-    <li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation in grasps</a></li>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-solid fa-book"></span> Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation</a></li>
+    <li><a class="dropdown-item" href="../articles/crit.html">Selection Criteria for Parameters</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -47,7 +47,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="main-functionality">Main functionality<a class="anchor" aria-label="anchor" href="#main-functionality"></a></h2>
 
 
 
@@ -58,19 +58,21 @@
 
       <dl><dt>
 
-          <code><a href="compute_derivative.html">compute_derivative()</a></code>
+          <code><a href="grasps.html">grasps()</a></code>
 
         </dt>
-        <dd>Penalty Derivative Computation</dd>
+        <dd>Groupwise Regularized Adaptive Sparse Precision Solution</dd>
+      </dl></div><div class="section level2">
+      <h2 id="simulation-tools">Simulation tools<a class="anchor" aria-label="anchor" href="#simulation-tools"></a></h2>
 
-        <dt>
 
-          <code><a href="compute_penalty.html">compute_penalty()</a></code>
 
-        </dt>
-        <dd>Penalty Function Computation</dd>
+      <dl></dl></div><div class="section level2">
 
-        <dt>
+
+
+
+      <dl><dt>
 
           <code><a href="gen_prec_sbm.html">gen_prec_sbm()</a></code>
 
@@ -79,19 +81,60 @@
 
         <dt>
 
-          <code><a href="grasps.html">grasps()</a></code>
+          <code><a href="sparsify_block_banded.html">sparsify_block_banded()</a></code>
 
         </dt>
-        <dd>Groupwise Regularized Adaptive Sparse Precision Solution</dd>
+        <dd>Groupwise Block-Banded Sparsifier</dd>
+      </dl></div><div class="section level2">
+      <h2 id="performance-evaluation">Performance evaluation<a class="anchor" aria-label="anchor" href="#performance-evaluation"></a></h2>
 
-        <dt>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="performance.html">performance()</a></code>
 
         </dt>
         <dd>Performance Measures for Precision Matrix Estimation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="penalty-utilities">Penalty utilities<a class="anchor" aria-label="anchor" href="#penalty-utilities"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="compute_penalty.html">compute_penalty()</a></code>
+
+        </dt>
+        <dd>Penalty Function Computation</dd>
 
         <dt>
+
+          <code><a href="compute_derivative.html">compute_derivative()</a></code>
+
+        </dt>
+        <dd>Penalty Derivative Computation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="plot.blkmat.html">plot(<i>&lt;blkmat&gt;</i>)</a></code>
 
@@ -104,15 +147,9 @@
 
         </dt>
         <dd>Plot Function for S3 Class "penderiv"</dd>
-
-        <dt>
-
-          <code><a href="sparsify_block_banded.html">sparsify_block_banded()</a></code>
-
-        </dt>
-        <dd>Groupwise Block-Banded Sparsifier</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
