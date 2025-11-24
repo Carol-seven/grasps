@@ -21,3 +21,48 @@ development:
 
 figures:
   dpi: 300
+
+reference:
+- title: Main functionality
+  contents:
+  - grasps
+- title: Simulation tools
+  contents:
+  - gen_prec_sbm
+  - sparsify_block_banded
+- title: Performance evaluation
+  contents:
+  - performance
+- title: Penalty utilities
+  contents:
+  - compute_penalty
+  - compute_derivative
+- title: Visualization
+  contents:
+  - plot.blkmat
+  - plot.penderiv
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - pen_est
+  - crit
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github, lightswitch]
+  components:
+    reference:
+      text: Functions
+      icon: fa-solid fa-file-code
+      href: reference/index.html
+    articles:
+      text: Articles
+      icon: fa-solid fa-book
+      menu:
+        - text: Penalized Precision Matrix Estimation
+          href: articles/pen_est.html
+        - text: Selection Criteria for Parameters
+          href: articles/crit.html

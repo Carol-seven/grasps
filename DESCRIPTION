@@ -16,7 +16,7 @@ Description: Provides a unified framework for sparse-group regularization and
     high-dimensional network inference where both sparsity and group structure
     are present.
 License: GPL (>= 3)
-URL: https://github.com/Carol-seven/grasps, https://shiying-xiao.com/grasps
+URL: https://github.com/Carol-seven/grasps, https://shiying-xiao.com/grasps/
 BugReports: https://github.com/Carol-seven/grasps/issues
 Encoding: UTF-8
 LazyData: true
