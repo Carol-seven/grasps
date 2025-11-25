@@ -119,7 +119,7 @@ set.seed(1234)
 sim <- gen_prec_sbm(d = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
-                    weight.paras = list(c(shape = 10, scale = 5),
+                    weight.paras = list(c(shape = 20, rate = 10),
                                         c(min = 0, max = 5)),
                     cond.target = 100)
 ## visualization
@@ -140,17 +140,17 @@ plot(res)
 ## performance
 performance(hatOmega = res$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8368
-#> 2  Frobenius 460.8652
-#> 3         KL   8.4102
-#> 4  quadratic 132.4547
-#> 5   spectral 171.4447
-#> 6         TP  25.0000
-#> 7         TN 341.0000
-#> 8         FP  46.0000
-#> 9         FN  23.0000
-#> 10       TPR   0.5208
-#> 11       FPR   0.1189
-#> 12        F1   0.4202
-#> 13       MCC   0.3408
+#> 1   sparsity   0.7862
+#> 2  Frobenius  34.8430
+#> 3         KL  12.5488
+#> 4  quadratic 161.4326
+#> 5   spectral  19.8343
+#> 6         TP  24.0000
+#> 7         TN 318.0000
+#> 8         FP  69.0000
+#> 9         FN  24.0000
+#> 10       TPR   0.5000
+#> 11       FPR   0.1783
+#> 12        F1   0.3404
+#> 13       MCC   0.2459
 ```
