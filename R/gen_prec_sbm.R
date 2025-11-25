@@ -176,21 +176,6 @@ gen_prec_sbm <- function(d,
                                 block.sizes = block.sizes,
                                 directed = FALSE, loops = FALSE)
   SBM_adj <- as.matrix(igraph::as_adjacency_matrix(SBM_sim, sparse = FALSE))
-  # ## generate SBM adjacency (upper triangle once, then mirror)
-  # # SBM_adj <- matrix(0, d, d)
-  # for (i in 1:K) {
-  #   rows <- idx_list[[i]]
-  #   for (j in i:K) {
-  #     cols <- idx_list[[j]]
-  #     block <- matrix(rbinom(length(rows) * length(cols), 1, prob.mat[i,j]),
-  #                     length(rows), length(cols))
-  #     SBM_adj[rows, cols] <- block
-  #     if (j != i) {
-  #       SBM_adj[cols, rows] <- t(block)
-  #     }
-  #   }
-  # }
-  # diag(SBM_adj) <- 0
 
   ## build weights
   ## fill upper-triangular; mirror to keep symmetric.

@@ -112,13 +112,6 @@ performance <- function(hatOmega, Omega) {
 
   ## quadratic loss
   QL <- norm(Sigma %*% hatOmega - diag(d), "F")^2
-  ## Alternative versions:
-  ## QL <- (sum(diag(Sigma %*% hatOmega - diag(d))))^2
-  ## Kuismin, M. O., Kemppainen, J. T., & Sillanpää, M. J. (2017).
-  ## Precision Matrix Estimation With ROPE.
-  ## Journal of Computational and Graphical Statistics, 26(3), 682–694.
-  ## https://doi.org/10.1080/10618600.2016.1278002
-  ## QL <- sum((hatOmega %*% Sigma - diag(d))^2) ## rags2ridges
 
   ## spectral norm loss
   SL <- svd(Omega - hatOmega)$d[1]
@@ -142,15 +135,9 @@ performance <- function(hatOmega, Omega) {
 
   ## classification-based (structure-recovery) measures
   TPR <- TP / (TP + FN)
-  ## TPR <- TP / sum(Omega_edge != 0)
   FPR <- FP / (TN + FP)
-  ## FPR <- FP / sum(Omega_edge == 0)
   F1 <- 2 * TP / (2*TP + FN + FP)
-  ## F1 <- 2 * precision * recall / (precision + recall)
   MCC <- (TP * TN - FP * FN) / (sqrt(TP + FP) * sqrt(TP + FN) * sqrt(TN + FP) * sqrt(TN + FN))
-  ## MCC <- (TP * TN - FP * FN) / sqrt(
-  ##   sum(hatOmega_edge != 0) * sum(Omega_edge != 0) * sum(Omega_edge == 0) * sum(hatOmega_edge == 0)
-  ## )
 
   result <- data.frame(
     measure = c("sparsity", "Frobenius", "KL", "quadratic", "spectral",
