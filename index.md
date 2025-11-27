@@ -24,6 +24,8 @@ For more details, see the vignette [Penalized Precision Matrix
 Estimation in
 grasps](https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator).
 
+![](https://raw.githubusercontent.com/Carol-seven/grasps/refs/heads/main/man/figures/workflow.png)
+
 ## Penalties
 
 The package **grasps** provides functions to estimate precision matrices
