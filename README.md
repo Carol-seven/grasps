@@ -7,6 +7,7 @@
 
 <!-- badges: start -->
 
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/grasps)](https://CRAN.R-project.org/package=grasps)
 [![GitHub R package version](https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&color=green)](https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION)
 [![GitHub last commit](https://img.shields.io/github/last-commit/Carol-seven/grasps)](https://github.com/Carol-seven/grasps/commits/main)
 [![R-CMD-check](https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml)
@@ -30,6 +31,8 @@ $$P^\text{grp}_\gamma(\Omega)
 
 For more details, see the vignette
 [Penalized Precision Matrix Estimation in grasps](https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator).
+
+![](https://raw.githubusercontent.com/Carol-seven/grasps/refs/heads/main/man/figures/workflow.png)
 
 ## Penalties
 
