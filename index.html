@@ -81,8 +81,7 @@
 <div class="section level2">
 <h2 id="groupwise-regularized-adaptive-sparse-precision-solution">Groupwise Regularized Adaptive Sparse Precision Solution<a class="anchor" aria-label="anchor" href="#groupwise-regularized-adaptive-sparse-precision-solution"></a>
 </h2>
-<!-- badges: start -->
-
+<p><a href="https://CRAN.R-project.org/package=grasps" class="external-link"><img src="https://www.r-pkg.org/badges/version/grasps" alt="CRAN_Status_Badge"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION" class="external-link"><img src="https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&amp;color=green" alt="GitHub R package version"></a> <a href="https://github.com/Carol-seven/grasps/commits/main" class="external-link"><img src="https://img.shields.io/github/last-commit/Carol-seven/grasps" alt="GitHub last commit"></a> <a href="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/github/license/Carol-seven/grasps?color=blue" alt="GitHub License"></a></p>
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
 <p><span class="math display">\[\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
 \{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},\]</span></p>
@@ -147,14 +146,20 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of <strong>grasps</strong> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"Carol-seven/grasps"</span>)</span></code></pre></div>
+<ul>
+<li>You can install the released version of <strong>grasps</strong> from <a href="https://cran.r-project.org/package=grasps" class="external-link">CRAN</a> with:</li>
+</ul>
+<!-- --><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"grasps"</span>)</span></code></pre></div>
+<ul>
+<li>You can install the development version of <strong>grasps</strong> from <a href="https://github.com/Carol-seven/grasps" class="external-link">GitHub</a> with:</li>
+</ul>
+<!-- --><div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"Carol-seven/grasps"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Carol-seven/grasps" class="external-link">grasps</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## reproducibility for everything</span></span>
@@ -178,7 +183,7 @@
 <span><span class="co">## visualization</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## performance</span></span>
 <span><span class="fu"><a href="reference/performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span>
