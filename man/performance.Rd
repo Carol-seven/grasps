@@ -7,10 +7,10 @@
 performance(hatOmega, Omega)
 }
 \arguments{
-\item{hatOmega}{A numeric \eqn{d \times d} matrix giving the estimated
+\item{hatOmega}{A numeric \eqn{p \times p} matrix giving the estimated
 precision matrix.}
 
-\item{Omega}{A numeric \eqn{d \times d} matrix giving the reference
+\item{Omega}{A numeric \eqn{p \times p} matrix giving the reference
 (typically true) precision matrix.}
 }
 \value{
@@ -30,7 +30,7 @@ Compute a collection of loss-based and structure-based measures to evaluate
 the performance of an estimated precision matrix.
 }
 \details{
-Let \eqn{\Omega_{d \times d}} and \eqn{\hat{\Omega}_{d \times d}} be
+Let \eqn{\Omega_{p \times p}} and \eqn{\hat{\Omega}_{p \times p}} be
 the reference (true) and estimated precision matrices, respectively, with
 \eqn{\Sigma = \Omega^{-1}} being the corresponding covariance matrix.
 Edges are defined by nonzero off-diagonal entries in the upper triangle of
@@ -48,9 +48,9 @@ the off-diagonal elements in the upper triangle of \eqn{\hat{\Omega}}.
 \item "Frobenius": Frobenius (Hilbert-Schmidt) norm loss
 \eqn{= \Vert \Omega - \hat{\Omega} \Vert_F}.
 \item "KL": Kullback-Leibler divergence
-\eqn{= \mathrm{tr}(\Sigma \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - d}.
+\eqn{= \mathrm{tr}(\Sigma \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - p}.
 \item "quadratic": Quadratic norm loss
-\eqn{= \Vert \Sigma \hat{\Omega} - I_d \Vert_F^2}.
+\eqn{= \Vert \Sigma \hat{\Omega} - I_p \Vert_F^2}.
 \item "spectral": Spectral (operator) norm loss
 \eqn{= \Vert \Omega - \hat{\Omega} \Vert_{2,2} = e_1},
 where \eqn{e_1^2} is the largest eigenvalue of \eqn{(\Omega - \hat{\Omega})^2}.
@@ -104,7 +104,7 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 30, K = 3,
+sim <- gen_prec_sbm(p = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, rate = 10),

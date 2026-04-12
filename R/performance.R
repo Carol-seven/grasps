@@ -4,10 +4,10 @@
 #' Compute a collection of loss-based and structure-based measures to evaluate
 #' the performance of an estimated precision matrix.
 #'
-#' @param hatOmega A numeric \eqn{d \times d} matrix giving the estimated
+#' @param hatOmega A numeric \eqn{p \times p} matrix giving the estimated
 #' precision matrix.
 #'
-#' @param Omega A numeric \eqn{d \times d} matrix giving the reference
+#' @param Omega A numeric \eqn{p \times p} matrix giving the reference
 #' (typically true) precision matrix.
 #'
 #' @return
@@ -23,7 +23,7 @@
 #' }
 #'
 #' @details
-#' Let \eqn{\Omega_{d \times d}} and \eqn{\hat{\Omega}_{d \times d}} be
+#' Let \eqn{\Omega_{p \times p}} and \eqn{\hat{\Omega}_{p \times p}} be
 #' the reference (true) and estimated precision matrices, respectively, with
 #' \eqn{\Sigma = \Omega^{-1}} being the corresponding covariance matrix.
 #' Edges are defined by nonzero off-diagonal entries in the upper triangle of
@@ -41,9 +41,9 @@
 #' \item "Frobenius": Frobenius (Hilbert-Schmidt) norm loss
 #' \eqn{= \Vert \Omega - \hat{\Omega} \Vert_F}.
 #' \item "KL": Kullback-Leibler divergence
-#' \eqn{= \mathrm{tr}(\Sigma \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - d}.
+#' \eqn{= \mathrm{tr}(\Sigma \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - p}.
 #' \item "quadratic": Quadratic norm loss
-#' \eqn{= \Vert \Sigma \hat{\Omega} - I_d \Vert_F^2}.
+#' \eqn{= \Vert \Sigma \hat{\Omega} - I_p \Vert_F^2}.
 #' \item "spectral": Spectral (operator) norm loss
 #' \eqn{= \Vert \Omega - \hat{\Omega} \Vert_{2,2} = e_1},
 #' where \eqn{e_1^2} is the largest eigenvalue of \eqn{(\Omega - \hat{\Omega})^2}.
@@ -101,17 +101,17 @@ performance <- function(hatOmega, Omega) {
   Sigma <- solve(Omega)
 
   ## dimension
-  d <- ncol(hatOmega)
+  p <- ncol(hatOmega)
 
   ## Frobenius norm loss
   FL <- norm(Omega - hatOmega, "F")
 
   ## Kullback-Leibler divergence
   KL <- sum(diag(Sigma %*% hatOmega)) -
-    determinant(Sigma %*% hatOmega, logarithm = TRUE)$modulus[1] - d
+    determinant(Sigma %*% hatOmega, logarithm = TRUE)$modulus[1] - p
 
   ## quadratic loss
-  QL <- norm(Sigma %*% hatOmega - diag(d), "F")^2
+  QL <- norm(Sigma %*% hatOmega - diag(p), "F")^2
 
   ## spectral norm loss
   SL <- svd(Omega - hatOmega)$d[1]
