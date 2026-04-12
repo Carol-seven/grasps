@@ -71,12 +71,12 @@ where:
 ## Penalties
 
 1.  Lasso: Least absolute shrinkage and selection operator ([Tibshirani
-    1996](#ref-tibshirani1996regression); [Friedman, Hastie, and
-    Tibshirani 2008](#ref-friedman2008sparse))
+    1996](#ref-tibshirani1996regression); [Friedman et al.
+    2008](#ref-friedman2008sparse))
 
 \\\lambda p(\omega\_{ij}) = \lambda\vert\omega\_{ij}\vert.\\
 
-2.  Adaptive lasso ([Zou 2006](#ref-zou2006adaptive); [Fan, Feng, and Wu
+2.  Adaptive lasso ([Zou 2006](#ref-zou2006adaptive); [Fan et al.
     2009](#ref-fan2009network))
 
 \\ \lambda p\_\gamma(\omega\_{ij}) =
@@ -93,7 +93,7 @@ where:
 \arctan\left(\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad \gamma
 \> 0. \\
 
-4.  Exp: Exponential type penalty ([Wang, Fan, and Zhu
+4.  Exp: Exponential type penalty ([Wang et al.
     2018](#ref-wang2018variable))
 
 \\ \lambda p\_\gamma(\omega\_{ij}) =
@@ -107,7 +107,7 @@ where:
 \\ \lambda p\_\gamma(\omega\_{ij}) =
 \lambda\vert\omega\_{ij}\vert^\gamma, \quad 0 \< \gamma \< 1. \\
 
-6.  LSP: Log-sum penalty ([Candès, Wakin, and Boyd
+6.  LSP: Log-sum penalty ([Candès et al.
     2008](#ref-candes2008enhancing))
 
 \\ \lambda p\_\gamma(\omega\_{ij}) =
@@ -123,8 +123,7 @@ where:
 \gamma\lambda. \end{cases} \quad \gamma \> 1. \\
 
 8.  SCAD: Smoothly clipped absolute deviation ([Fan and Li
-    2001](#ref-fan2001variable); [Fan, Feng, and Wu
-    2009](#ref-fan2009network))
+    2001](#ref-fan2001variable); [Fan et al. 2009](#ref-fan2009network))
 
 \\ \lambda p\_\gamma(\omega\_{ij}) = \begin{cases}
 \lambda\vert\omega\_{ij}\vert & \text{if } \vert\omega\_{ij}\vert \leq

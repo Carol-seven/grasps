@@ -48,8 +48,8 @@ therefore given by \\\vert E(\Omega) \vert\\.
 where \\\xi \in \[0,1\]\\ is a tuning parameter. Setting \\\xi = 0\\
 reduces EBIC to the classic BIC.
 
-4.  HBIC: High dimensional Bayesian information criterion ([Wang, Kim,
-    and Li 2013](#ref-wang2013calibrating); [Fan et al.
+4.  HBIC: High dimensional Bayesian information criterion ([Wang et al.
+    2013](#ref-wang2013calibrating); [Fan et al.
     2017](#ref-fan2017high))
 
 \\ \hat{\Omega}\_{\mathrm{HBIC}} = {\arg\min}\_{\Omega} \left\\
@@ -79,7 +79,7 @@ Figure 1: \\K\\-fold cross-validation procedure for tuning (\\\lambda\\,
 Akaike, Hirotogu. 1973. “Information Theory and an Extension of the
 Maximum Likelihood Principle.” In *Second International Symposium on
 Information Theory*, edited by Boris Nikolaevich Petrov and Frigyes
-Csáki, 267–81. Budapest, Hungary: Akadémiai Kiadó.
+Csáki. Akadémiai Kiadó.
 
 Chen, Jiahua, and Zehua Chen. 2008. “Extended Bayesian Information
 Criteria for Model Selection with Large Model Spaces.” *Biometrika* 95
@@ -93,9 +93,8 @@ Royal Statistical Society Series B: Statistical Methodology* 79 (2):
 Foygel, Rina, and Mathias Drton. 2010. “Extended Bayesian Information
 Criteria for Gaussian Graphical Models.” In *Advances in Neural
 Information Processing Systems 23 (NIPS 2010)*, edited by J. Lafferty,
-C. Williams, J. Shawe-Taylor, R. Zemel, and A. Culotta, 604–12. Red
-Hook, NY, USA: Curran Associates, Inc.
-<https://dl.acm.org/doi/10.5555/2997189.2997257>.
+C. Williams, J. Shawe-Taylor, R. Zemel, and A. Culotta. Curran
+Associates, Inc. <https://dl.acm.org/doi/10.5555/2997189.2997257>.
 
 Schwarz, Gideon. 1978. “Estimating the Dimension of a Model.” *The
 Annals of Statistics* 6 (2): 461–64.

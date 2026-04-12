@@ -39,21 +39,21 @@ grasps(
 
 - X:
 
-  1.  An \\n \times d\\ data matrix with sample size \\n\\ and dimension
-      \\d\\.
+  1.  An \\n \times p\\ data matrix with sample size \\n\\ and dimension
+      \\p\\.
 
-  2.  A \\d \times d\\ sample covariance matrix with dimension \\d\\.
+  2.  A \\p \times p\\ sample covariance matrix with dimension \\p\\.
 
 - n:
 
   An integer (default = `nrow(X)`) specifying the sample size. This is
-  only required when the input matrix `X` is a \\d \times d\\ sample
-  covariance matrix with dimension \\d\\.
+  only required when the input matrix `X` is a \\p \times p\\ sample
+  covariance matrix with dimension \\p\\.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension \\d\\.
+  `membership` must be consistent with the dimension \\p\\.
 
 - penalty:
 
@@ -103,7 +103,7 @@ grasps(
 
 - alpha:
 
-  A numeric vector in \[0, 1\] specifying the grid for the mixing
+  A numeric vector in \[0,1\] specifying the grid for the mixing
   parameter balancing the element-wise individual L1 penalty and the
   block-wise group L2 penalty. An alpha of 1 corresponds to the
   individual penalty only; an alpha of 0 corresponds to the group
@@ -222,7 +222,7 @@ grasps(
 
 - ebic.tuning:
 
-  A numeric value in \[0, 1\] (default = 0.5) specifying the tuning
+  A numeric value in \[0,1\] (default = 0.5) specifying the tuning
   parameter to calculate for `crit = "EBIC"`.
 
 ## Value
@@ -295,8 +295,8 @@ An object with S3 class `"grasps"` containing the following components:
 
 Akaike H (1973). “Information Theory and an Extension of the Maximum
 Likelihood Principle.” In Petrov BN, Csáki F (eds.), *Second
-International Symposium on Information Theory*, 267–281. Akad\\emiai
-Kiad\\o, Budapest, Hungary.  
+International Symposium on Information Theory*, 267–281. Akadémiai
+Kiadó, Budapest, Hungary.  
   
 Candès EJ, Wakin MB, Boyd SP (2008). “Enhancing Sparsity by Reweighted
 \\\ell_1\\ Minimization.” *Journal of Fourier Analysis and
@@ -391,7 +391,7 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 30, K = 3,
+sim <- gen_prec_sbm(p = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, rate = 10),

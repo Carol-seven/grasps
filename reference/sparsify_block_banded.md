@@ -13,13 +13,13 @@ sparsify_block_banded(mat, membership, neighbor.range = 1)
 
 - mat:
 
-  A \\d \times d\\ precision-like matrix specifying the base matrix to
+  A \\p \times p\\ precision-like matrix specifying the base matrix to
   be masked.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension \\d\\.
+  `membership` must be consistent with the dimension \\p\\.
 
 - neighbor.range:
 

@@ -13,11 +13,11 @@ performance(hatOmega, Omega)
 
 - hatOmega:
 
-  A numeric \\d \times d\\ matrix giving the estimated precision matrix.
+  A numeric \\p \times p\\ matrix giving the estimated precision matrix.
 
 - Omega:
 
-  A numeric \\d \times d\\ matrix giving the reference (typically true)
+  A numeric \\p \times p\\ matrix giving the reference (typically true)
   precision matrix.
 
 ## Value
@@ -39,7 +39,7 @@ metric and two columns:
 
 ## Details
 
-Let \\\Omega\_{d \times d}\\ and \\\hat{\Omega}\_{d \times d}\\ be the
+Let \\\Omega\_{p \times p}\\ and \\\hat{\Omega}\_{p \times p}\\ be the
 reference (true) and estimated precision matrices, respectively, with
 \\\Sigma = \Omega^{-1}\\ being the corresponding covariance matrix.
 Edges are defined by nonzero off-diagonal entries in the upper triangle
@@ -58,9 +58,9 @@ the off-diagonal elements in the upper triangle of \\\hat{\Omega}\\.
   \hat{\Omega} \Vert_F\\.
 
 - "KL": Kullback-Leibler divergence \\= \mathrm{tr}(\Sigma
-  \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - d\\.
+  \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - p\\.
 
-- "quadratic": Quadratic norm loss \\= \Vert \Sigma \hat{\Omega} - I_d
+- "quadratic": Quadratic norm loss \\= \Vert \Sigma \hat{\Omega} - I_p
   \Vert_F^2\\.
 
 - "spectral": Spectral (operator) norm loss \\= \Vert \Omega -
@@ -116,7 +116,7 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 30, K = 3,
+sim <- gen_prec_sbm(p = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, rate = 10),
