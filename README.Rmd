@@ -38,18 +38,20 @@ matrix, making them user-friendly and useful for researchers and practitioners.
 
 $$
 \hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},
+\left\{ -\log\det(\Omega) + \text{tr}(S\Omega)
++ \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \right\},
 $$
 $$
-P_{\alpha,\gamma}(\Omega)
-= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),
+\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha \mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega) + (1-\alpha) \mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega),
 $$
 $$
-P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),
+\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} P_{\lambda,\gamma}(\lvert\omega_{ij}\rvert),
 $$
 $$
-P^\text{grp}_\gamma(\Omega)
-= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).
+\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} P_{\lambda,\gamma}(\lVert\Omega_{gg^\prime}\rVert_F).
 $$
 
 
@@ -116,7 +118,7 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(d = 30, K = 3,
+sim <- gen_prec_sbm(p = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, rate = 10),
