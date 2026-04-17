@@ -144,10 +144,10 @@ where:
 ## Illustrative Visualization
 
 [Figure 1](#fig-pen) illustrates a comparison of various penalty
-functions \\\lambda p(\omega)\\ evaluated over a range of \\\omega\\
-values. The main panel (right) provides a wider view of the penalty
-functions’ behavior for larger \\\vert\omega\vert\\, while the inset
-panel (left) magnifies the region near zero \\\[-1, 1\]\\.
+functions \\P(\omega)\\ evaluated over a range of \\\omega\\ values. The
+main panel (right) provides a wider view of the penalty functions’
+behavior for larger \\\vert\omega\vert\\, while the inset panel (left)
+magnifies the region near zero \\\[-1, 1\]\\.
 
 ``` r
 library(grasps) ## for penalty computation
@@ -165,7 +165,7 @@ plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
 Figure 1: Illustrative penalty functions.
 
 [Figure 2](#fig-deriv) displays the derivative function
-\\p^\prime(\omega)\\ associated with a range of penalty types. The Lasso
+\\P^\prime(\omega)\\ associated with a range of penalty types. The Lasso
 exhibits a constant derivative, corresponding to uniform shrinkage. For
 MCP and SCAD, the derivatives are piecewise: initially equal to the
 Lasso derivative, then decreasing over an intermediate region, and
