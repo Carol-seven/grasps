@@ -83,13 +83,20 @@
 </h2>
 <p><a href="https://CRAN.R-project.org/package=grasps" class="external-link"><img src="https://www.r-pkg.org/badges/version/grasps" alt="CRAN_Status_Badge"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION" class="external-link"><img src="https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&amp;color=green" alt="GitHub R package version"></a> <a href="https://github.com/Carol-seven/grasps/commits/main" class="external-link"><img src="https://img.shields.io/github/last-commit/Carol-seven/grasps" alt="GitHub last commit"></a> <a href="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/github/license/Carol-seven/grasps?color=blue" alt="GitHub License"></a></p>
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
-<p><span class="math display">\[\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},\]</span></p>
-<p><span class="math display">\[P_{\alpha,\gamma}(\Omega)
-= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),\]</span></p>
-<p><span class="math display">\[P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),\]</span></p>
-<p><span class="math display">\[P^\text{grp}_\gamma(\Omega)
-= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).\]</span></p>
+<p><span class="math display">\[
+\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
+\left\{ -\log\det(\Omega) + \text{tr}(S\Omega)
++ \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \right\},
+\]</span> <span class="math display">\[
+\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha \mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega) + (1-\alpha) \mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega),
+\]</span> <span class="math display">\[
+\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} P_{\lambda,\gamma}(\lvert\omega_{ij}\rvert),
+\]</span> <span class="math display">\[
+\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} P_{\lambda,\gamma}(\lVert\Omega_{gg^\prime}\rVert_F).
+\]</span></p>
 <p>For more details, see the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator">Penalized Precision Matrix Estimation in grasps</a>.</p>
 <p><img src="https://raw.githubusercontent.com/Carol-seven/grasps/refs/heads/main/man/figures/workflow.png"></p>
 </div>
@@ -166,7 +173,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## block-structured precision matrix based on SBM</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                    within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span>
 <span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
@@ -182,17 +189,17 @@
 <span></span>
 <span><span class="co">## visualization</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
+<p><img src="reference/figures/README-unnamed-chunk-2-1.png" alt="" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## performance</span></span>
 <span><span class="fu"><a href="reference/performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      measure    value</span></span>
 <span><span class="co">#&gt; 1   sparsity   0.9103</span></span>
-<span><span class="co">#&gt; 2  Frobenius  24.6796</span></span>
-<span><span class="co">#&gt; 3         KL   7.2063</span></span>
-<span><span class="co">#&gt; 4  quadratic  54.1949</span></span>
-<span><span class="co">#&gt; 5   spectral  13.1336</span></span>
+<span><span class="co">#&gt; 2  Frobenius  24.6557</span></span>
+<span><span class="co">#&gt; 3         KL   7.2100</span></span>
+<span><span class="co">#&gt; 4  quadratic  54.4284</span></span>
+<span><span class="co">#&gt; 5   spectral  13.1234</span></span>
 <span><span class="co">#&gt; 6         TP  22.0000</span></span>
 <span><span class="co">#&gt; 7         TN 370.0000</span></span>
 <span><span class="co">#&gt; 8         FP  17.0000</span></span>
