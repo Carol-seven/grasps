@@ -76,21 +76,21 @@
 #' \code{lambda} values to generate when \code{lambda = NULL}.
 #'
 #' @param lambda.min.ratio A numeric value > 0 (default = 0.01) specifying
-#' the fraction of the maximum \code{lambda} value \eqn{\lambda_{max}} to
-#' generate the minimum \code{lambda} \eqn{\lambda_{min}}.
+#' the fraction of the maximum \code{lambda} value \eqn{\lambda_\max} to
+#' generate the minimum \code{lambda} \eqn{\lambda_\min}.
 #' If \code{lambda = NULL}, a \code{lambda} grid of length \code{nlambda} is
-#' automatically generated on a log scale, ranging from \eqn{\lambda_{max}}
-#' down to \eqn{\lambda_{min}}.
+#' automatically generated on a log scale, ranging from \eqn{\lambda_\max}
+#' down to \eqn{\lambda_\min}.
 #'
 #' @param growiter.lambda An integer (default = 30) specifying the maximum
 #' number of exponential growth steps during the initial search for an
-#' admissible upper bound \eqn{\lambda_{\max}}.
+#' admissible upper bound \eqn{\lambda_\max}.
 #'
 #' @param tol.lambda A numeric value > 0 (default = 1e-03) specifying
 #' the relative tolerance for the bisection stopping rule on the interval width.
 #'
 #' @param maxiter.lambda An integer (default = 50) specifying the maximum number
-#' of bisection iterations in the line search for  \eqn{\lambda_{\max}}.
+#' of bisection iterations in the line search for  \eqn{\lambda_\max}.
 #'
 #' @param rho A numeric value > 0 (default = 2) specifying the ADMM
 #' augmented-Lagrangian penalty parameter (often called the ADMM step size).
@@ -150,7 +150,7 @@
 #' \item{iterations}{The number of ADMM iterations.}
 #' \item{lambda.grid}{The actual lambda grid used in the program.}
 #' \item{alpha.grid}{The actual alpha grid used in the program.}
-#' \item{lambda.safe}{The bisection-refined upper bound \eqn{\lambda_{\max}},
+#' \item{lambda.safe}{The bisection-refined upper bound \eqn{\lambda_\max},
 #' corresponding to \code{alpha.grid}, when \code{lambda = NULL}.}
 #' \item{loss}{The optimal k-fold loss when \code{crit = "CV"}.}
 #' \item{CV.loss}{Matrix of CV losses, with rows for parameter combinations and
