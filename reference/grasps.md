@@ -137,16 +137,16 @@ grasps(
 - lambda.min.ratio:
 
   A numeric value \> 0 (default = 0.01) specifying the fraction of the
-  maximum `lambda` value \\\lambda\_{max}\\ to generate the minimum
-  `lambda` \\\lambda\_{min}\\. If `lambda = NULL`, a `lambda` grid of
+  maximum `lambda` value \\\lambda\_\max\\ to generate the minimum
+  `lambda` \\\lambda\_\min\\. If `lambda = NULL`, a `lambda` grid of
   length `nlambda` is automatically generated on a log scale, ranging
-  from \\\lambda\_{max}\\ down to \\\lambda\_{min}\\.
+  from \\\lambda\_\max\\ down to \\\lambda\_\min\\.
 
 - growiter.lambda:
 
   An integer (default = 30) specifying the maximum number of exponential
   growth steps during the initial search for an admissible upper bound
-  \\\lambda\_{\max}\\.
+  \\\lambda\_\max\\.
 
 - tol.lambda:
 
@@ -156,7 +156,7 @@ grasps(
 - maxiter.lambda:
 
   An integer (default = 50) specifying the maximum number of bisection
-  iterations in the line search for \\\lambda\_{\max}\\.
+  iterations in the line search for \\\lambda\_\max\\.
 
 - rho:
 
@@ -265,8 +265,8 @@ An object with S3 class `"grasps"` containing the following components:
 
 - lambda.safe:
 
-  The bisection-refined upper bound \\\lambda\_{\max}\\, corresponding
-  to `alpha.grid`, when `lambda = NULL`.
+  The bisection-refined upper bound \\\lambda\_\max\\, corresponding to
+  `alpha.grid`, when `lambda = NULL`.
 
 - loss:
 

@@ -198,15 +198,15 @@ The order for blocks is:</p><ul><li><p>Within-group blocks: Indices \(1, \dots, 
 The weighted adjacency matrix is symmetrized and used as the precision matrix
 \(\Omega_0\). Since arbitrary block-structured weights may not be positive
 definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
-Specifically, let \(\lambda_{\max}\) and \(\lambda_{\min}\) denote
+Specifically, let \(\lambda_\max\) and \(\lambda_\min\) denote
 the largest and smallest eigenvalues of a matrix. A non-negative numeric
 value \(\tau\) is added to the diagonal so that
 $$
 \left\{
 \begin{array}{l}
-\dfrac{\lambda_{\max}(\Omega_0 + \tau I)}{\lambda_{\min}(\Omega_0 + \tau I)}
+\dfrac{\lambda_\max(\Omega_0 + \tau I)}{\lambda_\min(\Omega_0 + \tau I)}
 \leq \texttt{cond.target} \\[1em]
-\lambda_{\min}(\Omega_0 + \tau I) &gt; 0 \\[.5em]
+\lambda_\min(\Omega_0 + \tau I) &gt; 0 \\[.5em]
 \tau \geq 0
 \end{array}
 \right.
