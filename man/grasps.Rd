@@ -212,18 +212,24 @@ sim <- gen_prec_sbm(p = 30, K = 3,
 ## visualization
 plot(sim)
 
-## n-by-d data matrix
+## n-by-p data matrix
 library(MASS)
 X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
-## adapt, HBIC
-res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "HBIC")
+## precision matrix: adaptive lasso; BIC
+prec <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
 
-## visualization
-plot(res)
+## precision matrix visualization
+plot(prec)
 
 ## performance
-performance(hatOmega = res$hatOmega, Omega = sim$Omega)
+performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
+
+## adjacency matrix: diagonal = 0; raw partial correlations;
+##                   no thresholding; weighted network
+adj <- prec_to_adj(prec$hatOmega,
+                   diag.zero = TRUE, absolute = FALSE,
+                   threshold = NULL, weighted = TRUE)
 }
 \references{
 \insertAllCited{}

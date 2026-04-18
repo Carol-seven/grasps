@@ -91,7 +91,7 @@
 #' }
 #'
 #' @example
-#' inst/example/ex-performance.R
+#' inst/example/ex-grasps.R
 #'
 #' @export
 
