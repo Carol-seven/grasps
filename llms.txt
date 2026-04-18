@@ -188,6 +188,11 @@ of the American Statistical Association* 101 (476): 1418–29.
 - [`performance()`](https://shiying-xiao.com/grasps/reference/performance.md)
   : Performance Measures for Precision Matrix Estimation
 
+## Network utilities
+
+- [`prec_to_adj()`](https://shiying-xiao.com/grasps/reference/prec_to_adj.md)
+  : Adjacency Matrix from Precision Matrix
+
 ## Penalty utilities
 
 - [`compute_penalty()`](https://shiying-xiao.com/grasps/reference/compute_penalty.md)

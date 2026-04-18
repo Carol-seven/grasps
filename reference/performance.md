@@ -126,31 +126,37 @@ sim <- gen_prec_sbm(p = 30, K = 3,
 plot(sim)
 
 
-## n-by-d data matrix
+## n-by-p data matrix
 library(MASS)
 X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
-## adapt, BIC
-res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
+## precision matrix: adaptive lasso; BIC
+prec <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
 
-## visualization
-plot(res)
+## precision matrix visualization
+plot(prec)
 
 
 ## performance
-performance(hatOmega = res$hatOmega, Omega = sim$Omega)
+performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.7862
-#> 2  Frobenius  34.8430
-#> 3         KL  12.5488
-#> 4  quadratic 161.4326
-#> 5   spectral  19.8343
-#> 6         TP  24.0000
-#> 7         TN 318.0000
-#> 8         FP  69.0000
-#> 9         FN  24.0000
-#> 10       TPR   0.5000
-#> 11       FPR   0.1783
-#> 12        F1   0.3404
-#> 13       MCC   0.2459
+#> 1   sparsity   0.8851
+#> 2  Frobenius  23.9251
+#> 3         KL   7.6715
+#> 4  quadratic  68.7751
+#> 5   spectral  12.3687
+#> 6         TP  23.0000
+#> 7         TN 360.0000
+#> 8         FP  27.0000
+#> 9         FN  25.0000
+#> 10       TPR   0.4792
+#> 11       FPR   0.0698
+#> 12        F1   0.4694
+#> 13       MCC   0.4022
+
+## adjacency matrix: diagonal = 0; raw partial correlations;
+##                   no thresholding; weighted network
+adj <- prec_to_adj(prec$hatOmega,
+                   diag.zero = TRUE, absolute = FALSE,
+                   threshold = NULL, weighted = TRUE)
 ```
