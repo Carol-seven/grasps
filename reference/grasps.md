@@ -415,19 +415,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8851
-#> 2  Frobenius  23.9251
-#> 3         KL   7.6715
-#> 4  quadratic  68.7751
-#> 5   spectral  12.3687
-#> 6         TP  23.0000
-#> 7         TN 360.0000
-#> 8         FP  27.0000
-#> 9         FN  25.0000
-#> 10       TPR   0.4792
-#> 11       FPR   0.0698
-#> 12        F1   0.4694
-#> 13       MCC   0.4022
+#> 1   sparsity   0.7862
+#> 2  Frobenius  34.8430
+#> 3         KL  12.5488
+#> 4  quadratic 161.4326
+#> 5   spectral  19.8343
+#> 6         TP  24.0000
+#> 7         TN 318.0000
+#> 8         FP  69.0000
+#> 9         FN  24.0000
+#> 10       TPR   0.5000
+#> 11       FPR   0.1783
+#> 12        F1   0.3404
+#> 13       MCC   0.2459
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network
