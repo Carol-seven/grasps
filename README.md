@@ -17,7 +17,7 @@ matrix, making them user-friendly and useful for researchers and practitioners.
 
 $$
 \hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
--\log\det(\Omega) + \text{tr}(S\Omega) + \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega),
+\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \},
 $$
 $$
 \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
