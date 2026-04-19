@@ -46,6 +46,7 @@ reference:
   - compute_derivative
 - title: Visualization
   contents:
+  - plot.adjmat
   - plot.blkmat
   - plot.penderiv
 

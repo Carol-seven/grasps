@@ -78,4 +78,7 @@ performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 adj <- prec_to_adj(prec$hatOmega,
                    diag.zero = TRUE, absolute = FALSE,
                    threshold = NULL, weighted = TRUE)
+
+## adjacency matrix visualization
+plot(adj)
 }
