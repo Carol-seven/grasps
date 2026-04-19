@@ -17,8 +17,8 @@ a precision matrix, making them user-friendly and useful for researchers
 and practitioners.
 
 \\ \hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}\_{\Omega \succ 0}
-\left\\ -\log\det(\Omega) + \text{tr}(S\Omega) +
-\mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega) \right\\, \\ \\
+-\log\det(\Omega) + \text{tr}(S\Omega) +
+\mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega), \\ \\
 \mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega) = \alpha
 \mathcal{P}^\text{idv}\_{\lambda,\gamma}(\Omega) + (1-\alpha)
 \mathcal{P}^\text{grp}\_{\lambda,\gamma}(\Omega), \\ \\
