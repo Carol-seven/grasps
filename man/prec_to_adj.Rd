@@ -34,7 +34,7 @@ If \code{weighted = FALSE}, the matrix is a binary adjacency matrix with
 entries equal to 0 or 1.}
 }
 \value{
-A numeric adjacency matrix.
+A numeric adjacency matrix with S3 class \code{"adjmat"}.
 }
 \description{
 Convert a precision matrix to a partial-correlation-based adjacency matrix.
@@ -42,7 +42,7 @@ Convert a precision matrix to a partial-correlation-based adjacency matrix.
 \details{
 For a precision matrix \eqn{\Omega}, the partial correlation between nodes
 \eqn{i} and \eqn{j} is computed as
-\deqn{\rho_{ij} = - \Omega_{ij} / \sqrt{\Omega_{ii}\Omega_{jj}}.}
+\deqn{\rho_{ij} = - \frac{\Omega_{ij}}{\sqrt{\Omega_{ii}\Omega_{jj}}}.}
 }
 \examples{
 library(grasps)
