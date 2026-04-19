@@ -397,7 +397,7 @@ sim <- gen_prec_sbm(p = 30, K = 3,
                     weight.paras = list(c(shape = 20, rate = 10),
                                         c(min = 0, max = 5)),
                     cond.target = 100)
-## visualization
+## ground truth visualization
 plot(sim)
 
 

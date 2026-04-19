@@ -85,39 +85,57 @@ sim <- gen_prec_sbm(p = 30, K = 3,
                     weight.paras = list(c(shape = 20, rate = 10),
                                         c(min = 0, max = 5)),
                     cond.target = 100)
-
-## synthetic data
-library(MASS)
-X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
-
-## solution
-res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "HBIC")
-
-## visualization
-plot(res)
+## ground truth visualization
+plot(sim)
 ```
 
 ![](reference/figures/README-unnamed-chunk-2-1.png)
 
 ``` r
 
-## performance
-performance(hatOmega = res$hatOmega, Omega = sim$Omega)
-#>      measure    value
-#> 1   sparsity   0.9103
-#> 2  Frobenius  24.6557
-#> 3         KL   7.2100
-#> 4  quadratic  54.4284
-#> 5   spectral  13.1234
-#> 6         TP  22.0000
-#> 7         TN 370.0000
-#> 8         FP  17.0000
-#> 9         FN  26.0000
-#> 10       TPR   0.4583
-#> 11       FPR   0.0439
-#> 12        F1   0.5057
-#> 13       MCC   0.4545
+## n-by-p data matrix
+library(MASS)
+X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
+
+## precision matrix: adaptive lasso; BIC
+prec <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
+
+## precision matrix visualization
+plot(prec)
 ```
+
+![](reference/figures/README-unnamed-chunk-2-2.png)
+
+``` r
+
+## performance
+performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
+#>      measure    value
+#> 1   sparsity   0.8805
+#> 2  Frobenius  23.9013
+#> 3         KL   7.6775
+#> 4  quadratic  69.1639
+#> 5   spectral  12.3571
+#> 6         TP  23.0000
+#> 7         TN 358.0000
+#> 8         FP  29.0000
+#> 9         FN  25.0000
+#> 10       TPR   0.4792
+#> 11       FPR   0.0749
+#> 12        F1   0.4600
+#> 13       MCC   0.3904
+
+## adjacency matrix: diagonal = 0; raw partial correlations;
+##                   no thresholding; weighted network
+adj <- prec_to_adj(prec$hatOmega,
+                   diag.zero = TRUE, absolute = FALSE,
+                   threshold = NULL, weighted = TRUE)
+
+## adjacency matrix visualization
+plot(adj)
+```
+
+![](reference/figures/README-unnamed-chunk-2-3.png)
 
 ## Reference
 
