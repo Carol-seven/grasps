@@ -58,18 +58,13 @@ plot.blkmat <- function(x, colors = NULL, ...) {
   Col <- Row <- value <- NULL
 
   ## plot data
-  labs <- paste0("V", seq_len(p))
+  labs <- as.character(seq_len(p))
   plotData <- data.frame(
     Row = factor(rep(labs, times = p),  levels = labs),
     Col = factor(rep(labs, each = p), levels = labs),
     value = as.vector(mat),
     check.names = FALSE
   )
-  # plotData <- as.data.frame(mat) %>%
-  #   mutate(Row = factor(paste0("V", rownames(.)),
-  #                       levels = paste0("V", rownames(.)))) %>%
-  #   pivot_longer(-Row, names_to = "Col", values_to = "value") %>%
-  #   mutate(Col = factor(Col, levels = levels(Row)))
 
   ## zero -> NA for better white rendering
   plotData$value[plotData$value == 0] <- NA
