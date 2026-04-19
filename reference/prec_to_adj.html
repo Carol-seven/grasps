@@ -99,13 +99,13 @@ entries equal to 0 or 1.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric adjacency matrix.</p>
+    <p>A numeric adjacency matrix with S3 class <code>"adjmat"</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For a precision matrix \(\Omega\), the partial correlation between nodes
 \(i\) and \(j\) is computed as
-$$\rho_{ij} = - \Omega_{ij} / \sqrt{\Omega_{ii}\Omega_{jj}}.$$</p>
+$$\rho_{ij} = - \frac{\Omega_{ij}}{\sqrt{\Omega_{ii}\Omega_{jj}}}.$$</p>
     </div>
 
     <div class="section level2">
@@ -140,25 +140,29 @@ $$\rho_{ij} = - \Omega_{ij} / \sqrt{\Omega_{ii}\Omega_{jj}}.$$</p>
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8851</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  23.9251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   7.6715</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic  68.7751</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  12.3687</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  23.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 360.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  27.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  25.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.4792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.0698</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4694</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.4022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.7862</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  34.8430</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL  12.5488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 161.4326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  19.8343</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  24.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 318.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  69.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  24.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1783</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.2459</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>
 <span class="r-in"><span><span class="va">adj</span> <span class="op">&lt;-</span> <span class="fu">prec_to_adj</span><span class="op">(</span><span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>,</span></span>
 <span class="r-in"><span>                   diag.zero <span class="op">=</span> <span class="cn">TRUE</span>, absolute <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                   threshold <span class="op">=</span> <span class="cn">NULL</span>, weighted <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## adjacency matrix visualization</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">adj</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="prec_to_adj-3.png" alt="" width="2188" height="1352"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

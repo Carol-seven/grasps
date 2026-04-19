@@ -1,60 +1,32 @@
-# Adjacency Matrix from Precision Matrix
+# Plot Function for S3 Class "adjmat"
 
-Convert a precision matrix to a partial-correlation-based adjacency
-matrix.
+Visualize an adjacency matrix as a heatmap. This function is shared by
+objects returned from
+[`prec_to_adj`](https://shiying-xiao.com/grasps/reference/prec_to_adj.md).
 
 ## Usage
 
 ``` r
-prec_to_adj(
-  prec.mat,
-  diag.zero = TRUE,
-  absolute = FALSE,
-  threshold = NULL,
-  weighted = TRUE
-)
+# S3 method for class 'adjmat'
+plot(x, ...)
 ```
 
 ## Arguments
 
-- prec.mat:
+- x:
 
-  A numeric precision matrix.
+  An object inheriting from S3 class `"adjmat"`, typically returned by
+  [`prec_to_adj`](https://shiying-xiao.com/grasps/reference/prec_to_adj.md).
 
-- diag.zero:
+- ...:
 
-  A logical value (default = TRUE) specifying whether to set the
-  diagonal entries of the adjacency matrix to 0. If `diag.zero = FALSE`,
-  the diagonal entries are set to 1 for a weighted network. For an
-  unweighted network (`weighted = FALSE`), the diagonal is always forced
-  to 0 to avoid self-loops.
-
-- absolute:
-
-  A logical value (default = FALSE) specifying whether to take the
-  absolute values of the partial correlations.
-
-- threshold:
-
-  A nonnegative numeric value (default = `NULL`) specifying the
-  threshold for edge filtering. Entries with absolute values smaller
-  than the threshold are set to 0.
-
-- weighted:
-
-  A logical value (default = TRUE) specifying whether to return a
-  weighted adjacency matrix. If `weighted = FALSE`, the matrix is a
-  binary adjacency matrix with entries equal to 0 or 1.
+  Additional arguments passed to
+  [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html).
 
 ## Value
 
-A numeric adjacency matrix with S3 class `"adjmat"`.
-
-## Details
-
-For a precision matrix \\\Omega\\, the partial correlation between nodes
-\\i\\ and \\j\\ is computed as \$\$\rho\_{ij} = -
-\frac{\Omega\_{ij}}{\sqrt{\Omega\_{ii}\Omega\_{jj}}}.\$\$
+A heatmap of class `ggplot` showing the matrix entries. The plot title
+also reports matrix dimension and sparsity.
 
 ## Examples
 

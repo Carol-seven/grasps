@@ -31,6 +31,8 @@
 
 ## Visualization
 
+- [`plot(`*`<adjmat>`*`)`](https://shiying-xiao.com/grasps/reference/plot.adjmat.md)
+  : Plot Function for S3 Class "adjmat"
 - [`plot(`*`<blkmat>`*`)`](https://shiying-xiao.com/grasps/reference/plot.blkmat.md)
   : Plot Function for Block-Structured Precision Matrices (Visualize a
   Matrix with Group Boundaries)
