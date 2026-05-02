@@ -1,7 +1,7 @@
 Package: grasps
 Type: Package
 Title: Groupwise Regularized Adaptive Sparse Precision Solution
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person(given = "Shiying", family = "Xiao",
            email = "shiying.xiao@outlook.com",
@@ -40,7 +40,6 @@ Imports:
 LinkingTo:
     Rcpp,
     RcppArmadillo
-RoxygenNote: 7.3.3
 RdMacros: Rdpack
 Suggests: 
     knitr,
@@ -50,3 +49,4 @@ Suggests:
 VignetteBuilder:
     knitr,
     quarto
+Config/roxygen2/version: 8.0.0

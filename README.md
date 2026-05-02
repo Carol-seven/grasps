@@ -71,8 +71,8 @@ for more details.
 
 <!-- -->
 
-    # install.packages("devtools")
-    devtools::install_github("Carol-seven/grasps")
+    # install.packages("pak")
+    pak::pkg_install("Carol-seven/grasps")
 
 ## Example
 
