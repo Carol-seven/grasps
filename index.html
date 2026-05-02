@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">grasps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,7 @@
     <li><a class="dropdown-item" href="articles/crit.html">Selection Criteria for Parameters</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -83,13 +84,19 @@
 </h2>
 <p><a href="https://CRAN.R-project.org/package=grasps" class="external-link"><img src="https://www.r-pkg.org/badges/version/grasps" alt="CRAN_Status_Badge"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION" class="external-link"><img src="https://img.shields.io/github/r-package/v/Carol-seven/grasps?label=R%20in%20dev&amp;color=green" alt="GitHub R package version"></a> <a href="https://github.com/Carol-seven/grasps/commits/main" class="external-link"><img src="https://img.shields.io/github/last-commit/Carol-seven/grasps" alt="GitHub last commit"></a> <a href="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Carol-seven/grasps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/Carol-seven/grasps/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/github/license/Carol-seven/grasps?color=blue" alt="GitHub License"></a></p>
 <p>The goal of <strong>grasps</strong> is to provide a collection of statistical methods that incorporate both element-wise and group-wise penalties to estimate a precision matrix, making them user-friendly and useful for researchers and practitioners.</p>
-<p><span class="math display">\[\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \lambda P_{\alpha,\gamma}(\Omega) \},\]</span></p>
-<p><span class="math display">\[P_{\alpha,\gamma}(\Omega)
-= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),\]</span></p>
-<p><span class="math display">\[P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),\]</span></p>
-<p><span class="math display">\[P^\text{grp}_\gamma(\Omega)
-= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).\]</span></p>
+<p><span class="math display">\[
+\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
+\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \},
+\]</span> <span class="math display">\[
+\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha \mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega) + (1-\alpha) \mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega),
+\]</span> <span class="math display">\[
+\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} P_{\lambda,\gamma}(\lvert\omega_{ij}\rvert),
+\]</span> <span class="math display">\[
+\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} P_{\lambda,\gamma}(\lVert\Omega_{gg^\prime}\rVert_F).
+\]</span></p>
 <p>For more details, see the vignette <a href="https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator">Penalized Precision Matrix Estimation in grasps</a>.</p>
 <p><img src="https://raw.githubusercontent.com/Carol-seven/grasps/refs/heads/main/man/figures/workflow.png"></p>
 </div>
@@ -153,8 +160,8 @@
 <ul>
 <li>You can install the development version of <strong>grasps</strong> from <a href="https://github.com/Carol-seven/grasps" class="external-link">GitHub</a> with:</li>
 </ul>
-<!-- --><div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"Carol-seven/grasps"</span>)</span></code></pre></div>
+<!-- --><div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># install.packages("pak")</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"Carol-seven/grasps"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -166,41 +173,55 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## block-structured precision matrix based on SBM</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                    within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span>
 <span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>                                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                    cond.target <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## synthetic data</span></span>
+<span><span class="co">## ground truth visualization</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-2-1.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">## n-by-p data matrix</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">MASS</a></span><span class="op">)</span></span>
 <span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## solution</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grasps.html">grasps</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"HBIC"</span><span class="op">)</span></span>
+<span><span class="co">## precision matrix: adaptive lasso; BIC</span></span>
+<span><span class="va">prec</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grasps.html">grasps</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## visualization</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<span><span class="co">## precision matrix visualization</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prec</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-2-2.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## performance</span></span>
-<span><span class="fu"><a href="reference/performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      measure    value</span></span>
-<span><span class="co">#&gt; 1   sparsity   0.9103</span></span>
-<span><span class="co">#&gt; 2  Frobenius  24.6796</span></span>
-<span><span class="co">#&gt; 3         KL   7.2063</span></span>
-<span><span class="co">#&gt; 4  quadratic  54.1949</span></span>
-<span><span class="co">#&gt; 5   spectral  13.1336</span></span>
-<span><span class="co">#&gt; 6         TP  22.0000</span></span>
-<span><span class="co">#&gt; 7         TN 370.0000</span></span>
-<span><span class="co">#&gt; 8         FP  17.0000</span></span>
-<span><span class="co">#&gt; 9         FN  26.0000</span></span>
-<span><span class="co">#&gt; 10       TPR   0.4583</span></span>
-<span><span class="co">#&gt; 11       FPR   0.0439</span></span>
-<span><span class="co">#&gt; 12        F1   0.5057</span></span>
-<span><span class="co">#&gt; 13       MCC   0.4545</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   sparsity   0.8805</span></span>
+<span><span class="co">#&gt; 2  Frobenius  23.9013</span></span>
+<span><span class="co">#&gt; 3         KL   7.6775</span></span>
+<span><span class="co">#&gt; 4  quadratic  69.1639</span></span>
+<span><span class="co">#&gt; 5   spectral  12.3571</span></span>
+<span><span class="co">#&gt; 6         TP  23.0000</span></span>
+<span><span class="co">#&gt; 7         TN 358.0000</span></span>
+<span><span class="co">#&gt; 8         FP  29.0000</span></span>
+<span><span class="co">#&gt; 9         FN  25.0000</span></span>
+<span><span class="co">#&gt; 10       TPR   0.4792</span></span>
+<span><span class="co">#&gt; 11       FPR   0.0749</span></span>
+<span><span class="co">#&gt; 12        F1   0.4600</span></span>
+<span><span class="co">#&gt; 13       MCC   0.3904</span></span>
+<span></span>
+<span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span>
+<span><span class="co">##                   no thresholding; weighted network</span></span>
+<span><span class="va">adj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prec_to_adj.html">prec_to_adj</a></span><span class="op">(</span><span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>,</span>
+<span>                   diag.zero <span class="op">=</span> <span class="cn">TRUE</span>, absolute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                   threshold <span class="op">=</span> <span class="cn">NULL</span>, weighted <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## adjacency matrix visualization</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">adj</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-2-3.png" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
@@ -272,6 +293,10 @@ Zou, Hui. 2006. “The Adaptive Lasso and Its Oracle Properties.” <em>Journal 
 <ul class="list-unstyled">
 <li>
 <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-8846-3258" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://statcomp.org" class="external-link">Jun Yan</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4401-7296" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://panpan-zhang.com" class="external-link">Panpan Zhang</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-8211-5930" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -282,7 +307,7 @@ Zou, Hui. 2006. “The Adaptive Lasso and Its Oracle Properties.” <em>Journal 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>.</p>
+  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>, <a href="https://statcomp.org" class="external-link">Jun Yan</a>, <a href="https://panpan-zhang.com" class="external-link">Panpan Zhang</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -17,6 +17,11 @@
 - [`performance()`](https://shiying-xiao.com/grasps/reference/performance.md)
   : Performance Measures for Precision Matrix Estimation
 
+## Network utilities
+
+- [`prec_to_adj()`](https://shiying-xiao.com/grasps/reference/prec_to_adj.md)
+  : Adjacency Matrix from Precision Matrix
+
 ## Penalty utilities
 
 - [`compute_penalty()`](https://shiying-xiao.com/grasps/reference/compute_penalty.md)
@@ -26,6 +31,8 @@
 
 ## Visualization
 
+- [`plot(`*`<adjmat>`*`)`](https://shiying-xiao.com/grasps/reference/plot.adjmat.md)
+  : Plot Function for S3 Class "adjmat"
 - [`plot(`*`<blkmat>`*`)`](https://shiying-xiao.com/grasps/reference/plot.blkmat.md)
   : Plot Function for Block-Structured Precision Matrices (Visualize a
   Matrix with Group Boundaries)

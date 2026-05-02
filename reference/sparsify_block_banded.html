@@ -15,7 +15,7 @@ keeping only entries within specified group neighborhoods."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">grasps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,6 +29,7 @@ keeping only entries within specified group neighborhoods."><meta property="og:i
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/pen_est.html">Penalized Precision Matrix Estimation</a></li>
     <li><a class="dropdown-item" href="../articles/crit.html">Selection Criteria for Parameters</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Carol-seven/grasps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -46,7 +47,7 @@ keeping only entries within specified group neighborhoods."><meta property="og:i
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Groupwise Block-Banded Sparsifier</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/v0.1.0/R/sparsify_block_banded.R" class="external-link"><code>R/sparsify_block_banded.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/main/R/sparsify_block_banded.R" class="external-link"><code>R/sparsify_block_banded.R</code></a></small>
       <div class="d-none name"><code>sparsify_block_banded.Rd</code></div>
     </div>
 
@@ -65,13 +66,13 @@ keeping only entries within specified group neighborhoods.</p>
 
 
 <dl><dt id="arg-mat">mat<a class="anchor" aria-label="anchor" href="#arg-mat"></a></dt>
-<dd><p>A \(d \times d\) precision-like matrix specifying the base
+<dd><p>A \(p \times p\) precision-like matrix specifying the base
 matrix to be masked.</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
 <dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension \(d\).</p></dd>
+The length of <code>membership</code> must be consistent with the dimension \(p\).</p></dd>
 
 
 <dt id="arg-neighbor-range">neighbor.range<a class="anchor" aria-label="anchor" href="#arg-neighbor-range"></a></dt>
@@ -131,7 +132,7 @@ the following components:</p><dl><dt>Omega</dt>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>.</p>
+  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>, <a href="https://statcomp.org" class="external-link">Jun Yan</a>, <a href="https://panpan-zhang.com" class="external-link">Panpan Zhang</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

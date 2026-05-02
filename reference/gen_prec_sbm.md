@@ -7,7 +7,7 @@ stochastic block model (SBM).
 
 ``` r
 gen_prec_sbm(
-  d,
+  p,
   block.sizes = NULL,
   K = 3,
   prob.mat = NULL,
@@ -22,14 +22,14 @@ gen_prec_sbm(
 
 ## Arguments
 
-- d:
+- p:
 
   An integer specifying the number of variables (dimensions).
 
 - block.sizes:
 
   An integer vector (default = `NULL`) specifying the size of each
-  group. If `NULL`, the \\d\\ variables are divided as evenly as
+  group. If `NULL`, the \\p\\ variables are divided as evenly as
   possible across \\K\\ groups.
 
 - K:
@@ -47,19 +47,19 @@ gen_prec_sbm(
 
 - within.prob:
 
-  A numeric value in \[0, 1\] (default = 0.25) specifying the
-  probability of creating an edge between vertices within the same
-  group. This argument is used only when `prob.mat = NULL`.
+  A numeric value in \[0,1\] (default = 0.25) specifying the probability
+  of creating an edge between vertices within the same group. This
+  argument is used only when `prob.mat = NULL`.
 
 - between.prob:
 
-  A numeric value in \[0, 1\] (default = 0.05) specifying the
-  probability of creating an edge between vertices from different
-  groups. This argument is used only when `prob.mat = NULL`.
+  A numeric value in \[0,1\] (default = 0.05) specifying the probability
+  of creating an edge between vertices from different groups. This
+  argument is used only when `prob.mat = NULL`.
 
 - weight.mat:
 
-  A \\d \times d\\ symmetric matrix (default = `NULL`) specifying the
+  A \\p \times p\\ symmetric matrix (default = `NULL`) specifying the
   edge weights. If `NULL`, weights are generated block-wise according to
   `weight.dists` and `weight.paras`.
 
@@ -186,15 +186,15 @@ determines how weight distributions are assigned:
 and used as the precision matrix \\\Omega_0\\. Since arbitrary
 block-structured weights may not be positive definite, a diagonal
 adjustment is applied to control the eigenvalue spectrum. Specifically,
-let \\\lambda\_{\max}\\ and \\\lambda\_{\min}\\ denote the largest and
+let \\\lambda\_\max\\ and \\\lambda\_\min\\ denote the largest and
 smallest eigenvalues of a matrix. A non-negative numeric value \\\tau\\
 is added to the diagonal so that \$\$ \left\\ \begin{array}{l}
-\dfrac{\lambda\_{\max}(\Omega_0 + \tau I)}{\lambda\_{\min}(\Omega_0 +
-\tau I)} \leq \texttt{cond.target} \\\[1em\] \lambda\_{\min}(\Omega_0 +
-\tau I) \> 0 \\\[.5em\] \tau \geq 0 \end{array} \right. \$\$ which
-ensures both positive definiteness and guarantees that the condition
-number does not exceed `cond.target`, providing numerical stability even
-in high-dimensional settings.
+\dfrac{\lambda\_\max(\Omega_0 + \tau I)}{\lambda\_\min(\Omega_0 + \tau
+I)} \leq \texttt{cond.target} \\\[1em\] \lambda\_\min(\Omega_0 + \tau I)
+\> 0 \\\[.5em\] \tau \geq 0 \end{array} \right. \$\$ which ensures both
+positive definiteness and guarantees that the condition number does not
+exceed `cond.target`, providing numerical stability even in
+high-dimensional settings.
 
 ## Examples
 
@@ -206,7 +206,7 @@ set.seed(1234)
 
 ## block-structured precision matrix based on SBM
 #### case 1: base R distribution
-sim1 <- gen_prec_sbm(d = 100, K = 5,
+sim1 <- gen_prec_sbm(p = 100, K = 5,
                      within.prob = 0.25, between.prob = 0.1,
                      weight.dists = list("gamma", "unif"),
                      weight.paras = list(c(shape = 100, scale = 1e2),
@@ -220,7 +220,7 @@ plot(sim1)
 my_gamma <- function(n) {
   rgamma(n, shape = 1e4, scale = 1e2)
 }
-sim2 <- gen_prec_sbm(d = 100, K = 5,
+sim2 <- gen_prec_sbm(p = 100, K = 5,
                      within.prob = 0.2, between.prob = 0.05,
                      weight.dists = list(my_gamma, "unif"),
                      weight.paras = list(NULL,
