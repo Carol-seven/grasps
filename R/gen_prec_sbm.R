@@ -115,15 +115,15 @@
 #' The weighted adjacency matrix is symmetrized and used as the precision matrix
 #' \eqn{\Omega_0}. Since arbitrary block-structured weights may not be positive
 #' definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
-#' Specifically, let \eqn{\lambda_\max} and \eqn{\lambda_\min} denote
+#' Specifically, let \eqn{\lambda_{\max}} and \eqn{\lambda_{\min}} denote
 #' the largest and smallest eigenvalues of a matrix. A non-negative numeric
 #' value \eqn{\tau} is added to the diagonal so that
 #' \deqn{
 #' \left\{
 #' \begin{array}{l}
-#' \dfrac{\lambda_\max(\Omega_0 + \tau I)}{\lambda_\min(\Omega_0 + \tau I)}
+#' \dfrac{\lambda_{\max}(\Omega_0 + \tau I)}{\lambda_{\min}(\Omega_0 + \tau I)}
 #' \leq \texttt{cond.target} \\[1em]
-#' \lambda_\min(\Omega_0 + \tau I) > 0 \\[.5em]
+#' \lambda_{\min}(\Omega_0 + \tau I) > 0 \\[.5em]
 #' \tau \geq 0
 #' \end{array}
 #' \right.

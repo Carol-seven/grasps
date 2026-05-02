@@ -3,7 +3,7 @@
 #' @description
 #' Given a list of off-diagonal blocks \code{blockList} from the sample
 #' covariance (or a related matrix), this routine finds a \strong{sharp}
-#' \eqn{\lambda_\max} by bisection so that the KKT condition
+#' \eqn{\lambda_{\max}} by bisection so that the KKT condition
 #' \deqn{\Vert\text{soft}(B, \lambda\alpha)\Vert_F \leq \lambda(1-\alpha)}
 #' holds for every block \eqn{B} in \code{blockList}, where
 #' \eqn{\text{soft}(\cdot, t)} denotes element-wise soft-thresholding with
@@ -13,7 +13,7 @@
 #' used in the group KKT check.
 #'
 #' @param lambda.safe A numeric value representing a safe (but possibly loose)
-#' upper bound for \eqn{\lambda_\max}. If the value is negative, the search
+#' upper bound for \eqn{\lambda_{\max}}. If the value is negative, the search
 #' starts from 1.
 #'
 #' @param alpha A numeric value in (0,1) specifying the mixture weight between
@@ -21,7 +21,7 @@
 #'
 #' @param growiter An integer specifying the maximum number of exponential
 #' growth steps during the initial search for an admissible upper bound
-#' \eqn{\lambda_\max}.
+#' \eqn{\lambda_{\max}}.
 #'
 #' @param tol A numeric value > 0 specifying the relative tolerance for
 #' the bisection stopping rule on the interval width.
@@ -30,7 +30,7 @@
 #' iterations.
 #'
 #' @return
-#' A numeric value giving the bisection-refined upper bound \eqn{\lambda_\max}.
+#' A numeric value giving the bisection-refined upper bound \eqn{\lambda_{\max}}.
 #'
 #' @details
 #' The procedure first grows an upper bound starting from \code{lambda.safe}
