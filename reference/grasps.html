@@ -189,17 +189,17 @@ the chosen <code>penalty</code>. The default value depends on the penalty:</p><o
 
 <dt id="arg-lambda-min-ratio">lambda.min.ratio<a class="anchor" aria-label="anchor" href="#arg-lambda-min-ratio"></a></dt>
 <dd><p>A numeric value &gt; 0 (default = 0.01) specifying
-the fraction of the maximum <code>lambda</code> value \(\lambda_\max\) to
-generate the minimum <code>lambda</code> \(\lambda_\min\).
+the fraction of the maximum <code>lambda</code> value \(\lambda_{\max}\) to
+generate the minimum <code>lambda</code> \(\lambda_{\min}\).
 If <code>lambda = NULL</code>, a <code>lambda</code> grid of length <code>nlambda</code> is
-automatically generated on a log scale, ranging from \(\lambda_\max\)
-down to \(\lambda_\min\).</p></dd>
+automatically generated on a log scale, ranging from \(\lambda_{\max}\)
+down to \(\lambda_{\min}\).</p></dd>
 
 
 <dt id="arg-growiter-lambda">growiter.lambda<a class="anchor" aria-label="anchor" href="#arg-growiter-lambda"></a></dt>
 <dd><p>An integer (default = 30) specifying the maximum
 number of exponential growth steps during the initial search for an
-admissible upper bound \(\lambda_\max\).</p></dd>
+admissible upper bound \(\lambda_{\max}\).</p></dd>
 
 
 <dt id="arg-tol-lambda">tol.lambda<a class="anchor" aria-label="anchor" href="#arg-tol-lambda"></a></dt>
@@ -209,7 +209,7 @@ the relative tolerance for the bisection stopping rule on the interval width.</p
 
 <dt id="arg-maxiter-lambda">maxiter.lambda<a class="anchor" aria-label="anchor" href="#arg-maxiter-lambda"></a></dt>
 <dd><p>An integer (default = 50) specifying the maximum number
-of bisection iterations in the line search for  \(\lambda_\max\).</p></dd>
+of bisection iterations in the line search for  \(\lambda_{\max}\).</p></dd>
 
 
 <dt id="arg-rho">rho<a class="anchor" aria-label="anchor" href="#arg-rho"></a></dt>
@@ -308,7 +308,7 @@ is chosen via <code>penalty</code>.</p></dd>
 <dd><p>The actual alpha grid used in the program.</p></dd>
 
 <dt>lambda.safe</dt>
-<dd><p>The bisection-refined upper bound \(\lambda_\max\),
+<dd><p>The bisection-refined upper bound \(\lambda_{\max}\),
 corresponding to <code>alpha.grid</code>, when <code>lambda = NULL</code>.</p></dd>
 
 <dt>loss</dt>
