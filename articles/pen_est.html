@@ -79,7 +79,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/main/vignettes/pen_est.qmd" class="external-link"><code>vignettes/pen_est.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/v0.1.0/vignettes/pen_est.qmd" class="external-link"><code>vignettes/pen_est.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -93,44 +93,47 @@
 <p>Consider the following setting:</p>
 <ul>
 <li><p><strong>Gaussian graphical model (GGM) assumption:</strong><br>
-The data <span class="math inline">\(X_{p \times p}\)</span> consists of independent and identically distributed samples <span class="math inline">\(X_1, \dots, X_n \sim N_p(\mu,\Sigma)\)</span>.</p></li>
+The data <span class="math inline">\(X_{n \times d}\)</span> consists of independent and identically distributed samples <span class="math inline">\(X_1, \dots, X_n \sim N_d(\mu,\Sigma)\)</span>.</p></li>
 <li><p><strong>Disjoint group structure:</strong><br>
-The <span class="math inline">\(p\)</span> variables can be partitioned into disjoint groups.</p></li>
+The <span class="math inline">\(d\)</span> variables can be partitioned into disjoint groups.</p></li>
 <li><p><strong>Goal:</strong><br>
-Estimate the precision matrix <span class="math inline">\(\Omega = \Sigma^{-1} = (\omega_{ij})_{p \times p}\)</span>.</p></li>
+Estimate the precision matrix <span class="math inline">\(\Omega = \Sigma^{-1} = (\omega_{ij})_{d \times d}\)</span>.</p></li>
 </ul></section><section class="level2"><h2 id="sparse-group-estimator">Sparse-Group Estimator<a class="anchor" aria-label="anchor" href="#sparse-group-estimator"></a>
 </h2>
 <p><span class="math display">\[\begin{gather}
 \hat{\Omega}(\lambda,\alpha,\gamma)
 = {\arg\min}_{\Omega \succ 0} \left\{ -\log\det(\Omega) + \text{tr}(S\Omega)
-+ \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \right\},
++ \lambda P_{\alpha,\gamma}(\Omega) \right\},
 \\[10pt]
-\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
-= \alpha \mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega) + (1-\alpha) \mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega),
+P_{\alpha,\gamma}(\Omega)
+= \alpha P^\text{idv}_\gamma(\Omega) + (1-\alpha) P^\text{grp}_\gamma(\Omega),
 \\[10pt]
-\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} P_{\lambda,\gamma}(\lvert\omega_{ij}\rvert),
+P^\text{idv}_\gamma(\Omega) = \sum_{i,j} p_\gamma(\vert\omega_{ij}\vert),
 \\[5pt]
-\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} P_{\lambda,\gamma}(\lVert\Omega_{gg^\prime}\rVert_F).
+P^\text{grp}_\gamma(\Omega)
+= \sum_{g,g^\prime} p_\gamma(\Vert\Omega_{gg^\prime}\Vert_F).
 \end{gather}\]</span></p>
 <p>where:</p>
 <ul>
 <li><p><span class="math inline">\(S = n^{-1} \sum_{i=1}^n (X_i-\bar{X})(X_i-\bar{X})^\top\)</span> is the empirical covariance matrix.</p></li>
 <li><p><span class="math inline">\(\lambda \geq 0\)</span> is the global regularization parameter controlling overall shrinkage.</p></li>
 <li><p><span class="math inline">\(\alpha \in [0,1]\)</span> is the mixing parameter controlling the balance between element-wise and block-wise penalties.</p></li>
-<li><p><span class="math inline">\(\gamma\)</span> is the additional parameter for non-convex penalties, controlling the degree of nonconvexity (or concavity) of the penalty function.</p></li>
-<li><p><span class="math inline">\(\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)\)</span> is a generic bi-level penalty template that combines element-wise and block-wise regularization, allowing convex or non-convex regularizers while preserving the intrinsic group structure among variables.</p></li>
-<li><p><span class="math inline">\(\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)\)</span> is the element-wise individual penalty component.</p></li>
-<li><p><span class="math inline">\(\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)\)</span> is the block-wise group penalty component.</p></li>
-<li><p><span class="math inline">\(P_{\lambda,\gamma}(\cdot)\)</span> is the penalty function.</p></li>
+<li><p><span class="math inline">\(\gamma\)</span> is the additional parameter controlling the curvature and effective degree of nonconvexity of the penalty.</p></li>
+<li><p><span class="math inline">\(P_{\alpha,\gamma}(\Omega)\)</span> is a generic bi-level penalty template that can incorporate convex or non-convex regularizers while preserving the intrinsic group structure among variables.</p></li>
+<li><p><span class="math inline">\(P^\text{idv}_\gamma(\Omega)\)</span> is the element-wise individual penalty component.</p></li>
+<li><p><span class="math inline">\(P^\text{grp}_\gamma(\Omega)\)</span> is the block-wise group penalty component.</p></li>
+<li><p><span class="math inline">\(p_\gamma(\cdot)\)</span> is a penalty kernel parameterized by <span class="math inline">\(\gamma\)</span>.</p></li>
 <li><p><span class="math inline">\(\Omega_{gg^\prime}\)</span> is the submatrix of <span class="math inline">\(\Omega\)</span> with the rows from group <span class="math inline">\(g\)</span> and columns from group <span class="math inline">\(g^\prime\)</span>.</p></li>
-<li><p>The Frobenius norm <span class="math inline">\(\lVert\Omega\rVert_F\)</span> is defined as <span class="math inline">\(\lVert\Omega\rVert_F = (\sum_{i,j} \lvert\omega_{ij}\rvert^2)^{1/2} = [\text{tr}(\Omega^\top\Omega)]^{1/2}\)</span>.</p></li>
+<li><p>The Frobenius norm <span class="math inline">\(\Vert\Omega\Vert_F\)</span> is defined as <span class="math inline">\(\Vert\Omega\Vert_F = (\sum_{i,j} \vert\omega_{ij}\vert^2)^{1/2} = [\text{tr}(\Omega^\top\Omega)]^{1/2}\)</span>.</p></li>
 </ul>
 <div class="note">
 <p><strong>Note</strong>:</p>
-<ul><li>The parameter <span class="math inline">\(\gamma\)</span> is only relevant for non-convex penalties. The Lasso penalty can be viewed as a special case in which <span class="math inline">\(\gamma\)</span> is not required.
-</li></ul>
+<ul>
+<li><p>The regularization parameter <span class="math inline">\(\lambda\)</span> acts as the scale factor for the entire penalty term <span class="math inline">\(\lambda P_{\alpha,\gamma}(\Omega)\)</span>.</p></li>
+<li>
+<p>The penalty kernel <span class="math inline">\(p_\gamma(\cdot)\)</span> is the shape function that governs the fundamental characteristics of the regularization.</p>
+</li>
+</ul>
 </div>
 
 <section class="level2"><h2 id="penalties">Penalties<a class="anchor" aria-label="anchor" href="#penalties"></a>
@@ -139,20 +142,20 @@ Estimate the precision matrix <span class="math inline">\(\Omega = \Sigma^{-1} =
 <li>Lasso: Least absolute shrinkage and selection operator <span class="citation" data-cites="tibshirani1996regression friedman2008sparse">(<a href="#ref-tibshirani1996regression" role="doc-biblioref">Tibshirani 1996</a>; <a href="#ref-friedman2008sparse" role="doc-biblioref">Friedman et al. 2008</a>)</span>
 </li>
 </ol>
-<p><span class="math display">\[P_\lambda(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.\]</span></p>
+<p><span class="math display">\[\lambda p(\omega_{ij}) = \lambda\vert\omega_{ij}\vert.\]</span></p>
 <ol start="2" type="1">
 <li>Adaptive lasso <span class="citation" data-cites="zou2006adaptive fan2009network">(<a href="#ref-zou2006adaptive" role="doc-biblioref">Zou 2006</a>; <a href="#ref-fan2009network" role="doc-biblioref">Fan et al. 2009</a>)</span>
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
+\lambda p_\gamma(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
 \]</span> where <span class="math inline">\(V = (v_{ij})_{d \times d} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{d \times d}\)</span> is a matrix of adaptive weights, and <span class="math inline">\(\tilde{\omega}_{ij}\)</span> is the initial estimate obtained using <code>penalty = "lasso"</code>.</p>
 <ol start="3" type="1">
 <li>Atan: Arctangent type penalty <span class="citation" data-cites="wang2016variable">(<a href="#ref-wang2016variable" role="doc-biblioref">Wang and Zhu 2016</a>)</span>
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \lambda(\gamma+\frac{2}{\pi})
 \arctan\left(\frac{\vert\omega_{ij}\vert}{\gamma}\right),
 \quad \gamma &gt; 0.
@@ -162,7 +165,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \lambda\left[1-\exp\left(-\frac{\vert\omega_{ij}\vert}{\gamma}\right)\right],
 \quad \gamma &gt; 0.
 \]</span></p>
@@ -171,7 +174,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
+\lambda p_\gamma(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
 \quad 0 &lt; \gamma &lt; 1.
 \]</span></p>
 <ol start="6" type="1">
@@ -179,7 +182,7 @@ P_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \lambda\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
 \quad \gamma &gt; 0.
 \]</span></p>
@@ -188,7 +191,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \begin{cases}
 \lambda\vert\omega_{ij}\vert - \dfrac{\omega_{ij}^2}{2\gamma},
 &amp; \text{if } \vert\omega_{ij}\vert \leq \gamma\lambda, \\
@@ -202,7 +205,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 </li>
 </ol>
 <p><span class="math display">\[
-P_{\lambda,\gamma}(\omega_{ij})
+\lambda p_\gamma(\omega_{ij})
 = \begin{cases}
 \lambda\vert\omega_{ij}\vert
 &amp; \text{if } \vert\omega_{ij}\vert \leq \lambda, \\
@@ -215,13 +218,17 @@ P_{\lambda,\gamma}(\omega_{ij})
 \]</span></p>
 <div class="note">
 <p><strong>Note</strong>:</p>
-<ul><li>For Lasso, which is convex, the additional parameter <span class="math inline">\(\gamma\)</span> is not required, and the penalty function <span class="math inline">\(P_{\lambda,\gamma}(\cdot)\)</span> simplifies to <span class="math inline">\(P_\lambda(\cdot)\)</span>.
-</li></ul>
+<ul>
+<li><p>For Lasso, which is convex, the additional parameter <span class="math inline">\(\gamma\)</span> is not required, and the penalty kernel <span class="math inline">\(p_\gamma(\cdot)\)</span> simplifies to <span class="math inline">\(p(\cdot)\)</span>.</p></li>
+<li>
+<p>For MCP and SCAD, <span class="math inline">\(\lambda\)</span> plays a dual role: it is the global regularization parameter, but it is also implicitly contained within the kernel <span class="math inline">\(p_\gamma(\cdot)\)</span>.</p>
+</li>
+</ul>
 </div>
 
 <section class="level2"><h2 id="illustrative-visualization">Illustrative Visualization<a class="anchor" aria-label="anchor" href="#illustrative-visualization"></a>
 </h2>
-<p><a href="#fig-pen" class="quarto-xref">Figure 1</a> illustrates a comparison of various penalty functions <span class="math inline">\(P(\omega)\)</span> evaluated over a range of <span class="math inline">\(\omega\)</span> values. The main panel (right) provides a wider view of the penalty functions’ behavior for larger <span class="math inline">\(\vert\omega\vert\)</span>, while the inset panel (left) magnifies the region near zero <span class="math inline">\([-1, 1]\)</span>.</p>
+<p><a href="#fig-pen" class="quarto-xref">Figure 1</a> illustrates a comparison of various penalty functions <span class="math inline">\(\lambda p(\omega)\)</span> evaluated over a range of <span class="math inline">\(\omega\)</span> values. The main panel (right) provides a wider view of the penalty functions’ behavior for larger <span class="math inline">\(\vert\omega\vert\)</span>, while the inset panel (left) magnifies the region near zero <span class="math inline">\([-1, 1]\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Carol-seven/grasps" class="external-link">grasps</a></span><span class="op">)</span> <span class="co">## for penalty computation</span></span>
@@ -248,7 +255,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 Figure 1: Illustrative penalty functions.
 </figcaption></figure>
 </div>
-<p><a href="#fig-deriv" class="quarto-xref">Figure 2</a> displays the derivative function <span class="math inline">\(P^\prime(\omega)\)</span> associated with a range of penalty types. The Lasso exhibits a constant derivative, corresponding to uniform shrinkage. For MCP and SCAD, the derivatives are piecewise: initially equal to the Lasso derivative, then decreasing over an intermediate region, and eventually dropping to zero, indicating that large <span class="math inline">\(\vert\omega\vert\)</span> receive no shrinkage. Other non-convex penalties show smoothly diminishing derivatives as <span class="math inline">\(\vert\omega\vert\)</span> increases, reflecting their tendency to shrink small <span class="math inline">\(\vert\omega\vert\)</span> strongly while exerting little to no shrinkage on large ones.</p>
+<p><a href="#fig-deriv" class="quarto-xref">Figure 2</a> displays the derivative function <span class="math inline">\(p^\prime(\omega)\)</span> associated with a range of penalty types. The Lasso exhibits a constant derivative, corresponding to uniform shrinkage. For MCP and SCAD, the derivatives are piecewise: initially equal to the Lasso derivative, then decreasing over an intermediate region, and eventually dropping to zero, indicating that large <span class="math inline">\(\vert\omega\vert\)</span> receive no shrinkage. Other non-convex penalties show smoothly diminishing derivatives as <span class="math inline">\(\vert\omega\vert\)</span> increases, reflecting their tendency to shrink small <span class="math inline">\(\vert\omega\vert\)</span> strongly while exerting little to no shrinkage on large ones.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deriv_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_derivative.html">compute_derivative</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>, <span class="va">penalties</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -397,7 +404,7 @@ Zou, Hui. 2006. <span>“The Adaptive Lasso and Its Oracle Properties.”</span>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>, <a href="https://statcomp.org" class="external-link">Jun Yan</a>, <a href="https://panpan-zhang.com" class="external-link">Panpan Zhang</a>.</p>
+  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

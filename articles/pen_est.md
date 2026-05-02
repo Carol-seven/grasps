@@ -5,28 +5,27 @@
 Consider the following setting:
 
 - **Gaussian graphical model (GGM) assumption:**  
-  The data \\X\_{p \times p}\\ consists of independent and identically
-  distributed samples \\X_1, \dots, X_n \sim N_p(\mu,\Sigma)\\.
+  The data \\X\_{n \times d}\\ consists of independent and identically
+  distributed samples \\X_1, \dots, X_n \sim N_d(\mu,\Sigma)\\.
 
 - **Disjoint group structure:**  
-  The \\p\\ variables can be partitioned into disjoint groups.
+  The \\d\\ variables can be partitioned into disjoint groups.
 
 - **Goal:**  
   Estimate the precision matrix \\\Omega = \Sigma^{-1} =
-  (\omega\_{ij})\_{p \times p}\\.
+  (\omega\_{ij})\_{d \times d}\\.
 
 ## Sparse-Group Estimator
 
 \\\begin{gather} \hat{\Omega}(\lambda,\alpha,\gamma) =
 {\arg\min}\_{\Omega \succ 0} \left\\ -\log\det(\Omega) +
-\text{tr}(S\Omega) + \mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega)
-\right\\, \\\[10pt\] \mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega) =
-\alpha \mathcal{P}^\text{idv}\_{\lambda,\gamma}(\Omega) + (1-\alpha)
-\mathcal{P}^\text{grp}\_{\lambda,\gamma}(\Omega), \\\[10pt\]
-\mathcal{P}^\text{idv}\_{\lambda,\gamma}(\Omega) = \sum\_{i,j}
-P\_{\lambda,\gamma}(\lvert\omega\_{ij}\rvert), \\\[5pt\]
-\mathcal{P}^\text{grp}\_{\lambda,\gamma}(\Omega) = \sum\_{g,g^\prime}
-P\_{\lambda,\gamma}(\lVert\Omega\_{gg^\prime}\rVert_F). \end{gather}\\
+\text{tr}(S\Omega) + \lambda P\_{\alpha,\gamma}(\Omega) \right\\,
+\\\[10pt\] P\_{\alpha,\gamma}(\Omega) = \alpha
+P^\text{idv}\_\gamma(\Omega) + (1-\alpha) P^\text{grp}\_\gamma(\Omega),
+\\\[10pt\] P^\text{idv}\_\gamma(\Omega) = \sum\_{i,j}
+p\_\gamma(\vert\omega\_{ij}\vert), \\\[5pt\]
+P^\text{grp}\_\gamma(\Omega) = \sum\_{g,g^\prime}
+p\_\gamma(\Vert\Omega\_{gg^\prime}\Vert_F). \end{gather}\\
 
 where:
 
@@ -39,36 +38,35 @@ where:
 - \\\alpha \in \[0,1\]\\ is the mixing parameter controlling the balance
   between element-wise and block-wise penalties.
 
-- \\\gamma\\ is the additional parameter for non-convex penalties,
-  controlling the degree of nonconvexity (or concavity) of the penalty
-  function.
+- \\\gamma\\ is the additional parameter controlling the curvature and
+  effective degree of nonconvexity of the penalty.
 
-- \\\mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega)\\ is a generic bi-level
-  penalty template that combines element-wise and block-wise
-  regularization, allowing convex or non-convex regularizers while
+- \\P\_{\alpha,\gamma}(\Omega)\\ is a generic bi-level penalty template
+  that can incorporate convex or non-convex regularizers while
   preserving the intrinsic group structure among variables.
 
-- \\\mathcal{P}^\text{idv}\_{\lambda,\gamma}(\Omega)\\ is the
-  element-wise individual penalty component.
+- \\P^\text{idv}\_\gamma(\Omega)\\ is the element-wise individual
+  penalty component.
 
-- \\\mathcal{P}^\text{grp}\_{\lambda,\gamma}(\Omega)\\ is the block-wise
-  group penalty component.
+- \\P^\text{grp}\_\gamma(\Omega)\\ is the block-wise group penalty
+  component.
 
-- \\P\_{\lambda,\gamma}(\cdot)\\ is the penalty function.
+- \\p\_\gamma(\cdot)\\ is a penalty kernel parameterized by \\\gamma\\.
 
 - \\\Omega\_{gg^\prime}\\ is the submatrix of \\\Omega\\ with the rows
   from group \\g\\ and columns from group \\g^\prime\\.
 
-- The Frobenius norm \\\lVert\Omega\rVert_F\\ is defined as
-  \\\lVert\Omega\rVert_F = (\sum\_{i,j}
-  \lvert\omega\_{ij}\rvert^2)^{1/2} =
+- The Frobenius norm \\\Vert\Omega\Vert_F\\ is defined as
+  \\\Vert\Omega\Vert_F = (\sum\_{i,j} \vert\omega\_{ij}\vert^2)^{1/2} =
   \[\text{tr}(\Omega^\top\Omega)\]^{1/2}\\.
 
 **Note**:
 
-- The parameter \\\gamma\\ is only relevant for non-convex penalties.
-  The Lasso penalty can be viewed as a special case in which \\\gamma\\
-  is not required.
+- The regularization parameter \\\lambda\\ acts as the scale factor for
+  the entire penalty term \\\lambda P\_{\alpha,\gamma}(\Omega)\\.
+
+- The penalty kernel \\p\_\gamma(\cdot)\\ is the shape function that
+  governs the fundamental characteristics of the regularization.
 
 ## Penalties
 
@@ -76,12 +74,12 @@ where:
     1996](#ref-tibshirani1996regression); [Friedman et al.
     2008](#ref-friedman2008sparse))
 
-\\P\_\lambda(\omega\_{ij}) = \lambda\vert\omega\_{ij}\vert.\\
+\\\lambda p(\omega\_{ij}) = \lambda\vert\omega\_{ij}\vert.\\
 
 2.  Adaptive lasso ([Zou 2006](#ref-zou2006adaptive); [Fan et al.
     2009](#ref-fan2009network))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) =
+\\ \lambda p\_\gamma(\omega\_{ij}) =
 \lambda\frac{\vert\omega\_{ij}\vert}{v\_{ij}}, \\ where \\V =
 (v\_{ij})\_{d \times d} = (\vert\tilde{\omega}\_{ij}\vert^\gamma)\_{d
 \times d}\\ is a matrix of adaptive weights, and
@@ -91,14 +89,14 @@ where:
 3.  Atan: Arctangent type penalty ([Wang and Zhu
     2016](#ref-wang2016variable))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) = \lambda(\gamma+\frac{2}{\pi})
+\\ \lambda p\_\gamma(\omega\_{ij}) = \lambda(\gamma+\frac{2}{\pi})
 \arctan\left(\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad \gamma
 \> 0. \\
 
 4.  Exp: Exponential type penalty ([Wang et al.
     2018](#ref-wang2018variable))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) =
+\\ \lambda p\_\gamma(\omega\_{ij}) =
 \lambda\left\[1-\exp\left(-\frac{\vert\omega\_{ij}\vert}{\gamma}\right)\right\],
 \quad \gamma \> 0. \\
 
@@ -106,19 +104,19 @@ where:
     1998](#ref-fu1998penalized); [Fan and Li
     2001](#ref-fan2001variable))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) =
+\\ \lambda p\_\gamma(\omega\_{ij}) =
 \lambda\vert\omega\_{ij}\vert^\gamma, \quad 0 \< \gamma \< 1. \\
 
 6.  LSP: Log-sum penalty ([Candès et al.
     2008](#ref-candes2008enhancing))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) =
+\\ \lambda p\_\gamma(\omega\_{ij}) =
 \lambda\log\left(1+\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad
 \gamma \> 0. \\
 
 7.  MCP: Minimax concave penalty ([Zhang 2010](#ref-zhang2010nearly))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) = \begin{cases}
+\\ \lambda p\_\gamma(\omega\_{ij}) = \begin{cases}
 \lambda\vert\omega\_{ij}\vert - \dfrac{\omega\_{ij}^2}{2\gamma}, &
 \text{if } \vert\omega\_{ij}\vert \leq \gamma\lambda, \\
 \dfrac{1}{2}\gamma\lambda^2, & \text{if } \vert\omega\_{ij}\vert \>
@@ -127,7 +125,7 @@ where:
 8.  SCAD: Smoothly clipped absolute deviation ([Fan and Li
     2001](#ref-fan2001variable); [Fan et al. 2009](#ref-fan2009network))
 
-\\ P\_{\lambda,\gamma}(\omega\_{ij}) = \begin{cases}
+\\ \lambda p\_\gamma(\omega\_{ij}) = \begin{cases}
 \lambda\vert\omega\_{ij}\vert & \text{if } \vert\omega\_{ij}\vert \leq
 \lambda, \\
 \dfrac{2\gamma\lambda\vert\omega\_{ij}\vert-\omega\_{ij}^2-\lambda^2}{2(\gamma-1)}
@@ -138,18 +136,23 @@ where:
 **Note**:
 
 - For Lasso, which is convex, the additional parameter \\\gamma\\ is not
-  required, and the penalty function \\P\_{\lambda,\gamma}(\cdot)\\
-  simplifies to \\P\_\lambda(\cdot)\\.
+  required, and the penalty kernel \\p\_\gamma(\cdot)\\ simplifies to
+  \\p(\cdot)\\.
+
+- For MCP and SCAD, \\\lambda\\ plays a dual role: it is the global
+  regularization parameter, but it is also implicitly contained within
+  the kernel \\p\_\gamma(\cdot)\\.
 
 ## Illustrative Visualization
 
 [Figure 1](#fig-pen) illustrates a comparison of various penalty
-functions \\P(\omega)\\ evaluated over a range of \\\omega\\ values. The
-main panel (right) provides a wider view of the penalty functions’
-behavior for larger \\\vert\omega\vert\\, while the inset panel (left)
-magnifies the region near zero \\\[-1, 1\]\\.
+functions \\\lambda p(\omega)\\ evaluated over a range of \\\omega\\
+values. The main panel (right) provides a wider view of the penalty
+functions’ behavior for larger \\\vert\omega\vert\\, while the inset
+panel (left) magnifies the region near zero \\\[-1, 1\]\\.
 
 ``` r
+
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
@@ -165,7 +168,7 @@ plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
 Figure 1: Illustrative penalty functions.
 
 [Figure 2](#fig-deriv) displays the derivative function
-\\P^\prime(\omega)\\ associated with a range of penalty types. The Lasso
+\\p^\prime(\omega)\\ associated with a range of penalty types. The Lasso
 exhibits a constant derivative, corresponding to uniform shrinkage. For
 MCP and SCAD, the derivatives are piecewise: initially equal to the
 Lasso derivative, then decreasing over an intermediate region, and
@@ -176,6 +179,7 @@ their tendency to shrink small \\\vert\omega\vert\\ strongly while
 exerting little to no shrinkage on large ones.
 
 ``` r
+
 deriv_df <- compute_derivative(seq(0, 4, by = 0.01), penalties, lambda = 1)
 plot(deriv_df) +
   scale_y_continuous(limits = c(0, 1.5)) +

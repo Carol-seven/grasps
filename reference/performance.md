@@ -13,11 +13,11 @@ performance(hatOmega, Omega)
 
 - hatOmega:
 
-  A numeric \\p \times p\\ matrix giving the estimated precision matrix.
+  A numeric \\d \times d\\ matrix giving the estimated precision matrix.
 
 - Omega:
 
-  A numeric \\p \times p\\ matrix giving the reference (typically true)
+  A numeric \\d \times d\\ matrix giving the reference (typically true)
   precision matrix.
 
 ## Value
@@ -39,7 +39,7 @@ metric and two columns:
 
 ## Details
 
-Let \\\Omega\_{p \times p}\\ and \\\hat{\Omega}\_{p \times p}\\ be the
+Let \\\Omega\_{d \times d}\\ and \\\hat{\Omega}\_{d \times d}\\ be the
 reference (true) and estimated precision matrices, respectively, with
 \\\Sigma = \Omega^{-1}\\ being the corresponding covariance matrix.
 Edges are defined by nonzero off-diagonal entries in the upper triangle
@@ -58,9 +58,9 @@ the off-diagonal elements in the upper triangle of \\\hat{\Omega}\\.
   \hat{\Omega} \Vert_F\\.
 
 - "KL": Kullback-Leibler divergence \\= \mathrm{tr}(\Sigma
-  \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - p\\.
+  \hat{\Omega}) - \log\det(\Sigma \hat{\Omega}) - d\\.
 
-- "quadratic": Quadratic norm loss \\= \Vert \Sigma \hat{\Omega} - I_p
+- "quadratic": Quadratic norm loss \\= \Vert \Sigma \hat{\Omega} - I_d
   \Vert_F^2\\.
 
 - "spectral": Spectral (operator) norm loss \\= \Vert \Omega -
@@ -99,13 +99,13 @@ the off-diagonal elements in the upper triangle of \\\hat{\Omega}\\.
 
 The following table summarizes the confusion matrix and related rates:
 
-|                       |                                                                       |                                                            |                                                                  |                                                          |
-|-----------------------|-----------------------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------|
-|                       | **Predicted Positive**                                                | **Predicted Negative**                                     |                                                                  |                                                          |
-| **Real Positive** (P) | True positive (TP)                                                    | False negative (FN)                                        | True positive rate (TPR), recall, sensitivity = TP / P = 1 - FNR | False negative rate (FNR) = FN / P = 1 - TPR             |
-| **Real Negative** (N) | False positive (FP)                                                   | True negative (TN)                                         | False positive rate (FPR) = FP / N = 1 - TNR                     | True negative rate (TNR), specificity = TN / N = 1 - FPR |
-|                       | Positive predictive value (PPV), precision = TP / (TP + FP) = 1 - FDR | False omission rate (FOR) = FN / (TN + FN) = 1 - NPV       |                                                                  |                                                          |
-|                       | False discovery rate (FDR) = FP / (TP + FP) = 1 - PPV                 | Negative predictive value (NPV) = TN / (TN + FN) = 1 - FOR |                                                                  |                                                          |
+|  |  |  |  |  |
+|----|----|----|----|----|
+|  | **Predicted Positive** | **Predicted Negative** |  |  |
+| **Real Positive** (P) | True positive (TP) | False negative (FN) | True positive rate (TPR), recall, sensitivity = TP / P = 1 - FNR | False negative rate (FNR) = FN / P = 1 - TPR |
+| **Real Negative** (N) | False positive (FP) | True negative (TN) | False positive rate (FPR) = FP / N = 1 - TNR | True negative rate (TNR), specificity = TN / N = 1 - FPR |
+|  | Positive predictive value (PPV), precision = TP / (TP + FP) = 1 - FDR | False omission rate (FOR) = FN / (TN + FN) = 1 - NPV |  |  |
+|  | False discovery rate (FDR) = FP / (TP + FP) = 1 - PPV | Negative predictive value (NPV) = TN / (TN + FN) = 1 - FOR |  |  |
 
 ## Examples
 
@@ -116,29 +116,29 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(p = 30, K = 3,
+sim <- gen_prec_sbm(d = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, rate = 10),
                                         c(min = 0, max = 5)),
                     cond.target = 100)
-## ground truth visualization
+## visualization
 plot(sim)
 
 
-## n-by-p data matrix
+## n-by-d data matrix
 library(MASS)
 X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
-## precision matrix: adaptive lasso; BIC
-prec <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
+## adapt, BIC
+res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
 
-## precision matrix visualization
-plot(prec)
+## visualization
+plot(res)
 
 
 ## performance
-performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
+performance(hatOmega = res$hatOmega, Omega = sim$Omega)
 #>      measure    value
 #> 1   sparsity   0.7862
 #> 2  Frobenius  34.8430
@@ -153,13 +153,4 @@ performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #> 11       FPR   0.1783
 #> 12        F1   0.3404
 #> 13       MCC   0.2459
-
-## adjacency matrix: diagonal = 0; raw partial correlations;
-##                   no thresholding; weighted network
-adj <- prec_to_adj(prec$hatOmega,
-                   diag.zero = TRUE, absolute = FALSE,
-                   threshold = NULL, weighted = TRUE)
-
-## adjacency matrix visualization
-plot(adj)
 ```

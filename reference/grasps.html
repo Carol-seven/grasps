@@ -46,7 +46,7 @@ element-wise and group-wise penalties to estimate a precision matrix."><meta pro
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Groupwise Regularized Adaptive Sparse Precision Solution</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/main/R/grasps.R" class="external-link"><code>R/grasps.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/v0.1.0/R/grasps.R" class="external-link"><code>R/grasps.R</code></a></small>
       <div class="d-none name"><code>grasps.Rd</code></div>
     </div>
 
@@ -91,21 +91,21 @@ element-wise and group-wise penalties to estimate a precision matrix.</p>
 
 
 <dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><ol><li><p>An \(n \times p\) data matrix with sample size \(n\) and
-dimension \(p\).</p></li>
-<li><p>A \(p \times p\) sample covariance matrix with dimension \(p\).</p></li>
+<dd><ol><li><p>An \(n \times d\) data matrix with sample size \(n\) and
+dimension \(d\).</p></li>
+<li><p>A \(d \times d\) sample covariance matrix with dimension \(d\).</p></li>
 </ol></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>An integer (default = <code>nrow(X)</code>) specifying the sample size.
-This is only required when the input matrix <code>X</code> is a \(p \times p\)
-sample covariance matrix with dimension \(p\).</p></dd>
+This is only required when the input matrix <code>X</code> is a \(d \times d\)
+sample covariance matrix with dimension \(d\).</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
 <dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension \(p\).</p></dd>
+The length of <code>membership</code> must be consistent with the dimension \(d\).</p></dd>
 
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
@@ -161,7 +161,7 @@ its own <code>lambda</code> sequence based on <code>nlambda</code> and
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>A numeric vector in [0,1] specifying the grid for
+<dd><p>A numeric vector in [0, 1] specifying the grid for
 the mixing parameter balancing the element-wise individual L1 penalty and
 the block-wise group L2 penalty.
 An alpha of 1 corresponds to the individual penalty only; an alpha of 0
@@ -188,17 +188,17 @@ the chosen <code>penalty</code>. The default value depends on the penalty:</p><o
 
 <dt id="arg-lambda-min-ratio">lambda.min.ratio<a class="anchor" aria-label="anchor" href="#arg-lambda-min-ratio"></a></dt>
 <dd><p>A numeric value &gt; 0 (default = 0.01) specifying
-the fraction of the maximum <code>lambda</code> value \(\lambda_\max\) to
-generate the minimum <code>lambda</code> \(\lambda_\min\).
+the fraction of the maximum <code>lambda</code> value \(\lambda_{max}\) to
+generate the minimum <code>lambda</code> \(\lambda_{min}\).
 If <code>lambda = NULL</code>, a <code>lambda</code> grid of length <code>nlambda</code> is
-automatically generated on a log scale, ranging from \(\lambda_\max\)
-down to \(\lambda_\min\).</p></dd>
+automatically generated on a log scale, ranging from \(\lambda_{max}\)
+down to \(\lambda_{min}\).</p></dd>
 
 
 <dt id="arg-growiter-lambda">growiter.lambda<a class="anchor" aria-label="anchor" href="#arg-growiter-lambda"></a></dt>
 <dd><p>An integer (default = 30) specifying the maximum
 number of exponential growth steps during the initial search for an
-admissible upper bound \(\lambda_\max\).</p></dd>
+admissible upper bound \(\lambda_{\max}\).</p></dd>
 
 
 <dt id="arg-tol-lambda">tol.lambda<a class="anchor" aria-label="anchor" href="#arg-tol-lambda"></a></dt>
@@ -208,7 +208,7 @@ the relative tolerance for the bisection stopping rule on the interval width.</p
 
 <dt id="arg-maxiter-lambda">maxiter.lambda<a class="anchor" aria-label="anchor" href="#arg-maxiter-lambda"></a></dt>
 <dd><p>An integer (default = 50) specifying the maximum number
-of bisection iterations in the line search for  \(\lambda_\max\).</p></dd>
+of bisection iterations in the line search for  \(\lambda_{\max}\).</p></dd>
 
 
 <dt id="arg-rho">rho<a class="anchor" aria-label="anchor" href="#arg-rho"></a></dt>
@@ -274,7 +274,7 @@ selection criterion to use. Available options include:</p><ol><li><p>"AIC": Akai
 
 
 <dt id="arg-ebic-tuning">ebic.tuning<a class="anchor" aria-label="anchor" href="#arg-ebic-tuning"></a></dt>
-<dd><p>A numeric value in [0,1] (default = 0.5) specifying
+<dd><p>A numeric value in [0, 1] (default = 0.5) specifying
 the tuning parameter to calculate for <code>crit = "EBIC"</code>.</p></dd>
 
 </dl></div>
@@ -307,7 +307,7 @@ is chosen via <code>penalty</code>.</p></dd>
 <dd><p>The actual alpha grid used in the program.</p></dd>
 
 <dt>lambda.safe</dt>
-<dd><p>The bisection-refined upper bound \(\lambda_\max\),
+<dd><p>The bisection-refined upper bound \(\lambda_{\max}\),
 corresponding to <code>alpha.grid</code>, when <code>lambda = NULL</code>.</p></dd>
 
 <dt>loss</dt>
@@ -410,53 +410,43 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## block-structured precision matrix based on SBM</span></span></span>
-<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="gen_prec_sbm.html">gen_prec_sbm</a></span><span class="op">(</span>d <span class="op">=</span> <span class="fl">30</span>, K <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>                    within.prob <span class="op">=</span> <span class="fl">0.25</span>, between.prob <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>                    weight.dists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"unif"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    weight.paras <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">20</span>, rate <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    cond.target <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">## ground truth visualization</span></span></span>
+<span class="r-in"><span><span class="co">## visualization</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="grasps-1.png" alt="" width="2188" height="1352"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## n-by-p data matrix</span></span></span>
+<span class="r-in"><span><span class="co">## n-by-d data matrix</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">MASS</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## precision matrix: adaptive lasso; BIC</span></span></span>
-<span class="r-in"><span><span class="va">prec</span> <span class="op">&lt;-</span> <span class="fu">grasps</span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## adapt, HBIC</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">grasps</span><span class="op">(</span>X <span class="op">=</span> <span class="va">X</span>, membership <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"adapt"</span>, crit <span class="op">=</span> <span class="st">"HBIC"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## precision matrix visualization</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prec</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## visualization</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="grasps-2.png" alt="" width="2188" height="1352"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## performance</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.7862</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  34.8430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL  12.5488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 161.4326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  19.8343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  24.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 318.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  69.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  24.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1783</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3404</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.2459</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
-<span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>
-<span class="r-in"><span><span class="va">adj</span> <span class="op">&lt;-</span> <span class="fu"><a href="prec_to_adj.html">prec_to_adj</a></span><span class="op">(</span><span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>,</span></span>
-<span class="r-in"><span>                   diag.zero <span class="op">=</span> <span class="cn">TRUE</span>, absolute <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>                   threshold <span class="op">=</span> <span class="cn">NULL</span>, weighted <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## adjacency matrix visualization</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">adj</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="grasps-3.png" alt="" width="2188" height="1352"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  27.3885</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   7.9326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic  64.5716</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  13.7645</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  19.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 359.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  28.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  29.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.3958</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.0724</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3265</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -464,7 +454,7 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>, <a href="https://statcomp.org" class="external-link">Jun Yan</a>, <a href="https://panpan-zhang.com" class="external-link">Panpan Zhang</a>.</p>
+  <p>Developed by <a href="http://shiying-xiao.com" class="external-link">Shiying Xiao</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

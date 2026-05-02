@@ -39,21 +39,21 @@ grasps(
 
 - X:
 
-  1.  An \\n \times p\\ data matrix with sample size \\n\\ and dimension
-      \\p\\.
+  1.  An \\n \times d\\ data matrix with sample size \\n\\ and dimension
+      \\d\\.
 
-  2.  A \\p \times p\\ sample covariance matrix with dimension \\p\\.
+  2.  A \\d \times d\\ sample covariance matrix with dimension \\d\\.
 
 - n:
 
   An integer (default = `nrow(X)`) specifying the sample size. This is
-  only required when the input matrix `X` is a \\p \times p\\ sample
-  covariance matrix with dimension \\p\\.
+  only required when the input matrix `X` is a \\d \times d\\ sample
+  covariance matrix with dimension \\d\\.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension \\p\\.
+  `membership` must be consistent with the dimension \\d\\.
 
 - penalty:
 
@@ -103,7 +103,7 @@ grasps(
 
 - alpha:
 
-  A numeric vector in \[0,1\] specifying the grid for the mixing
+  A numeric vector in \[0, 1\] specifying the grid for the mixing
   parameter balancing the element-wise individual L1 penalty and the
   block-wise group L2 penalty. An alpha of 1 corresponds to the
   individual penalty only; an alpha of 0 corresponds to the group
@@ -137,16 +137,16 @@ grasps(
 - lambda.min.ratio:
 
   A numeric value \> 0 (default = 0.01) specifying the fraction of the
-  maximum `lambda` value \\\lambda\_\max\\ to generate the minimum
-  `lambda` \\\lambda\_\min\\. If `lambda = NULL`, a `lambda` grid of
+  maximum `lambda` value \\\lambda\_{max}\\ to generate the minimum
+  `lambda` \\\lambda\_{min}\\. If `lambda = NULL`, a `lambda` grid of
   length `nlambda` is automatically generated on a log scale, ranging
-  from \\\lambda\_\max\\ down to \\\lambda\_\min\\.
+  from \\\lambda\_{max}\\ down to \\\lambda\_{min}\\.
 
 - growiter.lambda:
 
   An integer (default = 30) specifying the maximum number of exponential
   growth steps during the initial search for an admissible upper bound
-  \\\lambda\_\max\\.
+  \\\lambda\_{\max}\\.
 
 - tol.lambda:
 
@@ -156,7 +156,7 @@ grasps(
 - maxiter.lambda:
 
   An integer (default = 50) specifying the maximum number of bisection
-  iterations in the line search for \\\lambda\_\max\\.
+  iterations in the line search for \\\lambda\_{\max}\\.
 
 - rho:
 
@@ -222,7 +222,7 @@ grasps(
 
 - ebic.tuning:
 
-  A numeric value in \[0,1\] (default = 0.5) specifying the tuning
+  A numeric value in \[0, 1\] (default = 0.5) specifying the tuning
   parameter to calculate for `crit = "EBIC"`.
 
 ## Value
@@ -265,8 +265,8 @@ An object with S3 class `"grasps"` containing the following components:
 
 - lambda.safe:
 
-  The bisection-refined upper bound \\\lambda\_\max\\, corresponding to
-  `alpha.grid`, when `lambda = NULL`.
+  The bisection-refined upper bound \\\lambda\_{\max}\\, corresponding
+  to `alpha.grid`, when `lambda = NULL`.
 
 - loss:
 
@@ -391,50 +391,41 @@ library(grasps)
 set.seed(1234)
 
 ## block-structured precision matrix based on SBM
-sim <- gen_prec_sbm(p = 30, K = 3,
+sim <- gen_prec_sbm(d = 30, K = 3,
                     within.prob = 0.25, between.prob = 0.05,
                     weight.dists = list("gamma", "unif"),
                     weight.paras = list(c(shape = 20, rate = 10),
                                         c(min = 0, max = 5)),
                     cond.target = 100)
-## ground truth visualization
+## visualization
 plot(sim)
 
 
-## n-by-p data matrix
+## n-by-d data matrix
 library(MASS)
 X <- mvrnorm(n = 20, mu = rep(0, 30), Sigma = sim$Sigma)
 
-## precision matrix: adaptive lasso; BIC
-prec <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "BIC")
+## adapt, HBIC
+res <- grasps(X = X, membership = sim$membership, penalty = "adapt", crit = "HBIC")
 
-## precision matrix visualization
-plot(prec)
+## visualization
+plot(res)
 
 
 ## performance
-performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
+performance(hatOmega = res$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.7862
-#> 2  Frobenius  34.8430
-#> 3         KL  12.5488
-#> 4  quadratic 161.4326
-#> 5   spectral  19.8343
-#> 6         TP  24.0000
-#> 7         TN 318.0000
-#> 8         FP  69.0000
-#> 9         FN  24.0000
-#> 10       TPR   0.5000
-#> 11       FPR   0.1783
-#> 12        F1   0.3404
-#> 13       MCC   0.2459
-
-## adjacency matrix: diagonal = 0; raw partial correlations;
-##                   no thresholding; weighted network
-adj <- prec_to_adj(prec$hatOmega,
-                   diag.zero = TRUE, absolute = FALSE,
-                   threshold = NULL, weighted = TRUE)
-
-## adjacency matrix visualization
-plot(adj)
+#> 1   sparsity   0.8920
+#> 2  Frobenius  27.3885
+#> 3         KL   7.9326
+#> 4  quadratic  64.5716
+#> 5   spectral  13.7645
+#> 6         TP  19.0000
+#> 7         TN 359.0000
+#> 8         FP  28.0000
+#> 9         FN  29.0000
+#> 10       TPR   0.3958
+#> 11       FPR   0.0724
+#> 12        F1   0.4000
+#> 13       MCC   0.3265
 ```

@@ -10,9 +10,9 @@ trade off between element-wise (individual-level) and block-wise
 
 ## Background: Negative Log-Likelihood
 
-In a Gaussian graphical model (GGM), the data matrix \\X\_{n \times p}\\
+In a Gaussian graphical model (GGM), the data matrix \\X\_{n \times d}\\
 consists of \\n\\ independent and identically distributed observations
-\\X_1, \dots, X_n\\ drawn from \\N_p(\mu,\Sigma)\\. Let \\\Omega =
+\\X_1, \dots, X_n\\ drawn from \\N_d(\mu,\Sigma)\\. Let \\\Omega =
 \Sigma^{-1}\\ denote the precision matrix, and define the empirical
 covariance matrix as \\S = n^{-1} \sum\_{i=1}^n
 (X_i-\bar{X})(X_i-\bar{X})^\top\\. Up to an additive constant, the
@@ -43,7 +43,7 @@ therefore given by \\\vert E(\Omega) \vert\\.
 
 \\ \hat{\Omega}\_{\mathrm{EBIC}} = {\arg\min}\_{\Omega} \left\\
 2\\\mathrm{nll}(\Omega) + \log(n)\\\lvert E(\Omega) \rvert +
-4\\\xi\\\log(p)\\\lvert E(\Omega) \rvert \right\\, \\
+4\\\xi\\\log(d)\\\lvert E(\Omega) \rvert \right\\, \\
 
 where \\\xi \in \[0,1\]\\ is a tuning parameter. Setting \\\xi = 0\\
 reduces EBIC to the classic BIC.
@@ -53,7 +53,7 @@ reduces EBIC to the classic BIC.
     2017](#ref-fan2017high))
 
 \\ \hat{\Omega}\_{\mathrm{HBIC}} = {\arg\min}\_{\Omega} \left\\
-2\\\mathrm{nll}(\Omega) + \log\[\log(n)\]\\\log(p)\\\lvert E(\Omega)
+2\\\mathrm{nll}(\Omega) + \log\[\log(n)\]\\\log(d)\\\lvert E(\Omega)
 \rvert \right\\. \\
 
 5.  \\K\\-fold cross validation with negative log-likelihood loss.
