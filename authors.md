@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/Carol-seven/grasps/blob/v0.1.1/DESCRIPTION)
 
 Xiao S, Yan J, Zhang P (2026). *grasps: Groupwise Regularized Adaptive
 Sparse Precision Solution*. R package version 0.1.1,
