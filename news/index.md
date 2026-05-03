@@ -1,5 +1,17 @@
 # Changelog
 
+## grasps 0.1.1
+
+CRAN release: 2026-05-02
+
+- Added function
+  [`plot.adjmat()`](https://shiying-xiao.com/grasps/reference/plot.adjmat.md).
+- Added function
+  [`prec_to_adj()`](https://shiying-xiao.com/grasps/reference/prec_to_adj.md).
+- Use `d` instead of `p` to denote the dimension.
+- Revised the estimator expression in the vignette.
+- Added NEWS file to record the changelog.
+
 ## grasps 0.1.0
 
 CRAN release: 2025-11-27
