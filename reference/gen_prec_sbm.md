@@ -182,19 +182,20 @@ determines how weight distributions are assigned:
 - Between-group blocks: \\K(K-1)/2\\ blocks in order \\(1,2)\\,
   \\(1,3)\\, \\(1,4)\\, ..., \\(1,K)\\, \\(2,3)\\, ..., \\(K-1,K)\\.
 
-**Positive definiteness.** The weighted adjacency matrix is symmetrized
-and used as the precision matrix \\\Omega_0\\. Since arbitrary
-block-structured weights may not be positive definite, a diagonal
-adjustment is applied to control the eigenvalue spectrum. Specifically,
-let \\\lambda\_{\max}\\ and \\\lambda\_{\min}\\ denote the largest and
-smallest eigenvalues of a matrix. A non-negative numeric value \\\tau\\
-is added to the diagonal so that \$\$ \left\\ \begin{array}{l}
-\dfrac{\lambda\_{\max}(\Omega_0 + \tau I)}{\lambda\_{\min}(\Omega_0 +
-\tau I)} \leq \texttt{cond.target} \\\[1em\] \lambda\_{\min}(\Omega_0 +
-\tau I) \> 0 \\\[.5em\] \tau \geq 0 \end{array} \right. \$\$ which
-ensures both positive definiteness and guarantees that the condition
-number does not exceed `cond.target`, providing numerical stability even
-in high-dimensional settings.
+**Positive definiteness.** Motivated by condition-number-regularized
+covariance estimation (Won et al. 2013) , the weighted adjacency matrix
+is symmetrized and used as the precision matrix \\\Omega_0\\. Since
+arbitrary block-structured weights may not be positive definite, a
+diagonal adjustment is applied to control the eigenvalue spectrum.
+Specifically, let \\\lambda\_{\max}\\ and \\\lambda\_{\min}\\ denote the
+largest and smallest eigenvalues of a matrix. A non-negative numeric
+value \\\tau\\ is added to the diagonal so that \$\$ \left\\
+\begin{array}{l} \dfrac{\lambda\_{\max}(\Omega_0 + \tau
+I)}{\lambda\_{\min}(\Omega_0 + \tau I)} \leq \texttt{cond.target}
+\\\[1em\] \lambda\_{\min}(\Omega_0 + \tau I) \> 0 \\\[.5em\] \tau \geq 0
+\end{array} \right. \$\$ which ensures both positive definiteness and
+guarantees that the condition number does not exceed `cond.target`,
+providing numerical stability even in high-dimensional settings.
 
 ## Examples
 

@@ -14,16 +14,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/Carol-seven/grasps/blob/v0.1.1/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/Carol-seven/grasps/blob/main/DESCRIPTION)
 
 Xiao S, Yan J, Zhang P (2026). *grasps: Groupwise Regularized Adaptive
-Sparse Precision Solution*. R package version 0.1.1,
+Sparse Precision Solution*. R package version 0.1.2,
 <https://github.com/Carol-seven/grasps>.
 
     @Manual{,
       title = {grasps: Groupwise Regularized Adaptive Sparse Precision Solution},
       author = {Shiying Xiao and Jun Yan and Panpan Zhang},
       year = {2026},
-      note = {R package version 0.1.1},
+      note = {R package version 0.1.2},
       url = {https://github.com/Carol-seven/grasps},
     }

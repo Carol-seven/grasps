@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Performance Measures for Precision Matrix Estimation — performance"><meta name="description" content="Compute a collection of loss-based and structure-based measures to evaluate
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Performance Measures for Precision Matrix Estimation — performance"><meta name="description" content="Compute a collection of loss-based and structure-based measures to evaluate
 the performance of an estimated precision matrix."><meta property="og:description" content="Compute a collection of loss-based and structure-based measures to evaluate
 the performance of an estimated precision matrix."><meta property="og:image" content="https://raw.githubusercontent.com/Carol-seven/grasps/blob/main/man/figures/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -15,7 +15,7 @@ the performance of an estimated precision matrix."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">grasps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@ the performance of an estimated precision matrix."><meta property="og:image" con
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Performance Measures for Precision Matrix Estimation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/v0.1.1/R/performance.R" class="external-link"><code>R/performance.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/main/R/performance.R" class="external-link"><code>R/performance.R</code></a></small>
       <div class="d-none name"><code>performance.Rd</code></div>
     </div>
 
@@ -163,19 +163,19 @@ in \(\Omega\) but not in \(\hat{\Omega}\).</p></li>
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu">performance</span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.7862</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  34.8430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL  12.5488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 161.4326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  19.8343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  24.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 318.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  69.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  24.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1783</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3404</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.2459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8138</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  27.2918</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL  10.0469</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 171.6233</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.9981</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  27.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 333.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  54.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  21.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4186</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3404</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>
@@ -197,7 +197,7 @@ in \(\Omega\) but not in \(\hat{\Omega}\).</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

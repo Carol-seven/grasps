@@ -5,7 +5,7 @@
 Consider the following setting:
 
 - **Gaussian graphical model (GGM) assumption:**  
-  The data \\X\_{p \times p}\\ consists of independent and identically
+  The data \\X\_{n \times p}\\ consists of independent and identically
   distributed samples \\X_1, \dots, X_n \sim N_p(\mu,\Sigma)\\.
 
 - **Disjoint group structure:**  

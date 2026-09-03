@@ -97,9 +97,9 @@ grasps(
 
 - lambda:
 
-  A non-negative numeric vector specifying the grid for the
-  regularization parameter. The default is `NULL`, which generates its
-  own `lambda` sequence based on `nlambda` and `lambda.min.ratio`.
+  A positive numeric vector specifying the grid for the regularization
+  parameter. The default is `NULL`, which generates its own `lambda`
+  sequence based on `nlambda` and `lambda.min.ratio`.
 
 - alpha:
 
@@ -108,7 +108,8 @@ grasps(
   block-wise group L2 penalty. An alpha of 1 corresponds to the
   individual penalty only; an alpha of 0 corresponds to the group
   penalty only. The default value is a sequence from 0.1 to 0.9 with
-  increments of 0.1.
+  increments of 0.1. When both `alpha` and `lambda` are supplied, all
+  Cartesian combinations of their values are evaluated.
 
 - gamma:
 
@@ -265,8 +266,9 @@ An object with S3 class `"grasps"` containing the following components:
 
 - lambda.safe:
 
-  The bisection-refined upper bound \\\lambda\_{\max}\\, corresponding
-  to `alpha.grid`, when `lambda = NULL`.
+  The conservative upper bound used to initialize the line search for
+  \\\lambda\_{\max}\\, corresponding to each distinct value in
+  `alpha.grid`, when `lambda = NULL`.
 
 - loss:
 
@@ -415,19 +417,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.7862
-#> 2  Frobenius  34.8430
-#> 3         KL  12.5488
-#> 4  quadratic 161.4326
-#> 5   spectral  19.8343
-#> 6         TP  24.0000
-#> 7         TN 318.0000
-#> 8         FP  69.0000
-#> 9         FN  24.0000
-#> 10       TPR   0.5000
-#> 11       FPR   0.1783
-#> 12        F1   0.3404
-#> 13       MCC   0.2459
+#> 1   sparsity   0.8138
+#> 2  Frobenius  27.2918
+#> 3         KL  10.0469
+#> 4  quadratic 171.6233
+#> 5   spectral  11.9981
+#> 6         TP  27.0000
+#> 7         TN 333.0000
+#> 8         FP  54.0000
+#> 9         FN  21.0000
+#> 10       TPR   0.5625
+#> 11       FPR   0.1395
+#> 12        F1   0.4186
+#> 13       MCC   0.3404
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network
