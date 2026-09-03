@@ -130,9 +130,11 @@ The order for blocks is:
 }
 
 \strong{Positive definiteness.}
-The weighted adjacency matrix is symmetrized and used as the precision matrix
-\eqn{\Omega_0}. Since arbitrary block-structured weights may not be positive
-definite, a diagonal adjustment is applied to control the eigenvalue spectrum.
+Motivated by condition-number-regularized covariance estimation
+\insertCite{won2013condition}{grasps}, the weighted adjacency matrix is
+symmetrized and used as the precision matrix \eqn{\Omega_0}.
+Since arbitrary block-structured weights may not be positive definite,
+a diagonal adjustment is applied to control the eigenvalue spectrum.
 Specifically, let \eqn{\lambda_{\max}} and \eqn{\lambda_{\min}} denote
 the largest and smallest eigenvalues of a matrix. A non-negative numeric
 value \eqn{\tau} is added to the diagonal so that

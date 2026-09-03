@@ -1,7 +1,7 @@
 Package: grasps
 Type: Package
 Title: Groupwise Regularized Adaptive Sparse Precision Solution
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person(given = "Shiying", family = "Xiao",
            email = "shiying.xiao@outlook.com",
@@ -49,4 +49,4 @@ Suggests:
 VignetteBuilder:
     knitr,
     quarto
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
