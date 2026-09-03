@@ -197,6 +197,14 @@ I)}{\lambda\_{\min}(\Omega_0 + \tau I)} \leq \texttt{cond.target}
 guarantees that the condition number does not exceed `cond.target`,
 providing numerical stability even in high-dimensional settings.
 
+## References
+
+Won J, Lim J, Kim S, Rajaratnam B (2013). “Condition-Number-Regularized
+Covariance Estimation.” *Journal of the Royal Statistical Society Series
+B: Statistical Methodology*, **75**(3), 427–450.
+[doi:10.1111/j.1467-9868.2012.01049.x](https://doi.org/10.1111/j.1467-9868.2012.01049.x)
+.
+
 ## Examples
 
 ``` r
