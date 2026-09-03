@@ -182,3 +182,6 @@ sim2 <- gen_prec_sbm(p = 100, K = 5,
 #### visualization
 plot(sim2)
 }
+\references{
+\insertAllCited{}
+}

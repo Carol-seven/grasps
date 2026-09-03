@@ -134,6 +134,9 @@
 #' number does not exceed \code{cond.target}, providing numerical stability
 #' even in high-dimensional settings.
 #'
+#' @references
+#' \insertAllCited{}
+#'
 #' @example
 #' inst/example/ex-gen_prec_sbm.R
 #'
