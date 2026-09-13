@@ -2,6 +2,8 @@
 
 ## grasps 0.1.2
 
+CRAN release: 2026-09-12
+
 - Fixed the tuning-parameter grid so that all combinations of
   user-supplied `alpha` and `lambda` values are evaluated.
 - Fixed automatic tuning-parameter generation so that a separate lambda
