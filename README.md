@@ -15,22 +15,14 @@ The goal of **grasps** is to provide a collection of statistical methods that
 incorporate both element-wise and group-wise penalties to estimate a precision
 matrix, making them user-friendly and useful for researchers and practitioners.
 
-$$
-\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
-\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \},
-$$
-$$
-\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
-= \alpha \mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega) + (1-\alpha) \mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega),
-$$
-$$
-\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)
-= \sum_{i,j} P_{\lambda,\gamma}(\lvert\omega_{ij}\rvert),
-$$
-$$
-\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)
-= \sum_{g,g^\prime} P_{\lambda,\gamma}(\lVert\Omega_{gg^\prime}\rVert_F).
-$$
+$$\hat{\Omega}(\lambda,\alpha,\gamma) = {\arg\min}_{\Omega \succ 0}
+\{ -\log\det(\Omega) + \text{tr}(S\Omega) + \mathcal{P}_{\lambda,\alpha,\gamma}(\Omega) \},$$
+$$\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)
+= \alpha \mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega) + (1-\alpha) \mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega),$$
+$$\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)
+= \sum_{i,j} P_{\lambda,\gamma}(\lvert\omega_{ij}\rvert),$$
+$$\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)
+= \sum_{g,g^\prime} P_{\lambda,\gamma}(\lVert\Omega_{gg^\prime}\rVert_F).$$
 
 For more details, see the vignette
 [Penalized Precision Matrix Estimation in grasps](https://shiying-xiao.com/grasps/articles/pen_est#sparse-group-estimator).
@@ -115,19 +107,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8805
-#> 2  Frobenius  23.9013
-#> 3         KL   7.6775
-#> 4  quadratic  69.1639
-#> 5   spectral  12.3571
-#> 6         TP  23.0000
-#> 7         TN 358.0000
-#> 8         FP  29.0000
-#> 9         FN  25.0000
-#> 10       TPR   0.4792
-#> 11       FPR   0.0749
-#> 12        F1   0.4600
-#> 13       MCC   0.3904
+#> 1   sparsity   0.8414
+#> 2  Frobenius  24.9542
+#> 3         KL   8.5650
+#> 4  quadratic 116.1826
+#> 5   spectral  12.8341
+#> 6         TP  21.0000
+#> 7         TN 339.0000
+#> 8         FP  48.0000
+#> 9         FN  27.0000
+#> 10       TPR   0.4375
+#> 11       FPR   0.1240
+#> 12        F1   0.3590
+#> 13       MCC   0.2688
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network

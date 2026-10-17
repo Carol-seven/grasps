@@ -41,6 +41,9 @@ arma::mat update_Zblock(const arma::mat& M, const std::string& penalty,
       // get subview for in-place update
       auto Z_block = Z.submat(row_idx, col_idx);
       arma::mat Initial_block = Initial.submat(row_idx, col_idx);
+      if (g == h && !diag_include) {
+        Initial_block.diag().zeros();
+      }
       double lambda_grp = lambda_group(Initial_block, penalty, lambda, gamma);
       if (g != h) {
         double block_norm = arma::norm(Z_block, "fro");
