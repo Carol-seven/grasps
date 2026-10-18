@@ -62,10 +62,10 @@ plot(prec)
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
 #> 1   sparsity   0.8138
-#> 2  Frobenius  27.2455
-#> 3         KL  10.0317
-#> 4  quadratic 171.1935
-#> 5   spectral  12.0030
+#> 2  Frobenius  27.0344
+#> 3         KL   9.9220
+#> 4  quadratic 168.3812
+#> 5   spectral  12.0472
 #> 6         TP  27.0000
 #> 7         TN 333.0000
 #> 8         FP  54.0000
