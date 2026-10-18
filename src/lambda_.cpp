@@ -57,7 +57,7 @@ double lambda_group(const arma::mat& Omega, std::string penalty,
     return lambda;
 
   } else if (penalty == "adapt") {
-    return lambda / (arma::norm(arma::pow(arma::abs(Omega), gamma), "fro") + eps);
+    return lambda / (std::pow(Omega_norm, gamma) + eps);
 
   } else if (penalty == "atan") {
     return lambda * gamma * (gamma + 2/M_PI) / (gamma*gamma + Omega_norm*Omega_norm);
