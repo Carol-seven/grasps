@@ -150,8 +150,10 @@
 #' \item{gamma}{The optimal addtional parameter when a non-convex penalty
 #' is chosen via \code{penalty}.}
 #' \item{iterations}{The number of ADMM iterations.}
-#' \item{lambda.grid}{The actual lambda grid used in the program.}
-#' \item{alpha.grid}{The actual alpha grid used in the program.}
+#' \item{converged}{A logical value indicating whether the selected model
+#' satisfied the ADMM convergence criteria before reaching \code{maxiter}.}
+#' \item{initial.converged}{For non-convex penalties, a logical value indicating
+#' whether the lasso initializer converged.}
 #' \item{lambda.safe}{The conservative upper bound used to initialize
 #' the line search for \eqn{\lambda_{\max}}, corresponding to each distinct
 #' value in \code{alpha.grid}, when \code{lambda = NULL}.}
@@ -163,6 +165,15 @@
 #' \item{IC.score}{The information criterion score for each parameter
 #' combination when \code{crit} is set to \code{"AIC"}, \code{"BIC"},
 #' \code{"EBIC"}, or \code{"HBIC"}.}
+#' \item{converged.grid}{The convergence status of the candidate fits.
+#' For information criterion selection, this is a logical vector corresponding
+#' to \code{lambda.grid} and \code{alpha.grid}.
+#' For cross-validation, this is a logical matrix with parameter combinations
+#' in rows and folds in columns.
+#' All candidates are retained for model selection regardless of convergence
+#' status.}
+#' \item{lambda.grid}{The actual lambda grid used in the program.}
+#' \item{alpha.grid}{The actual alpha grid used in the program.}
 #' \item{membership}{The group membership.}
 #' }
 #'
@@ -356,6 +367,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       }
       result$loss <- CV$loss.min
       result$CV.loss <- CV$CV.loss
+      result$converged.grid <- CV$converged.grid == 1
 
     } else {
 
@@ -372,6 +384,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       }
       result$score <- IC$score.min
       result$IC.score <- as.vector(IC$IC.score)
+      result$converged.grid <- as.vector(IC$converged.grid == 1)
 
     }
 

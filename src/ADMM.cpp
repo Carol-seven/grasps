@@ -15,6 +15,8 @@ List ADMMsggl(const arma::mat& S, const List& group_idx,
 
   int p = S.n_cols;
   int iter = 0;
+  int iterations = 0;
+  bool converged = false;
   arma::mat Omega = arma::diagmat(1/arma::diagvec(S));
   arma::mat Z = arma::zeros(p, p);
   arma::mat U = arma::zeros(p, p);
@@ -88,7 +90,10 @@ List ADMMsggl(const arma::mat& S, const List& group_idx,
     double tol_pri = p * tol_abs + tol_rel * std::max(arma::norm(Omega, "fro"), arma::norm(Z, "fro"));
     double tol_dual = p * tol_abs + tol_rel * rho * arma::norm(U, "fro");
 
+    iterations = iter + 1;
+
     if (r <= tol_pri && s <= tol_dual) {
+      converged = true;
       break;
     }
 
@@ -112,7 +117,8 @@ List ADMMsggl(const arma::mat& S, const List& group_idx,
     Named("hatOmega") = Z,
     Named("lambda") = lambda,
     Named("alpha") = alpha,
-    Named("iterations") = iter
+    Named("iterations") = iterations,
+    Named("converged") = converged
   );
 }
 
@@ -126,6 +132,8 @@ List ADMMsggn(const arma::mat& S, const List& group_idx, std::string penalty,
 
   int p = S.n_cols;
   int iter = 0;
+  int iterations = 0;
+  bool converged = false;
   arma::mat Omega = arma::diagmat(1/arma::diagvec(S));
   arma::mat Z = arma::zeros(p, p);
   arma::mat U = arma::zeros(p, p);
@@ -134,6 +142,7 @@ List ADMMsggn(const arma::mat& S, const List& group_idx, std::string penalty,
                           rho, tau_incr, tau_decr, nu,
                           tol_abs, tol_rel, maxiter);
   arma::mat initial = sgglres["hatOmega"];
+  bool initial_converged = Rcpp::as<bool>(sgglres["converged"]);
 
   arma::mat I = arma::ones(p, p);
   if (!diag_ind) {
@@ -167,7 +176,10 @@ List ADMMsggn(const arma::mat& S, const List& group_idx, std::string penalty,
     double tol_pri = p * tol_abs + tol_rel * std::max(arma::norm(Omega, "fro"), arma::norm(Z, "fro"));
     double tol_dual = p * tol_abs + tol_rel * rho * arma::norm(U, "fro");
 
+    iterations = iter + 1;
+
     if (r <= tol_pri && s <= tol_dual) {
+      converged = true;
       break;
     }
 
@@ -193,7 +205,9 @@ List ADMMsggn(const arma::mat& S, const List& group_idx, std::string penalty,
     Named("alpha") = alpha,
     Named("initial") = initial,
     Named("gamma") = gamma,
-    Named("iterations") = iter
+    Named("iterations") = iterations,
+    Named("converged") = initial_converged && converged,
+    Named("initial.converged") = initial_converged
   );
 }
 
@@ -230,6 +244,7 @@ List ADMMsggm_CV(const arma::mat& X, const List& group_idx, std::string penalty,
   int nlambda = lambdas.n_elem;
 
   arma::mat CV_loss(nlambda, kfold, arma::fill::zeros);
+  arma::umat converged_grid(nlambda, kfold, arma::fill::zeros);
   arma::uvec index = index_kfold(n, kfold);
 
   for (int k = 0; k < kfold; ++k) {
@@ -256,6 +271,9 @@ List ADMMsggm_CV(const arma::mat& X, const List& group_idx, std::string penalty,
                              rho, tau_incr, tau_decr, nu,
                              tol_abs, tol_rel, maxiter);
 
+      bool converged = Rcpp::as<bool>(result["converged"]);
+      converged_grid(i, k) = converged;
+
       // negative Gaussian log-likelihood
       arma::mat hatOmega = result["hatOmega"];
       double sign, logdet;
@@ -279,8 +297,9 @@ List ADMMsggm_CV(const arma::mat& X, const List& group_idx, std::string penalty,
   return List::create(Named("lambda.opt") = lambda_opt,
                       Named("alpha.opt") = alpha_opt,
                       Named("CV.loss") = CV_loss,
-                      Named("loss.min") = loss_min);
-
+                      Named("loss.min") = loss_min,
+                      Named("converged.grid") = converged_grid
+  );
 }
 
 
@@ -295,6 +314,7 @@ List ADMMsggm_IC(const arma::mat& S, const List& group_idx, std::string penalty,
 
   int nlambda = lambdas.n_elem;
   arma::vec IC_score(nlambda, arma::fill::zeros);
+  arma::uvec converged_grid(nlambda, arma::fill::zeros);
   List result_list(nlambda);
 
   for (int i = 0; i < nlambda; ++i) {
@@ -307,6 +327,9 @@ List ADMMsggm_IC(const arma::mat& S, const List& group_idx, std::string penalty,
                            rho, tau_incr, tau_decr, nu,
                            tol_abs, tol_rel, maxiter);
     result_list[i] = result;
+
+    bool converged = Rcpp::as<bool>(result["converged"]);
+    converged_grid[i] = converged;
 
     arma::mat hatOmega = result["hatOmega"];
     IC_score[i] = criterion(hatOmega, S, n, crit, ebic_tuning);
@@ -323,7 +346,8 @@ List ADMMsggm_IC(const arma::mat& S, const List& group_idx, std::string penalty,
                       Named("alpha.opt") = alpha_opt,
                       Named("IC.score") = IC_score,
                       Named("score.min") = score_min,
-                      Named("result") = result_list[opt_idx]);
-
+                      Named("converged.grid") = converged_grid,
+                      Named("result") = result_list[opt_idx]
+  );
 }
 
