@@ -256,13 +256,15 @@ An object with S3 class `"grasps"` containing the following components:
 
   The number of ADMM iterations.
 
-- lambda.grid:
+- converged:
 
-  The actual lambda grid used in the program.
+  A logical value indicating whether the selected model satisfied the
+  ADMM convergence criteria before reaching `maxiter`.
 
-- alpha.grid:
+- initial.converged:
 
-  The actual alpha grid used in the program.
+  For non-convex penalties, a logical value indicating whether the lasso
+  initializer converged.
 
 - lambda.safe:
 
@@ -288,6 +290,23 @@ An object with S3 class `"grasps"` containing the following components:
 
   The information criterion score for each parameter combination when
   `crit` is set to `"AIC"`, `"BIC"`, `"EBIC"`, or `"HBIC"`.
+
+- converged.grid:
+
+  The convergence status of the candidate fits. For information
+  criterion selection, this is a logical vector corresponding to
+  `lambda.grid` and `alpha.grid`. For cross-validation, this is a
+  logical matrix with parameter combinations in rows and folds in
+  columns. All candidates are retained for model selection regardless of
+  convergence status.
+
+- lambda.grid:
+
+  The actual lambda grid used in the program.
+
+- alpha.grid:
+
+  The actual alpha grid used in the program.
 
 - membership:
 

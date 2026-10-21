@@ -303,11 +303,13 @@ is chosen via <code>penalty</code>.</p></dd>
 <dt>iterations</dt>
 <dd><p>The number of ADMM iterations.</p></dd>
 
-<dt>lambda.grid</dt>
-<dd><p>The actual lambda grid used in the program.</p></dd>
+<dt>converged</dt>
+<dd><p>A logical value indicating whether the selected model
+satisfied the ADMM convergence criteria before reaching <code>maxiter</code>.</p></dd>
 
-<dt>alpha.grid</dt>
-<dd><p>The actual alpha grid used in the program.</p></dd>
+<dt>initial.converged</dt>
+<dd><p>For non-convex penalties, a logical value indicating
+whether the lasso initializer converged.</p></dd>
 
 <dt>lambda.safe</dt>
 <dd><p>The conservative upper bound used to initialize
@@ -329,6 +331,21 @@ to <code>"AIC"</code>, <code>"BIC"</code>, <code>"EBIC"</code>, or <code>"HBIC"<
 <dd><p>The information criterion score for each parameter
 combination when <code>crit</code> is set to <code>"AIC"</code>, <code>"BIC"</code>,
 <code>"EBIC"</code>, or <code>"HBIC"</code>.</p></dd>
+
+<dt>converged.grid</dt>
+<dd><p>The convergence status of the candidate fits.
+For information criterion selection, this is a logical vector corresponding
+to <code>lambda.grid</code> and <code>alpha.grid</code>.
+For cross-validation, this is a logical matrix with parameter combinations
+in rows and folds in columns.
+All candidates are retained for model selection regardless of convergence
+status.</p></dd>
+
+<dt>lambda.grid</dt>
+<dd><p>The actual lambda grid used in the program.</p></dd>
+
+<dt>alpha.grid</dt>
+<dd><p>The actual alpha grid used in the program.</p></dd>
 
 <dt>membership</dt>
 <dd><p>The group membership.</p></dd>
