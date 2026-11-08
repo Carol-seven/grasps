@@ -37,14 +37,21 @@ grasps(
 \item An \eqn{n \times p} data matrix with sample size \eqn{n} and
 dimension \eqn{p}.
 \item A \eqn{p \times p} sample covariance matrix with dimension \eqn{p}.
-}}
+}
+Entries must be finite and real. Covariance input must be positive
+semidefinite with positive diagonal entries; data columns must have positive
+sample variances. Symmetric matrices are interpreted as covariance input.}
 
 \item{n}{An integer (default = \code{nrow(X)}) specifying the sample size.
 This is only required when the input matrix \code{X} is a \eqn{p \times p}
-sample covariance matrix with dimension \eqn{p}.}
+sample covariance matrix with dimension \eqn{p}.
+It must be supplied explicitly for covariance input and must equal
+\code{nrow(X)} for data input. The sample size must be at least 2.}
 
 \item{membership}{An integer vector specifying the group membership.
-The length of \code{membership} must be consistent with the dimension \eqn{p}.}
+The length of \code{membership} must be consistent with the dimension \eqn{p}.
+Labels must be finite integers without missing values; consecutive labels
+are not required.}
 
 \item{penalty}{A character string specifying the penalty for estimating
 precision matrix. Available options include:
@@ -91,7 +98,7 @@ The default value is a sequence from 0.1 to 0.9 with increments of 0.1.
 When both \code{alpha} and \code{lambda} are supplied,
 all Cartesian combinations of their values are evaluated.}
 
-\item{gamma}{A numeric value specifying the additional parameter fo
+\item{gamma}{A finite numeric scalar specifying the additional parameter for
 the chosen \code{penalty}. The default value depends on the penalty:
 \enumerate{
 \item "adapt": 0.5
@@ -101,7 +108,10 @@ the chosen \code{penalty}. The default value depends on the penalty:
 \item "lsp": 0.1
 \item "mcp": 3
 \item "scad": 3.7
-}}
+}
+It must be positive for "adapt", "atan", "exp", and "lsp"; in (0,1)
+for "lq"; greater than 1 for "mcp"; and greater than 2 for "scad".
+It is ignored for "lasso".}
 
 \item{nlambda}{An integer (default = 10) specifying the number of
 \code{lambda} values to generate when \code{lambda = NULL}.}
@@ -163,7 +173,8 @@ selection criterion to use. Available options include:
 }}
 
 \item{kfold}{An integer (default = 5) specifying the number of folds used for
-\code{crit = "CV"}.}
+\code{crit = "CV"}.
+It must be at least 2 and leave at least 2 observations per validation fold.}
 
 \item{ebic.tuning}{A numeric value in [0,1] (default = 0.5) specifying
 the tuning parameter to calculate for \code{crit = "EBIC"}.}
@@ -200,7 +211,10 @@ to \code{lambda.grid} and \code{alpha.grid}.
 For cross-validation, this is a logical matrix with parameter combinations
 in rows and folds in columns.
 All candidates are retained for model selection regardless of convergence
-status.}
+status. Non-finite scores and estimates that are not positive definite are
+assigned infinite scores. Selection stops with an error if no candidate has
+a finite score. A warning is issued if the selected fit or its selected CV
+fits did not converge.}
 \item{lambda.grid}{The actual lambda grid used in the program.}
 \item{alpha.grid}{The actual alpha grid used in the program.}
 \item{membership}{The group membership.}

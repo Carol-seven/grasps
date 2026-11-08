@@ -28,12 +28,15 @@ double criterion(const arma::mat& hatOmega, const arma::mat& S, int n,
   // dimensionality
   int p = S.n_cols;
   // Gaussian log-likelihood
-  double sign, logdet;
-  arma::log_det(logdet, sign, hatOmega);
-  if (sign <= 0 || !std::isfinite(logdet)) {
+  arma::mat factor;
+  if (!hatOmega.is_finite() || !arma::chol(factor, hatOmega)) {
     return std::numeric_limits<double>::infinity();
   }
+  double logdet = 2.0 * arma::accu(arma::log(factor.diag()));
   double loglik = (n/2.0) * (logdet - arma::accu(hatOmega % S));
+  if (!std::isfinite(loglik)) {
+    return std::numeric_limits<double>::infinity();
+  }
 
   if (crit == "negloglik") {
     return -loglik;
@@ -42,20 +45,22 @@ double criterion(const arma::mat& hatOmega, const arma::mat& S, int n,
   // cardinality of the edge set
   arma::uword edges = arma::accu(arma::trimatu(hatOmega, 1) != 0);
 
+  double score;
   if (crit == "AIC") {
-    return -2*loglik + 2*edges;
+    score = -2*loglik + 2*edges;
   }
   else if (crit == "BIC") {
-    return -2*loglik + std::log(n)*edges;
+    score = -2*loglik + std::log(n)*edges;
   }
   else if (crit == "EBIC") {
-    return -2*loglik + std::log(n)*edges + 4*ebic_tuning*std::log(p)*edges;
+    score = -2*loglik + std::log(n)*edges + 4*ebic_tuning*std::log(p)*edges;
   }
   else if (crit == "HBIC") {
-    return -2*loglik + std::log(std::log(n))*std::log(p)*edges;
+    score = -2*loglik + std::log(std::log(n))*std::log(p)*edges;
   }
   else {
     Rcpp::stop("Unknown criterion!");
   }
+  return std::isfinite(score) ? score : std::numeric_limits<double>::infinity();
 }
 
