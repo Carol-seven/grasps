@@ -44,16 +44,25 @@ grasps(
 
   2.  A \\p \times p\\ sample covariance matrix with dimension \\p\\.
 
+  Entries must be finite and real. Covariance input must be positive
+  semidefinite with positive diagonal entries; data columns must have
+  positive sample variances. Symmetric matrices are interpreted as
+  covariance input.
+
 - n:
 
   An integer (default = `nrow(X)`) specifying the sample size. This is
   only required when the input matrix `X` is a \\p \times p\\ sample
-  covariance matrix with dimension \\p\\.
+  covariance matrix with dimension \\p\\. It must be supplied explicitly
+  for covariance input and must equal `nrow(X)` for data input. The
+  sample size must be at least 2.
 
 - membership:
 
   An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension \\p\\.
+  `membership` must be consistent with the dimension \\p\\. Labels must
+  be finite integers without missing values; consecutive labels are not
+  required.
 
 - penalty:
 
@@ -113,8 +122,8 @@ grasps(
 
 - gamma:
 
-  A numeric value specifying the additional parameter fo the chosen
-  `penalty`. The default value depends on the penalty:
+  A finite numeric scalar specifying the additional parameter for the
+  chosen `penalty`. The default value depends on the penalty:
 
   1.  "adapt": 0.5
 
@@ -129,6 +138,10 @@ grasps(
   6.  "mcp": 3
 
   7.  "scad": 3.7
+
+  It must be positive for "adapt", "atan", "exp", and "lsp"; in (0,1)
+  for "lq"; greater than 1 for "mcp"; and greater than 2 for "scad". It
+  is ignored for "lasso".
 
 - nlambda:
 
@@ -219,7 +232,8 @@ grasps(
 - kfold:
 
   An integer (default = 5) specifying the number of folds used for
-  `crit = "CV"`.
+  `crit = "CV"`. It must be at least 2 and leave at least 2 observations
+  per validation fold.
 
 - ebic.tuning:
 
@@ -298,7 +312,10 @@ An object with S3 class `"grasps"` containing the following components:
   `lambda.grid` and `alpha.grid`. For cross-validation, this is a
   logical matrix with parameter combinations in rows and folds in
   columns. All candidates are retained for model selection regardless of
-  convergence status.
+  convergence status. Non-finite scores and estimates that are not
+  positive definite are assigned infinite scores. Selection stops with
+  an error if no candidate has a finite score. A warning is issued if
+  the selected fit or its selected CV fits did not converge.
 
 - lambda.grid:
 
@@ -436,19 +453,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8138
-#> 2  Frobenius  27.0344
-#> 3         KL   9.9220
-#> 4  quadratic 168.3812
-#> 5   spectral  12.0472
-#> 6         TP  27.0000
-#> 7         TN 333.0000
-#> 8         FP  54.0000
-#> 9         FN  21.0000
-#> 10       TPR   0.5625
-#> 11       FPR   0.1395
-#> 12        F1   0.4186
-#> 13       MCC   0.3404
+#> 1   sparsity   0.8391
+#> 2  Frobenius  25.4522
+#> 3         KL   9.3753
+#> 4  quadratic 136.2799
+#> 5   spectral  11.5183
+#> 6         TP  23.0000
+#> 7         TN 340.0000
+#> 8         FP  47.0000
+#> 9         FN  25.0000
+#> 10       TPR   0.4792
+#> 11       FPR   0.1214
+#> 12        F1   0.3898
+#> 13       MCC   0.3050
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network

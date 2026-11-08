@@ -1,5 +1,17 @@
 # Changelog
 
+## grasps 0.1.3
+
+- Validate data, covariance matrices, group labels, scalar controls, and
+  penalty-specific `gamma` domains before calling the native solvers.
+- Require an explicit sample size for covariance input and reject CV
+  fold counts that would leave singleton validation folds.
+- Use positive-definiteness checks when scoring candidates and stop when
+  no candidate has a finite score. Warn when the selected fit or its
+  selected cross-validation fits did not converge.
+- Add standalone regression checks for validation and failed-fit
+  handling.
+
 ## grasps 0.1.2
 
 CRAN release: 2026-09-12
