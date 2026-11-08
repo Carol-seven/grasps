@@ -276,19 +276,17 @@ List ADMMsggm_CV(const arma::mat& X, const List& group_idx, std::string penalty,
 
       // negative Gaussian log-likelihood
       arma::mat hatOmega = result["hatOmega"];
-      double sign, logdet;
-      arma::log_det(logdet, sign, hatOmega);
-      if (sign <= 0 || !std::isfinite(logdet)) {
-        CV_loss(i,k) = arma::datum::inf;
-      } else {
-        CV_loss(i,k) = (n_test / 2.0) * (arma::accu(hatOmega % S_test) - logdet);
-      }
+      CV_loss(i,k) = criterion(hatOmega, S_test, n_test, "negloglik", 0.0);
 
     }
   }
 
   // the mean of the k-fold loss for each parameter grid value
   arma::mat loss_avg = arma::mean(CV_loss, 1);
+  if (!std::isfinite(loss_avg.min())) {
+    stop("No candidate has a finite cross-validation score. "
+         "Try increasing `maxiter` or changing the tuning grid.");
+  }
   arma::uword opt_idx = loss_avg.index_min();
   double loss_min = loss_avg(opt_idx);
   double lambda_opt = lambdas[opt_idx];
@@ -337,6 +335,10 @@ List ADMMsggm_IC(const arma::mat& S, const List& group_idx, std::string penalty,
   }
 
   // the mean of the score for each parameter grid value
+  if (!std::isfinite(IC_score.min())) {
+    stop("No candidate has a finite information-criterion score. "
+         "Try increasing `maxiter` or changing the tuning grid.");
+  }
   arma::uword opt_idx = IC_score.index_min();
   double score_min = IC_score(opt_idx);
   double lambda_opt = lambdas[opt_idx];
