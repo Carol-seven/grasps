@@ -164,7 +164,7 @@ Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008. “Sparse
 Inverse Covariance Estimation with the Graphical Lasso.” *Biostatistics*
 9 (3): 432–41. <https://doi.org/10.1093/biostatistics/kxm045>.
 
-Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge Versus the
+Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge versus the
 Lasso.” *Journal of Computational and Graphical Statistics* 7 (3):
 397–416. <https://doi.org/10.1080/10618600.1998.10474784>.
 
@@ -182,7 +182,7 @@ Wang, Yanxin, and Li Zhu. 2016. “Variable Selection and Parameter
 Estimation with the Atan Regularization Method.” *Journal of Probability
 and Statistics* 2016: 6495417. <https://doi.org/10.1155/2016/6495417>.
 
-Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection Under Minimax
+Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection under Minimax
 Concave Penalty.” *The Annals of Statistics* 38 (2): 894–942.
 <https://doi.org/10.1214/09-AOS729>.
 
