@@ -38,20 +38,24 @@ grasps(
 dimension \eqn{p}.
 \item A \eqn{p \times p} sample covariance matrix with dimension \eqn{p}.
 }
-Entries must be finite and real. Covariance input must be positive
-semidefinite with positive diagonal entries; data columns must have positive
-sample variances. Symmetric matrices are interpreted as covariance input.}
+Entries must be finite and real.
+Covariance input must be positive semidefinite with positive diagonal entries;
+data columns must have positive sample variances.
+Symmetric matrices are interpreted as covariance input.}
 
 \item{n}{An integer (default = \code{nrow(X)}) specifying the sample size.
-This is only required when the input matrix \code{X} is a \eqn{p \times p}
-sample covariance matrix with dimension \eqn{p}.
-It must be supplied explicitly for covariance input and must equal
-\code{nrow(X)} for data input. The sample size must be at least 2.}
+\enumerate{
+\item For an \eqn{n \times p} data matrix, it defaults to \code{nrow(X)} and,
+if supplied, must equal \code{nrow(X)}.
+\item For a \eqn{p \times p} sample covariance matrix, it must be supplied
+explicitly.
+}
+In either case, \code{n} must be at least 2.}
 
-\item{membership}{An integer vector specifying the group membership.
-The length of \code{membership} must be consistent with the dimension \eqn{p}.
-Labels must be finite integers without missing values; consecutive labels
-are not required.}
+\item{membership}{A numeric vector specifying the group membership.
+Its length must equal the dimension \eqn{p}.
+Labels must be finite, non-missing integer values; consecutive labels are not
+required.}
 
 \item{penalty}{A character string specifying the penalty for estimating
 precision matrix. Available options include:
@@ -99,19 +103,18 @@ When both \code{alpha} and \code{lambda} are supplied,
 all Cartesian combinations of their values are evaluated.}
 
 \item{gamma}{A finite numeric scalar specifying the additional parameter for
-the chosen \code{penalty}. The default value depends on the penalty:
+the chosen \code{penalty}.
+The default value and valid range depend on the penalty:
 \enumerate{
-\item "adapt": 0.5
-\item "atan": 0.005
-\item "exp": 0.01
-\item "lq": 0.5
-\item "lsp": 0.1
-\item "mcp": 3
-\item "scad": 3.7
+\item "adapt": default 0.5; must be positive.
+\item "atan": default 0.005; must be positive.
+\item "exp": default 0.01; must be positive.
+\item "lq": default 0.5; must be in \eqn{(0, 1)}.
+\item "lsp": default 0.1; must be positive.
+\item "mcp": default 3; must be greater than 1.
+\item "scad": default 3.7; must be greater than 2.
 }
-It must be positive for "adapt", "atan", "exp", and "lsp"; in (0,1)
-for "lq"; greater than 1 for "mcp"; and greater than 2 for "scad".
-It is ignored for "lasso".}
+This argument is ignored when \code{penalty = "lasso"}.}
 
 \item{nlambda}{An integer (default = 10) specifying the number of
 \code{lambda} values to generate when \code{lambda = NULL}.}
@@ -187,8 +190,8 @@ An object with S3 class \code{"grasps"} containing the following components:
 \item{alpha}{The optimal mixing parameter.}
 \item{initial}{The initial estimate of \code{hatOmega} when a non-convex
 penalty is chosen via \code{penalty}.}
-\item{gamma}{The optimal addtional parameter when a non-convex penalty
-is chosen via \code{penalty}.}
+\item{gamma}{The addtional parameter when a non-convex penalty is chosen
+via \code{penalty}.}
 \item{iterations}{The number of ADMM iterations.}
 \item{converged}{A logical value indicating whether the selected model
 satisfied the ADMM convergence criteria before reaching \code{maxiter}.}
@@ -211,10 +214,12 @@ to \code{lambda.grid} and \code{alpha.grid}.
 For cross-validation, this is a logical matrix with parameter combinations
 in rows and folds in columns.
 All candidates are retained for model selection regardless of convergence
-status. Non-finite scores and estimates that are not positive definite are
-assigned infinite scores. Selection stops with an error if no candidate has
-a finite score. A warning is issued if the selected fit or its selected CV
-fits did not converge.}
+status.
+Non-finite scores and estimates that are not positive definite are assigned
+infinite scores.
+Selection stops with an error if no candidate has a finite score.
+A warning is issued if the selected fit or its selected CV fits did not
+converge.}
 \item{lambda.grid}{The actual lambda grid used in the program.}
 \item{alpha.grid}{The actual alpha grid used in the program.}
 \item{membership}{The group membership.}

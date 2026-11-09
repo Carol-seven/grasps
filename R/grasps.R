@@ -9,20 +9,24 @@
 #' dimension \eqn{p}.
 #' \item A \eqn{p \times p} sample covariance matrix with dimension \eqn{p}.
 #' }
-#' Entries must be finite and real. Covariance input must be positive
-#' semidefinite with positive diagonal entries; data columns must have positive
-#' sample variances. Symmetric matrices are interpreted as covariance input.
+#' Entries must be finite and real.
+#' Covariance input must be positive semidefinite with positive diagonal entries;
+#' data columns must have positive sample variances.
+#' Symmetric matrices are interpreted as covariance input.
 #'
 #' @param n An integer (default = \code{nrow(X)}) specifying the sample size.
-#' This is only required when the input matrix \code{X} is a \eqn{p \times p}
-#' sample covariance matrix with dimension \eqn{p}.
-#' It must be supplied explicitly for covariance input and must equal
-#' \code{nrow(X)} for data input. The sample size must be at least 2.
+#' \enumerate{
+#' \item For an \eqn{n \times p} data matrix, it defaults to \code{nrow(X)} and,
+#' if supplied, must equal \code{nrow(X)}.
+#' \item For a \eqn{p \times p} sample covariance matrix, it must be supplied
+#' explicitly.
+#' }
+#' In either case, \code{n} must be at least 2.
 #'
-#' @param membership An integer vector specifying the group membership.
-#' The length of \code{membership} must be consistent with the dimension \eqn{p}.
-#' Labels must be finite integers without missing values; consecutive labels
-#' are not required.
+#' @param membership A numeric vector specifying the group membership.
+#' Its length must equal the dimension \eqn{p}.
+#' Labels must be finite, non-missing integer values; consecutive labels are not
+#' required.
 #'
 #' @param penalty A character string specifying the penalty for estimating
 #' precision matrix. Available options include:
@@ -70,19 +74,18 @@
 #' all Cartesian combinations of their values are evaluated.
 #'
 #' @param gamma A finite numeric scalar specifying the additional parameter for
-#' the chosen \code{penalty}. The default value depends on the penalty:
+#' the chosen \code{penalty}.
+#' The default value and valid range depend on the penalty:
 #' \enumerate{
-#' \item "adapt": 0.5
-#' \item "atan": 0.005
-#' \item "exp": 0.01
-#' \item "lq": 0.5
-#' \item "lsp": 0.1
-#' \item "mcp": 3
-#' \item "scad": 3.7
+#' \item "adapt": default 0.5; must be positive.
+#' \item "atan": default 0.005; must be positive.
+#' \item "exp": default 0.01; must be positive.
+#' \item "lq": default 0.5; must be in \eqn{(0, 1)}.
+#' \item "lsp": default 0.1; must be positive.
+#' \item "mcp": default 3; must be greater than 1.
+#' \item "scad": default 3.7; must be greater than 2.
 #' }
-#' It must be positive for "adapt", "atan", "exp", and "lsp"; in (0,1)
-#' for "lq"; greater than 1 for "mcp"; and greater than 2 for "scad".
-#' It is ignored for "lasso".
+#' This argument is ignored when \code{penalty = "lasso"}.
 #'
 #' @param nlambda An integer (default = 10) specifying the number of
 #' \code{lambda} values to generate when \code{lambda = NULL}.
@@ -158,8 +161,8 @@
 #' \item{alpha}{The optimal mixing parameter.}
 #' \item{initial}{The initial estimate of \code{hatOmega} when a non-convex
 #' penalty is chosen via \code{penalty}.}
-#' \item{gamma}{The optimal addtional parameter when a non-convex penalty
-#' is chosen via \code{penalty}.}
+#' \item{gamma}{The addtional parameter when a non-convex penalty is chosen
+#' via \code{penalty}.}
 #' \item{iterations}{The number of ADMM iterations.}
 #' \item{converged}{A logical value indicating whether the selected model
 #' satisfied the ADMM convergence criteria before reaching \code{maxiter}.}
@@ -182,10 +185,12 @@
 #' For cross-validation, this is a logical matrix with parameter combinations
 #' in rows and folds in columns.
 #' All candidates are retained for model selection regardless of convergence
-#' status. Non-finite scores and estimates that are not positive definite are
-#' assigned infinite scores. Selection stops with an error if no candidate has
-#' a finite score. A warning is issued if the selected fit or its selected CV
-#' fits did not converge.}
+#' status.
+#' Non-finite scores and estimates that are not positive definite are assigned
+#' infinite scores.
+#' Selection stops with an error if no candidate has a finite score.
+#' A warning is issued if the selected fit or its selected CV fits did not
+#' converge.}
 #' \item{lambda.grid}{The actual lambda grid used in the program.}
 #' \item{alpha.grid}{The actual alpha grid used in the program.}
 #' \item{membership}{The group membership.}
@@ -211,102 +216,27 @@ grasps <- function(X, n = nrow(X), membership, penalty,
                    tol.abs = 1e-04, tol.rel = 1e-04, maxiter = 1e+04,
                    crit = "BIC", kfold = 5, ebic.tuning = 0.5) {
 
+  ## Validate the input matrix and sample size ---------------------------------
+
   if (!is.matrix(X) || !is.numeric(X) || is.complex(X) ||
       nrow(X) < 1L || ncol(X) < 1L || any(!is.finite(X))) {
     stop('`X` must be a nonempty finite numeric matrix.', call. = FALSE)
   }
 
-  p <- ncol(X)
+  cov.input <- isSymmetric(X)
 
-  if (length(membership) != p) {
-    stop('The length of `membership` must equal the column dimension of `X`!')
+  if (cov.input && missing(n)) {
+    stop('`n` must be supplied when `X` is a covariance matrix.', call. = FALSE)
   }
 
-  if (!is.numeric(membership) || is.complex(membership) ||
-      !is.null(dim(membership)) || any(!is.finite(membership)) ||
-      any(membership != floor(membership))) {
-    stop('`membership` must be a vector of finite integer group labels.',
-         call. = FALSE)
-  }
-
-  if (!is.character(penalty) || length(penalty) != 1L || is.na(penalty) ||
-      !(penalty %in% c("lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad"))) {
-    stop('Error in `penalty`!
-         Available options: "lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad".')
-  }
-
-  if (!is.character(crit) || length(crit) != 1L || is.na(crit) ||
-      !(crit %in% c("AIC", "BIC", "EBIC", "HBIC", "CV"))) {
-    stop('Error in `crit`!
-         Available options: "AIC", "BIC", "EBIC", "HBIC", "CV".')
-  }
-
-  lambda_null <- is.null(lambda)
-
-  if (!lambda_null &&
-      (!is.numeric(lambda) || is.complex(lambda) || length(lambda) == 0 ||
-       any(!is.finite(lambda)) || any(lambda <= 0))) {
-    stop('The parameter `lambda` must be positive!')
-  }
-
-  alpha_null <- is.null(alpha)
-
-  if (!alpha_null &&
-      (!is.numeric(alpha) || is.complex(alpha) || length(alpha) == 0 ||
-       any(!is.finite(alpha)) || any(alpha < 0 | alpha > 1))) {
-    stop('The parameter `alpha` must be in [0,1]!')
-  }
-
-  flags <- list(diag.ind = diag.ind, diag.grp = diag.grp,
-                diag.include = diag.include)
-  for (name in names(flags)) {
-    value <- flags[[name]]
-    if (!is.logical(value) || length(value) != 1L || is.na(value)) {
-      stop(sprintf('`%s` must be TRUE or FALSE.', name), call. = FALSE)
-    }
-  }
-
-  validate_scalar(rho, "rho")
-  validate_scalar(tau.incr, "tau.incr", lower = 1)
-  validate_scalar(tau.decr, "tau.decr", lower = 1)
-  validate_scalar(nu, "nu", lower = 1)
-  validate_scalar(tol.abs, "tol.abs")
-  validate_scalar(tol.rel, "tol.rel")
-  validate_scalar(maxiter, "maxiter", integer = TRUE)
-  if (crit == "EBIC") {
-    validate_scalar(ebic.tuning, "ebic.tuning", upper = 1,
-                    lower.inclusive = TRUE)
-  }
-
-  ## Validate gamma before building the tuning grid or entering C++.
-  if (penalty == "lasso") {
-    gamma <- NA_real_
-  } else {
-    if (is.null(gamma)) {
-      gamma <- switch(penalty, adapt = 0.5, atan = 0.005, exp = 0.01,
-                      lq = 0.5, lsp = 0.1, mcp = 3, scad = 3.7)
-    }
-    lower <- switch(penalty, mcp = 1, scad = 2, 0)
-    validate_scalar(gamma, "gamma", lower = lower)
-    if (penalty == "lq" && gamma >= 1) {
-      stop('For "lq", `gamma` must be in (0,1).', call. = FALSE)
-    }
-  }
-
-  ## Force n before X is replaced by NULL in the covariance-input branch.
-  covariance.input <- isSymmetric(X)
-  if (covariance.input && missing(n)) {
-    stop('Supply `n`, the sample size, when `X` is a covariance matrix.',
-         call. = FALSE)
-  }
   validate_scalar(n, "n", lower = 2, integer = TRUE, lower.inclusive = TRUE)
 
-  if (covariance.input) {
+  if (cov.input) {
     S <- X
     X <- NULL
   } else {
     if (nrow(X) < 2L || n != nrow(X)) {
-      stop('For data input, `n` must equal nrow(X), which must be at least 2.',
+      stop('For data input, `n` must equal `nrow(X)`, which must be at least 2.',
            call. = FALSE)
     }
     S <- (n-1)/n*cov(X)
@@ -316,17 +246,125 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     stop('The covariance matrix must be finite with positive diagonal entries.',
          call. = FALSE)
   }
-  if (covariance.input) {
-    eigenvalues <- eigen(S, symmetric = TRUE, only.values = TRUE)$values
-    tolerance <- sqrt(.Machine$double.eps) * max(abs(eigenvalues))
-    if (min(eigenvalues) < -tolerance) {
+
+  if (cov.input) {
+    eigvals <- eigen(S, symmetric = TRUE, only.values = TRUE)$values
+    tol <- sqrt(.Machine$double.eps) * max(abs(eigvals))
+    if (min(eigvals) < -tol) {
       stop('The covariance matrix must be positive semidefinite.', call. = FALSE)
     }
   }
 
+  p <- ncol(S)
+
+  ## Validate group membership -------------------------------------------------
+
+  if (!is.numeric(membership) || is.complex(membership) ||
+      !is.null(dim(membership)) || any(!is.finite(membership)) ||
+      any(membership != floor(membership))) {
+    stop('`membership` must be a vector of finite integer group labels.',
+         call. = FALSE)
+  }
+
+  if (length(membership) != p) {
+    stop('The length of `membership` must equal `p`.', call. = FALSE)
+  }
+
+  ## Validate the penalty specification ----------------------------------------
+
+  penalties <- c("lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad")
+
+  if (!is.character(penalty) || length(penalty) != 1L ||
+      is.na(penalty) || !(penalty %in% penalties)) {
+    stop(sprintf("Invalid `penalty`.\nAvailable options: %s.",
+                 paste(sprintf('"%s"', penalties), collapse = ", ")),
+         call. = FALSE)
+  }
+
+  ## Validate diagonal-penalty controls ----------------------------------------
+
+  diags <- list(diag.ind = diag.ind,
+                diag.grp = diag.grp,
+                diag.include = diag.include)
+
+  for (name in names(diags)) {
+    value <- diags[[name]]
+    if (!is.logical(value) || length(value) != 1L || is.na(value)) {
+      stop(sprintf('`%s` must be TRUE or FALSE.', name), call. = FALSE)
+    }
+  }
+
+  ## Validate tuning parameters ------------------------------------------------
+
+  lambda_null <- is.null(lambda)
+
+  if (!lambda_null &&
+      (!is.numeric(lambda) || is.complex(lambda) || length(lambda) == 0 ||
+       any(!is.finite(lambda)) || any(lambda <= 0))) {
+    stop('`lambda` must contain positive finite numeric values.', call. = FALSE)
+  }
+
+  alpha_null <- is.null(alpha)
+
+  if (!alpha_null &&
+      (!is.numeric(alpha) || is.complex(alpha) || length(alpha) == 0 ||
+       any(!is.finite(alpha)) || any(alpha < 0 | alpha > 1))) {
+    stop('`alpha` must contain finite numeric values in [0,1].', call. = FALSE)
+  }
+
+  if (penalty == "lasso") {
+    gamma <- NA_real_
+  } else {
+    if (is.null(gamma)) {
+      gamma <- switch(penalty,
+                      "adapt" = 0.5, "atan" = 0.005, "exp"  = 0.01, "lq" = 0.5,
+                      "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7)
+    }
+    lower <- switch(penalty, "mcp" = 1, "scad" = 2, 0)
+    validate_scalar(gamma, "gamma", lower = lower)
+    if (penalty == "lq" && gamma >= 1) {
+      stop('For "lq", `gamma` must be in (0,1).', call. = FALSE)
+    }
+  }
+
+  if (lambda_null) {
+    validate_scalar(nlambda, "nlambda", integer = TRUE)
+    validate_scalar(lambda.min.ratio, "lambda.min.ratio", upper = 1)
+    validate_scalar(growiter.lambda, "growiter.lambda", integer = TRUE,
+                    lower.inclusive = TRUE)
+    validate_scalar(tol.lambda, "tol.lambda")
+    validate_scalar(maxiter.lambda, "maxiter.lambda", integer = TRUE)
+  }
+
+  ## Validate ADMM controls ----------------------------------------------------
+
+  validate_scalar(rho, "rho")
+  validate_scalar(tau.incr, "tau.incr", lower = 1)
+  validate_scalar(tau.decr, "tau.decr", lower = 1)
+  validate_scalar(nu, "nu", lower = 1)
+  validate_scalar(tol.abs, "tol.abs")
+  validate_scalar(tol.rel, "tol.rel")
+  validate_scalar(maxiter, "maxiter", integer = TRUE)
+
+  ## Validate model-selection controls -----------------------------------------
+
+  criteria <- c("AIC", "BIC", "EBIC", "HBIC", "CV")
+
+  if (!is.character(crit) || length(crit) != 1L ||
+      is.na(crit) || !(crit %in% criteria)) {
+    stop(sprintf("Invalid `crit`.\nAvailable options: %s.",
+                 paste(sprintf('"%s"', criteria), collapse = ", ")),
+         call. = FALSE)
+  }
+
+  if (crit == "EBIC") {
+    validate_scalar(ebic.tuning, "ebic.tuning", upper = 1,
+                    lower.inclusive = TRUE)
+  }
+
   if (crit == "CV") {
-    if (is.null(X)) {
-      stop('CV requires the n-by-p data matrix!', call. = FALSE)
+    if (cov.input) {
+      stop('CV requires the n-by-p data matrix.', call. = FALSE)
     }
     validate_scalar(kfold, "kfold", lower = 2, integer = TRUE,
                     lower.inclusive = TRUE)
@@ -336,23 +374,21 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     }
   }
 
+  ## Construct group indices ---------------------------------------------------
+
   grp <- sort(unique(membership))
-  group.idx <- lapply(grp, function(g) which(membership == g)-1)
+  group.idx <- lapply(grp, function(g) which(membership == g) - 1)
   names(group.idx) <- grp
+
+  ## Construct the alpha grid --------------------------------------------------
 
   if (alpha_null) {
     alpha <- seq(0.1, 0.9, 0.1)
   }
 
+  ## Construct the lambda grid -------------------------------------------------
+
   if (lambda_null) {
-
-    validate_scalar(nlambda, "nlambda", integer = TRUE)
-    validate_scalar(lambda.min.ratio, "lambda.min.ratio", upper = 1)
-    validate_scalar(growiter.lambda, "growiter.lambda", integer = TRUE,
-                    lower.inclusive = TRUE)
-    validate_scalar(tol.lambda, "tol.lambda")
-    validate_scalar(maxiter.lambda, "maxiter.lambda", integer = TRUE)
-
     max_abs.off <- max(abs(S[upper.tri(S, diag = FALSE)]), 0)
     S2 <- S*S
     sum.row <- rowsum(S2, membership)
@@ -361,20 +397,21 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     max_block.norm.off <- max(block.norm[upper.tri(block.norm, diag = FALSE)], 0)
     idx_list <- split(seq_along(membership), membership)
     block.off_list <- list()
-    if (length(idx_list) >= 2) {
+    if (length(idx_list) >= 2L) {
       for (g in seq_along(idx_list)) {
         for (gp in seq_along(idx_list)) {
           if (g < gp) {
-            block.off_list[[length(block.off_list)+1]] <- S[idx_list[[g]], idx_list[[gp]], drop = FALSE]
+            block.off_list[[length(block.off_list) + 1L]] <-
+              S[idx_list[[g]], idx_list[[gp]], drop = FALSE]
           }
         }
       }
     }
     lambda_path <- lapply(alpha, function(a) {
       lambda.ind <- ifelse(a > 0, max_abs.off / a, 0)
-      lambda.grp <- ifelse(a < 1, max_block.norm.off / (1-a), 0)
+      lambda.grp <- ifelse(a < 1, max_block.norm.off / (1 - a), 0)
       lambda.safe <- max(lambda.ind, lambda.grp)
-      if (a > 0 && a < 1 && length(block.off_list) > 0) {
+      if (a > 0 && a < 1 && length(block.off_list) > 0L) {
         lambda.max <- line_search_lambda_max(
           blockList = block.off_list, lambda.safe = lambda.safe, alpha = a,
           growiter = growiter.lambda, tol = tol.lambda, maxiter = maxiter.lambda)
@@ -384,19 +421,23 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       if (!is.finite(lambda.max) || lambda.max <= 0) {
         stop("Cannot generate a positive `lambda` sequence for alpha = ", a,
              ": the computed `lambda.max` is ", lambda.max,
-             ".\nPlease supply a positive `lambda` explicitly.")
+             ".\nPlease supply a positive `lambda` explicitly.", call. = FALSE)
       }
       lambda.min <- lambda.min.ratio * lambda.max
-      return(list(lambda = exp(seq(log(lambda.max), log(lambda.min), length = nlambda)),
+      return(list(lambda = exp(seq(log(lambda.max), log(lambda.min),
+                                   length = nlambda)),
                   lambda.safe = lambda.safe))
     })
     lambda.safe <- sapply(lambda_path, `[[`, "lambda.safe")
     names(lambda.safe) <- alpha
   }
 
+  ## Construct the parameter grid ----------------------------------------------
+
   if (lambda_null) {
     parameter <- do.call(rbind, lapply(seq_along(alpha), function(k) {
-      data.frame(alpha = rep(alpha[k], nlambda), lambda = lambda_path[[k]]$lambda)
+      data.frame(alpha = rep(alpha[k], nlambda),
+                 lambda = lambda_path[[k]]$lambda)
     }))
     rownames(parameter) <- NULL
   } else {
@@ -404,38 +445,40 @@ grasps <- function(X, n = nrow(X), membership, penalty,
                             lambda = rep(lambda, times = length(alpha)))
   }
 
+  ## Fit the model -------------------------------------------------------------
+
   if (nrow(parameter) > 1) {
-
     if (crit == "CV") {
-
-      CV <- ADMMsggm_CV(X = X, group_idx = group.idx, penalty = penalty,
-                        diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
-                        lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
-                        rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
-                        tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
-                        kfold = kfold)
-
-      result <- ADMMsggm(S = S, group_idx = group.idx, penalty = penalty,
-                         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
-                         lambda = CV$lambda.opt, alpha = CV$alpha.opt, gamma = gamma,
-                         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
-                         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter)
+      CV <- ADMMsggm_CV(
+        X = X, group_idx = group.idx, penalty = penalty,
+        diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
+        lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
+        rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
+        tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
+        kfold = kfold
+      )
+      result <- ADMMsggm(
+        S = S, group_idx = group.idx, penalty = penalty,
+        diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
+        lambda = CV$lambda.opt, alpha = CV$alpha.opt, gamma = gamma,
+        rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
+        tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter
+      )
       if (lambda_null) {
         result$lambda.safe <- lambda.safe
       }
       result$loss <- CV$loss.min
       result$CV.loss <- CV$CV.loss
       result$converged.grid <- CV$converged.grid == 1
-
     } else {
-
-      IC <- ADMMsggm_IC(S = S, group_idx = group.idx, penalty = penalty,
-                        diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
-                        lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
-                        rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
-                        tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
-                        crit = crit, n = n, ebic_tuning = ebic.tuning)
-
+      IC <- ADMMsggm_IC(
+        S = S, group_idx = group.idx, penalty = penalty,
+        diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
+        lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
+        rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
+        tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
+        crit = crit, n = n, ebic_tuning = ebic.tuning
+      )
       result <- IC$result
       if (lambda_null) {
         result$lambda.safe <- lambda.safe
@@ -443,44 +486,56 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       result$score <- IC$score.min
       result$IC.score <- as.vector(IC$IC.score)
       result$converged.grid <- as.vector(IC$converged.grid == 1)
-
     }
-
   } else {
-
-    result <- ADMMsggm(S = S, group_idx = group.idx, penalty = penalty,
-                       diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
-                       lambda = parameter$lambda, alpha = parameter$alpha, gamma = gamma,
-                       rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
-                       tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter)
-
+    result <- ADMMsggm(
+      S = S, group_idx = group.idx, penalty = penalty,
+      diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
+      lambda = parameter$lambda, alpha = parameter$alpha, gamma = gamma,
+      rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
+      tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter
+    )
     if (lambda_null) {
       result$lambda.safe <- lambda.safe
     }
-
   }
+
+  ## Store the parameter grid --------------------------------------------------
 
   result$lambda.grid <- parameter$lambda
   result$alpha.grid <- parameter$alpha
 
-  if (any(!is.finite(result$hatOmega)) ||
-      !isTRUE(tryCatch({ chol(result$hatOmega); TRUE }, error = function(e) FALSE))) {
+  ## Validate the selected estimate --------------------------------------------
+
+  positive.definite <- isTRUE(tryCatch({
+    chol(result$hatOmega)
+    TRUE
+  }, error = function(e) FALSE))
+
+  if (any(!is.finite(result$hatOmega)) || !positive.definite) {
     stop('The selected fit did not produce a finite positive-definite precision matrix.\n',
-         'Try increasing `maxiter` or changing the tuning parameters.', call. = FALSE)
+         'Try increasing `maxiter` or changing the tuning parameters.',
+         call. = FALSE)
   }
+
   cv.failed <- FALSE
+
   if (!is.null(result$CV.loss)) {
     selected <- which.min(rowMeans(result$CV.loss))
     cv.failed <- !all(result$converged.grid[selected, ])
   }
+
   if (!isTRUE(result$converged) || cv.failed) {
     warning('The selected fit or its cross-validation fits did not converge.\n',
             'Try increasing `maxiter` and inspect `converged` and `converged.grid`.',
             call. = FALSE)
   }
 
+  ## Finalize the result -------------------------------------------------------
+
   result$membership <- membership
   class(result) <- c("grasps", "blkmat")
+
   return(result)
 
 }

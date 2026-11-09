@@ -61,11 +61,11 @@ for (penalty in names(bad.gamma)) {
 expect_error(fit(penalty = "scad", gamma = c(3, 4)), "`gamma`")
 
 expect_error(grasps(diag(2), membership = 1:2, penalty = "lasso",
-                    lambda = 0.1, alpha = 0.5), "Supply `n`")
+                    lambda = 0.1, alpha = 0.5), "`n` must")
 expect_error(fit(n = 1), "`n`")
 X <- cbind(sin(1:12), cos((1:12) / 2))
 set.seed(2026)
-expect_error(fit(X = X, n = 11), "must equal nrow(X)")
+expect_error(fit(X = X, n = 11), "must equal `nrow(X)`")
 expect_error(fit(X = cbind(1:12, rep(1, 12)), n = 12), "positive diagonal")
 expect_error(fit(crit = "CV"), "CV requires")
 expect_error(fit(X = X, n = 12, crit = "CV", kfold = 2.5), "`kfold`")
