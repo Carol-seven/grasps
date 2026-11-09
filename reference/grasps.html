@@ -95,24 +95,25 @@ element-wise and group-wise penalties to estimate a precision matrix.</p>
 <dd><ol><li><p>An \(n \times p\) data matrix with sample size \(n\) and
 dimension \(p\).</p></li>
 <li><p>A \(p \times p\) sample covariance matrix with dimension \(p\).</p></li>
-</ol><p>Entries must be finite and real. Covariance input must be positive
-semidefinite with positive diagonal entries; data columns must have positive
-sample variances. Symmetric matrices are interpreted as covariance input.</p></dd>
+</ol><p>Entries must be finite and real.
+Covariance input must be positive semidefinite with positive diagonal entries;
+data columns must have positive sample variances.
+Symmetric matrices are interpreted as covariance input.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>An integer (default = <code>nrow(X)</code>) specifying the sample size.
-This is only required when the input matrix <code>X</code> is a \(p \times p\)
-sample covariance matrix with dimension \(p\).
-It must be supplied explicitly for covariance input and must equal
-<code>nrow(X)</code> for data input. The sample size must be at least 2.</p></dd>
+<dd><p>An integer (default = <code>nrow(X)</code>) specifying the sample size.</p><ol><li><p>For an \(n \times p\) data matrix, it defaults to <code>nrow(X)</code> and,
+if supplied, must equal <code>nrow(X)</code>.</p></li>
+<li><p>For a \(p \times p\) sample covariance matrix, it must be supplied
+explicitly.</p></li>
+</ol><p>In either case, <code>n</code> must be at least 2.</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
-<dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension \(p\).
-Labels must be finite integers without missing values; consecutive labels
-are not required.</p></dd>
+<dd><p>A numeric vector specifying the group membership.
+Its length must equal the dimension \(p\).
+Labels must be finite, non-missing integer values; consecutive labels are not
+required.</p></dd>
 
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
@@ -180,16 +181,15 @@ all Cartesian combinations of their values are evaluated.</p></dd>
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
 <dd><p>A finite numeric scalar specifying the additional parameter for
-the chosen <code>penalty</code>. The default value depends on the penalty:</p><ol><li><p>"adapt": 0.5</p></li>
-<li><p>"atan": 0.005</p></li>
-<li><p>"exp": 0.01</p></li>
-<li><p>"lq": 0.5</p></li>
-<li><p>"lsp": 0.1</p></li>
-<li><p>"mcp": 3</p></li>
-<li><p>"scad": 3.7</p></li>
-</ol><p>It must be positive for "adapt", "atan", "exp", and "lsp"; in (0,1)
-for "lq"; greater than 1 for "mcp"; and greater than 2 for "scad".
-It is ignored for "lasso".</p></dd>
+the chosen <code>penalty</code>.
+The default value and valid range depend on the penalty:</p><ol><li><p>"adapt": default 0.5; must be positive.</p></li>
+<li><p>"atan": default 0.005; must be positive.</p></li>
+<li><p>"exp": default 0.01; must be positive.</p></li>
+<li><p>"lq": default 0.5; must be in \((0, 1)\).</p></li>
+<li><p>"lsp": default 0.1; must be positive.</p></li>
+<li><p>"mcp": default 3; must be greater than 1.</p></li>
+<li><p>"scad": default 3.7; must be greater than 2.</p></li>
+</ol><p>This argument is ignored when <code>penalty = "lasso"</code>.</p></dd>
 
 
 <dt id="arg-nlambda">nlambda<a class="anchor" aria-label="anchor" href="#arg-nlambda"></a></dt>
@@ -306,8 +306,8 @@ the tuning parameter to calculate for <code>crit = "EBIC"</code>.</p></dd>
 penalty is chosen via <code>penalty</code>.</p></dd>
 
 <dt>gamma</dt>
-<dd><p>The optimal addtional parameter when a non-convex penalty
-is chosen via <code>penalty</code>.</p></dd>
+<dd><p>The addtional parameter when a non-convex penalty is chosen
+via <code>penalty</code>.</p></dd>
 
 <dt>iterations</dt>
 <dd><p>The number of ADMM iterations.</p></dd>
@@ -348,10 +348,12 @@ to <code>lambda.grid</code> and <code>alpha.grid</code>.
 For cross-validation, this is a logical matrix with parameter combinations
 in rows and folds in columns.
 All candidates are retained for model selection regardless of convergence
-status. Non-finite scores and estimates that are not positive definite are
-assigned infinite scores. Selection stops with an error if no candidate has
-a finite score. A warning is issued if the selected fit or its selected CV
-fits did not converge.</p></dd>
+status.
+Non-finite scores and estimates that are not positive definite are assigned
+infinite scores.
+Selection stops with an error if no candidate has a finite score.
+A warning is issued if the selected fit or its selected CV fits did not
+converge.</p></dd>
 
 <dt>lambda.grid</dt>
 <dd><p>The actual lambda grid used in the program.</p></dd>
@@ -467,19 +469,19 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8391</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.4522</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 136.2799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.5183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  23.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 340.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  47.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  25.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.4792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1214</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.7397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 144.4687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.1326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  25.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 336.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  51.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  23.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3210</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>

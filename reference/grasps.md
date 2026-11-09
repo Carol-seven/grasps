@@ -51,18 +51,21 @@ grasps(
 
 - n:
 
-  An integer (default = `nrow(X)`) specifying the sample size. This is
-  only required when the input matrix `X` is a \\p \times p\\ sample
-  covariance matrix with dimension \\p\\. It must be supplied explicitly
-  for covariance input and must equal `nrow(X)` for data input. The
-  sample size must be at least 2.
+  An integer (default = `nrow(X)`) specifying the sample size.
+
+  1.  For an \\n \times p\\ data matrix, it defaults to `nrow(X)` and,
+      if supplied, must equal `nrow(X)`.
+
+  2.  For a \\p \times p\\ sample covariance matrix, it must be supplied
+      explicitly.
+
+  In either case, `n` must be at least 2.
 
 - membership:
 
-  An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension \\p\\. Labels must
-  be finite integers without missing values; consecutive labels are not
-  required.
+  A numeric vector specifying the group membership. Its length must
+  equal the dimension \\p\\. Labels must be finite, non-missing integer
+  values; consecutive labels are not required.
 
 - penalty:
 
@@ -123,25 +126,24 @@ grasps(
 - gamma:
 
   A finite numeric scalar specifying the additional parameter for the
-  chosen `penalty`. The default value depends on the penalty:
+  chosen `penalty`. The default value and valid range depend on the
+  penalty:
 
-  1.  "adapt": 0.5
+  1.  "adapt": default 0.5; must be positive.
 
-  2.  "atan": 0.005
+  2.  "atan": default 0.005; must be positive.
 
-  3.  "exp": 0.01
+  3.  "exp": default 0.01; must be positive.
 
-  4.  "lq": 0.5
+  4.  "lq": default 0.5; must be in \\(0, 1)\\.
 
-  5.  "lsp": 0.1
+  5.  "lsp": default 0.1; must be positive.
 
-  6.  "mcp": 3
+  6.  "mcp": default 3; must be greater than 1.
 
-  7.  "scad": 3.7
+  7.  "scad": default 3.7; must be greater than 2.
 
-  It must be positive for "adapt", "atan", "exp", and "lsp"; in (0,1)
-  for "lq"; greater than 1 for "mcp"; and greater than 2 for "scad". It
-  is ignored for "lasso".
+  This argument is ignored when `penalty = "lasso"`.
 
 - nlambda:
 
@@ -263,8 +265,8 @@ An object with S3 class `"grasps"` containing the following components:
 
 - gamma:
 
-  The optimal addtional parameter when a non-convex penalty is chosen
-  via `penalty`.
+  The addtional parameter when a non-convex penalty is chosen via
+  `penalty`.
 
 - iterations:
 
@@ -453,19 +455,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8391
-#> 2  Frobenius  25.4522
-#> 3         KL   9.3753
-#> 4  quadratic 136.2799
-#> 5   spectral  11.5183
-#> 6         TP  23.0000
-#> 7         TN 340.0000
-#> 8         FP  47.0000
-#> 9         FN  25.0000
-#> 10       TPR   0.4792
-#> 11       FPR   0.1214
-#> 12        F1   0.3898
-#> 13       MCC   0.3050
+#> 1   sparsity   0.8253
+#> 2  Frobenius  25.7397
+#> 3         KL   9.3274
+#> 4  quadratic 144.4687
+#> 5   spectral  11.1326
+#> 6         TP  25.0000
+#> 7         TN 336.0000
+#> 8         FP  51.0000
+#> 9         FN  23.0000
+#> 10       TPR   0.5208
+#> 11       FPR   0.1318
+#> 12        F1   0.4032
+#> 13       MCC   0.3210
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network
