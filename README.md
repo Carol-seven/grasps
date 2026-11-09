@@ -169,7 +169,7 @@ Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008. “Sparse Inverse 
 
 <div id="ref-fu1998penalized" class="csl-entry">
 
-Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge Versus the Lasso.” *Journal of Computational and Graphical Statistics* 7 (3): 397–416. <https://doi.org/10.1080/10618600.1998.10474784>.
+Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge versus the Lasso.” *Journal of Computational and Graphical Statistics* 7 (3): 397–416. <https://doi.org/10.1080/10618600.1998.10474784>.
 
 </div>
 
@@ -193,7 +193,7 @@ Wang, Yanxin, and Li Zhu. 2016. “Variable Selection and Parameter Estimation w
 
 <div id="ref-zhang2010nearly" class="csl-entry">
 
-Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection Under Minimax Concave Penalty.” *The Annals of Statistics* 38 (2): 894–942. <https://doi.org/10.1214/09-AOS729>.
+Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection under Minimax Concave Penalty.” *The Annals of Statistics* 38 (2): 894–942. <https://doi.org/10.1214/09-AOS729>.
 
 </div>
 
