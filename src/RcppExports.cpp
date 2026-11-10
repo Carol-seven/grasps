@@ -12,20 +12,23 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // ADMMsggm
-List ADMMsggm(const arma::mat& S, const List& group_idx, std::string penalty, bool diag_ind, bool diag_grp, bool diag_include, const double& lambda, const double& alpha, const double& gamma, double rho, const double tau_incr, const double tau_decr, const double nu, const double tol_abs, const double tol_rel, const int maxiter);
-RcppExport SEXP _grasps_ADMMsggm(SEXP SSEXP, SEXP group_idxSEXP, SEXP penaltySEXP, SEXP diag_indSEXP, SEXP diag_grpSEXP, SEXP diag_includeSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP gammaSEXP, SEXP rhoSEXP, SEXP tau_incrSEXP, SEXP tau_decrSEXP, SEXP nuSEXP, SEXP tol_absSEXP, SEXP tol_relSEXP, SEXP maxiterSEXP) {
+List ADMMsggm(const arma::mat& S, const List& group_idx, const std::string& penalty, bool diag_ind, bool diag_grp, bool diag_include, const double& lambda, const double& alpha, const double& gamma, bool lla, const double tol_lla, const int maxiter_lla, double rho, const double tau_incr, const double tau_decr, const double nu, const double tol_abs, const double tol_rel, const int maxiter);
+RcppExport SEXP _grasps_ADMMsggm(SEXP SSEXP, SEXP group_idxSEXP, SEXP penaltySEXP, SEXP diag_indSEXP, SEXP diag_grpSEXP, SEXP diag_includeSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP gammaSEXP, SEXP llaSEXP, SEXP tol_llaSEXP, SEXP maxiter_llaSEXP, SEXP rhoSEXP, SEXP tau_incrSEXP, SEXP tau_decrSEXP, SEXP nuSEXP, SEXP tol_absSEXP, SEXP tol_relSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
     Rcpp::traits::input_parameter< const List& >::type group_idx(group_idxSEXP);
-    Rcpp::traits::input_parameter< std::string >::type penalty(penaltySEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type penalty(penaltySEXP);
     Rcpp::traits::input_parameter< bool >::type diag_ind(diag_indSEXP);
     Rcpp::traits::input_parameter< bool >::type diag_grp(diag_grpSEXP);
     Rcpp::traits::input_parameter< bool >::type diag_include(diag_includeSEXP);
     Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double& >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const double& >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lla(llaSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol_lla(tol_llaSEXP);
+    Rcpp::traits::input_parameter< const int >::type maxiter_lla(maxiter_llaSEXP);
     Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const double >::type tau_incr(tau_incrSEXP);
     Rcpp::traits::input_parameter< const double >::type tau_decr(tau_decrSEXP);
@@ -33,25 +36,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tol_abs(tol_absSEXP);
     Rcpp::traits::input_parameter< const double >::type tol_rel(tol_relSEXP);
     Rcpp::traits::input_parameter< const int >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(ADMMsggm(S, group_idx, penalty, diag_ind, diag_grp, diag_include, lambda, alpha, gamma, rho, tau_incr, tau_decr, nu, tol_abs, tol_rel, maxiter));
+    rcpp_result_gen = Rcpp::wrap(ADMMsggm(S, group_idx, penalty, diag_ind, diag_grp, diag_include, lambda, alpha, gamma, lla, tol_lla, maxiter_lla, rho, tau_incr, tau_decr, nu, tol_abs, tol_rel, maxiter));
     return rcpp_result_gen;
 END_RCPP
 }
 // ADMMsggm_CV
-List ADMMsggm_CV(const arma::mat& X, const List& group_idx, std::string penalty, bool diag_ind, bool diag_grp, bool diag_include, const arma::colvec& lambdas, const arma::colvec& alphas, const double& gamma, double rho, const double tau_incr, const double tau_decr, const double nu, const double tol_abs, const double tol_rel, const int maxiter, int kfold);
-RcppExport SEXP _grasps_ADMMsggm_CV(SEXP XSEXP, SEXP group_idxSEXP, SEXP penaltySEXP, SEXP diag_indSEXP, SEXP diag_grpSEXP, SEXP diag_includeSEXP, SEXP lambdasSEXP, SEXP alphasSEXP, SEXP gammaSEXP, SEXP rhoSEXP, SEXP tau_incrSEXP, SEXP tau_decrSEXP, SEXP nuSEXP, SEXP tol_absSEXP, SEXP tol_relSEXP, SEXP maxiterSEXP, SEXP kfoldSEXP) {
+List ADMMsggm_CV(const arma::mat& X, const List& group_idx, const std::string& penalty, bool diag_ind, bool diag_grp, bool diag_include, const arma::colvec& lambdas, const arma::colvec& alphas, const double& gamma, bool lla, const double tol_lla, const int maxiter_lla, double rho, const double tau_incr, const double tau_decr, const double nu, const double tol_abs, const double tol_rel, const int maxiter, int kfold);
+RcppExport SEXP _grasps_ADMMsggm_CV(SEXP XSEXP, SEXP group_idxSEXP, SEXP penaltySEXP, SEXP diag_indSEXP, SEXP diag_grpSEXP, SEXP diag_includeSEXP, SEXP lambdasSEXP, SEXP alphasSEXP, SEXP gammaSEXP, SEXP llaSEXP, SEXP tol_llaSEXP, SEXP maxiter_llaSEXP, SEXP rhoSEXP, SEXP tau_incrSEXP, SEXP tau_decrSEXP, SEXP nuSEXP, SEXP tol_absSEXP, SEXP tol_relSEXP, SEXP maxiterSEXP, SEXP kfoldSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const List& >::type group_idx(group_idxSEXP);
-    Rcpp::traits::input_parameter< std::string >::type penalty(penaltySEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type penalty(penaltySEXP);
     Rcpp::traits::input_parameter< bool >::type diag_ind(diag_indSEXP);
     Rcpp::traits::input_parameter< bool >::type diag_grp(diag_grpSEXP);
     Rcpp::traits::input_parameter< bool >::type diag_include(diag_includeSEXP);
     Rcpp::traits::input_parameter< const arma::colvec& >::type lambdas(lambdasSEXP);
     Rcpp::traits::input_parameter< const arma::colvec& >::type alphas(alphasSEXP);
     Rcpp::traits::input_parameter< const double& >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lla(llaSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol_lla(tol_llaSEXP);
+    Rcpp::traits::input_parameter< const int >::type maxiter_lla(maxiter_llaSEXP);
     Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const double >::type tau_incr(tau_incrSEXP);
     Rcpp::traits::input_parameter< const double >::type tau_decr(tau_decrSEXP);
@@ -60,25 +66,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tol_rel(tol_relSEXP);
     Rcpp::traits::input_parameter< const int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< int >::type kfold(kfoldSEXP);
-    rcpp_result_gen = Rcpp::wrap(ADMMsggm_CV(X, group_idx, penalty, diag_ind, diag_grp, diag_include, lambdas, alphas, gamma, rho, tau_incr, tau_decr, nu, tol_abs, tol_rel, maxiter, kfold));
+    rcpp_result_gen = Rcpp::wrap(ADMMsggm_CV(X, group_idx, penalty, diag_ind, diag_grp, diag_include, lambdas, alphas, gamma, lla, tol_lla, maxiter_lla, rho, tau_incr, tau_decr, nu, tol_abs, tol_rel, maxiter, kfold));
     return rcpp_result_gen;
 END_RCPP
 }
 // ADMMsggm_IC
-List ADMMsggm_IC(const arma::mat& S, const List& group_idx, std::string penalty, bool diag_ind, bool diag_grp, bool diag_include, const arma::colvec& lambdas, const arma::colvec& alphas, const double& gamma, double rho, const double tau_incr, const double tau_decr, const double nu, const double tol_abs, const double tol_rel, const int maxiter, std::string crit, int n, double ebic_tuning);
-RcppExport SEXP _grasps_ADMMsggm_IC(SEXP SSEXP, SEXP group_idxSEXP, SEXP penaltySEXP, SEXP diag_indSEXP, SEXP diag_grpSEXP, SEXP diag_includeSEXP, SEXP lambdasSEXP, SEXP alphasSEXP, SEXP gammaSEXP, SEXP rhoSEXP, SEXP tau_incrSEXP, SEXP tau_decrSEXP, SEXP nuSEXP, SEXP tol_absSEXP, SEXP tol_relSEXP, SEXP maxiterSEXP, SEXP critSEXP, SEXP nSEXP, SEXP ebic_tuningSEXP) {
+List ADMMsggm_IC(const arma::mat& S, const List& group_idx, const std::string& penalty, bool diag_ind, bool diag_grp, bool diag_include, const arma::colvec& lambdas, const arma::colvec& alphas, const double& gamma, bool lla, const double tol_lla, const int maxiter_lla, double rho, const double tau_incr, const double tau_decr, const double nu, const double tol_abs, const double tol_rel, const int maxiter, const std::string& crit, int n, double ebic_tuning);
+RcppExport SEXP _grasps_ADMMsggm_IC(SEXP SSEXP, SEXP group_idxSEXP, SEXP penaltySEXP, SEXP diag_indSEXP, SEXP diag_grpSEXP, SEXP diag_includeSEXP, SEXP lambdasSEXP, SEXP alphasSEXP, SEXP gammaSEXP, SEXP llaSEXP, SEXP tol_llaSEXP, SEXP maxiter_llaSEXP, SEXP rhoSEXP, SEXP tau_incrSEXP, SEXP tau_decrSEXP, SEXP nuSEXP, SEXP tol_absSEXP, SEXP tol_relSEXP, SEXP maxiterSEXP, SEXP critSEXP, SEXP nSEXP, SEXP ebic_tuningSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
     Rcpp::traits::input_parameter< const List& >::type group_idx(group_idxSEXP);
-    Rcpp::traits::input_parameter< std::string >::type penalty(penaltySEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type penalty(penaltySEXP);
     Rcpp::traits::input_parameter< bool >::type diag_ind(diag_indSEXP);
     Rcpp::traits::input_parameter< bool >::type diag_grp(diag_grpSEXP);
     Rcpp::traits::input_parameter< bool >::type diag_include(diag_includeSEXP);
     Rcpp::traits::input_parameter< const arma::colvec& >::type lambdas(lambdasSEXP);
     Rcpp::traits::input_parameter< const arma::colvec& >::type alphas(alphasSEXP);
     Rcpp::traits::input_parameter< const double& >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lla(llaSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol_lla(tol_llaSEXP);
+    Rcpp::traits::input_parameter< const int >::type maxiter_lla(maxiter_llaSEXP);
     Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const double >::type tau_incr(tau_incrSEXP);
     Rcpp::traits::input_parameter< const double >::type tau_decr(tau_decrSEXP);
@@ -86,10 +95,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tol_abs(tol_absSEXP);
     Rcpp::traits::input_parameter< const double >::type tol_rel(tol_relSEXP);
     Rcpp::traits::input_parameter< const int >::type maxiter(maxiterSEXP);
-    Rcpp::traits::input_parameter< std::string >::type crit(critSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type crit(critSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type ebic_tuning(ebic_tuningSEXP);
-    rcpp_result_gen = Rcpp::wrap(ADMMsggm_IC(S, group_idx, penalty, diag_ind, diag_grp, diag_include, lambdas, alphas, gamma, rho, tau_incr, tau_decr, nu, tol_abs, tol_rel, maxiter, crit, n, ebic_tuning));
+    rcpp_result_gen = Rcpp::wrap(ADMMsggm_IC(S, group_idx, penalty, diag_ind, diag_grp, diag_include, lambdas, alphas, gamma, lla, tol_lla, maxiter_lla, rho, tau_incr, tau_decr, nu, tol_abs, tol_rel, maxiter, crit, n, ebic_tuning));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -107,9 +116,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_grasps_ADMMsggm", (DL_FUNC) &_grasps_ADMMsggm, 16},
-    {"_grasps_ADMMsggm_CV", (DL_FUNC) &_grasps_ADMMsggm_CV, 17},
-    {"_grasps_ADMMsggm_IC", (DL_FUNC) &_grasps_ADMMsggm_IC, 19},
+    {"_grasps_ADMMsggm", (DL_FUNC) &_grasps_ADMMsggm, 19},
+    {"_grasps_ADMMsggm_CV", (DL_FUNC) &_grasps_ADMMsggm_CV, 20},
+    {"_grasps_ADMMsggm_IC", (DL_FUNC) &_grasps_ADMMsggm_IC, 22},
     {"_grasps_soft_matrix", (DL_FUNC) &_grasps_soft_matrix, 2},
     {NULL, NULL, 0}
 };

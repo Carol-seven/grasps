@@ -28,8 +28,9 @@
 #' Labels must be finite, non-missing integer values; consecutive labels are not
 #' required.
 #'
-#' @param penalty A character string specifying the penalty for estimating
-#' precision matrix. Available options include:
+#' @param penalty A character string specifying the penalty used to estimate
+#' the precision matrix.
+#' Available options include:
 #' \enumerate{
 #' \item "lasso": Least absolute shrinkage and selection operator
 #' \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
@@ -60,13 +61,13 @@
 #' \code{diag.grp = TRUE}.
 #'
 #' @param lambda A positive numeric vector specifying the grid for
-#' the regularization parameter. The default is \code{NULL}, which generates
-#' its own \code{lambda} sequence based on \code{nlambda} and
-#' \code{lambda.min.ratio}.
+#' the regularization parameter.
+#' The default is \code{NULL}, which generates its own \code{lambda} sequence
+#' based on \code{nlambda} and \code{lambda.min.ratio}.
 #'
-#' @param alpha A numeric vector in [0,1] specifying the grid for
-#' the mixing parameter balancing the element-wise individual L1 penalty and
-#' the block-wise group L2 penalty.
+#' @param alpha A numeric vector in [0,1] specifying the grid for the mixing
+#' parameter balancing the element-wise individual L1 penalty and the block-wise
+#' group L2 penalty.
 #' An alpha of 1 corresponds to the individual penalty only; an alpha of 0
 #' corresponds to the group penalty only.
 #' The default value is a sequence from 0.1 to 0.9 with increments of 0.1.
@@ -106,6 +107,26 @@
 #'
 #' @param maxiter.lambda An integer (default = 50) specifying the maximum number
 #' of bisection iterations in the line search for  \eqn{\lambda_{\max}}.
+#'
+#' @param lla A logical value (default = FALSE) specifying whether to use
+#' iterative local linear approximation (LLA) for non-convex penalties.
+#' \enumerate{
+#' \item If \code{FALSE}, a one-step LLA estimator is computed.
+#' \item If \code{TRUE}, penalty weights are updated iteratively until the LLA
+#' stopping criterion is satisfied or \code{maxiter.lla} is reached.
+#' }
+#' This argument is ignored for \code{penalty = "lasso"} and
+#' \code{penalty = "adapt"}.
+#'
+#' @param tol.lla A numeric value > 0 (default = 1e-04) specifying the stopping
+#' tolerance for the relative change between successive precision matrix
+#' estimates in iterative LLA.
+#' This argument is used only when \code{lla = TRUE}.
+#'
+#' @param maxiter.lla An integer (default = 10) specifying the maximum number of
+#' weighted subproblems solved by iterative LLA.
+#' The lasso pilot estimation is not included in this count.
+#' This argument is used only when \code{lla = TRUE}.
 #'
 #' @param rho A numeric value > 0 (default = 2) specifying the ADMM
 #' augmented-Lagrangian penalty parameter (often called the ADMM step size).
@@ -157,21 +178,31 @@
 #' An object with S3 class \code{"grasps"} containing the following components:
 #' \describe{
 #' \item{hatOmega}{The estimated precision matrix.}
-#' \item{lambda}{The optimal regularization parameter.}
-#' \item{alpha}{The optimal mixing parameter.}
-#' \item{initial}{The initial estimate of \code{hatOmega} when a non-convex
-#' penalty is chosen via \code{penalty}.}
-#' \item{gamma}{The addtional parameter when a non-convex penalty is chosen
-#' via \code{penalty}.}
-#' \item{iterations}{The number of ADMM iterations.}
-#' \item{converged}{A logical value indicating whether the selected model
-#' satisfied the ADMM convergence criteria before reaching \code{maxiter}.}
-#' \item{initial.converged}{For non-convex penalties, a logical value indicating
-#' whether the lasso initializer converged.}
+#' \item{lambda}{The selected regularization parameter.}
+#' \item{alpha}{The selected mixing parameter.}
+#' \item{initial}{The lasso pilot estimate used to construct penalty weights
+#' when \code{penalty != "lasso"}.}
+#' \item{gamma}{The additional parameter used for the selected penalty when
+#' \code{penalty != "lasso"}.}
+#' \item{iterations}{For \code{penalty = "lasso"}, the number of ADMM iterations.
+#' For other penalties, the total number of ADMM iterations across all LLA
+#' subproblems, excluding the lasso pilot estimation.}
+#' \item{converged}{A logical value indicating whether all ADMM solves,
+#' including the lasso pilot when applicable, satisfied their convergence
+#' criteria before reaching \code{maxiter}.}
+#' \item{initial.converged}{For penalties other than \code{"lasso"}, a logical
+#' value indicating whether the lasso pilot estimation converged.}
+#' \item{lla.iterations}{The number of LLA steps performed for non-convex
+#' penalties. It is \code{1} for one-step LLA and \code{NA} for \code{"lasso"}
+#' and \code{"adapt"}.}
+#' \item{lla.converged}{For iterative LLA, a logical value indicating whether
+#' the stopping criterion was satisfied before reaching \code{maxiter.lla}.
+#' It is \code{NA} for one-step LLA, \code{penalty = "lasso"}, and
+#' \code{penalty = "adapt"}.}
 #' \item{lambda.safe}{The conservative upper bound used to initialize
 #' the line search for \eqn{\lambda_{\max}}, corresponding to each distinct
 #' value in \code{alpha.grid}, when \code{lambda = NULL}.}
-#' \item{loss}{The optimal k-fold loss when \code{crit = "CV"}.}
+#' \item{loss}{The minimum mean k-fold loss when \code{crit = "CV"}.}
 #' \item{CV.loss}{Matrix of CV losses, with rows for parameter combinations and
 #' columns for CV folds, when \code{crit = "CV"}.}
 #' \item{score}{The optimal information criterion score when \code{crit} is set
@@ -190,11 +221,39 @@
 #' infinite scores.
 #' Selection stops with an error if no candidate has a finite score.
 #' A warning is issued if the selected fit or its selected CV fits did not
-#' converge.}
+#' satisfy the ADMM convergence criteria.}
+#' \item{lla.converged.grid}{The iterative LLA convergence status of
+#' the candidate fits.
+#' For information criterion selection, this is a logical vector corresponding
+#' to \code{lambda.grid} and \code{alpha.grid}.
+#' For cross-validation, this is a logical matrix with parameter combinations
+#' in rows and folds in columns.
+#' Entries are \code{NA} when iterative LLA is not used.
+#' A warning is issued if the selected fit or its selected CV fits did not
+#' satisfy the iterative LLA convergence criterion.}
 #' \item{lambda.grid}{The actual lambda grid used in the program.}
 #' \item{alpha.grid}{The actual alpha grid used in the program.}
 #' \item{membership}{The group membership.}
 #' }
+#'
+#' @details
+#' For non-convex penalties, the default \code{lla = FALSE} computes a one-step
+#' LLA estimator.
+#' Penalty weights are constructed from a lasso pilot estimate and held fixed
+#' while the resulting weighted subproblem is solved.
+#'
+#' When \code{lla = TRUE}, the penalty weights are updated after each weighted
+#' subproblem until the relative change between successive precision matrix
+#' estimates is no greater than \code{tol.lla}, or \code{maxiter.lla} is reached.
+#' This iterative procedure is intended to approach a stationary point of
+#' the original non-convex objective but does not guarantee a global optimum.
+#'
+#' For \code{penalty = "adapt"}, weights are constructed from the lasso pilot
+#' estimate and remain fixed; therefore, \code{lla} is ignored.
+#' The \code{converged} component concerns convergence of the lasso pilot and
+#' fixed-weight ADMM subproblems, not stationarity of the original non-convex
+#' objective.
+#' The \code{lla.converged} component concerns the outer iterative LLA procedure.
 #'
 #' @references
 #' \insertAllCited{}
@@ -212,6 +271,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
                    lambda = NULL, alpha = NULL, gamma = NULL,
                    nlambda = 10, lambda.min.ratio = 0.01,
                    growiter.lambda = 30, tol.lambda = 1e-03, maxiter.lambda = 50,
+                   lla = FALSE, tol.lla = 1e-04, maxiter.lla = 10,
                    rho = 2, tau.incr = 2, tau.decr = 2, nu = 10,
                    tol.abs = 1e-04, tol.rel = 1e-04, maxiter = 1e+04,
                    crit = "BIC", kfold = 5, ebic.tuning = 0.5) {
@@ -336,6 +396,17 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     validate_scalar(maxiter.lambda, "maxiter.lambda", integer = TRUE)
   }
 
+  ## Validate LLA controls -----------------------------------------------------
+
+  if (!is.logical(lla) || length(lla) != 1L || is.na(lla)) {
+    stop('`lla` must be TRUE or FALSE.', call. = FALSE)
+  }
+
+  if (lla && !(penalty %in% c("lasso", "adapt"))) {
+    validate_scalar(tol.lla, "tol.lla")
+    validate_scalar(maxiter.lla, "maxiter.lla", integer = TRUE)
+  }
+
   ## Validate ADMM controls ----------------------------------------------------
 
   validate_scalar(rho, "rho")
@@ -453,6 +524,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
         X = X, group_idx = group.idx, penalty = penalty,
         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
         lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
+        lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
         kfold = kfold
@@ -461,6 +533,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
         S = S, group_idx = group.idx, penalty = penalty,
         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
         lambda = CV$lambda.opt, alpha = CV$alpha.opt, gamma = gamma,
+        lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter
       )
@@ -470,11 +543,13 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       result$loss <- CV$loss.min
       result$CV.loss <- CV$CV.loss
       result$converged.grid <- CV$converged.grid == 1
+      result$lla.converged.grid <- CV$lla.converged.grid
     } else {
       IC <- ADMMsggm_IC(
         S = S, group_idx = group.idx, penalty = penalty,
         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
         lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
+        lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
         crit = crit, n = n, ebic_tuning = ebic.tuning
@@ -486,12 +561,14 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       result$score <- IC$score.min
       result$IC.score <- as.vector(IC$IC.score)
       result$converged.grid <- as.vector(IC$converged.grid == 1)
+      result$lla.converged.grid <- as.vector(IC$lla.converged.grid)
     }
   } else {
     result <- ADMMsggm(
       S = S, group_idx = group.idx, penalty = penalty,
       diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
       lambda = parameter$lambda, alpha = parameter$alpha, gamma = gamma,
+      lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
       rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
       tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter
     )
@@ -513,22 +590,34 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   }, error = function(e) FALSE))
 
   if (any(!is.finite(result$hatOmega)) || !positive.definite) {
-    stop('The selected fit did not produce a finite positive-definite precision matrix.\n',
+    stop('The selected fit did not produce a finite positive-definite ',
+         'precision matrix.\n',
          'Try increasing `maxiter` or changing the tuning parameters.',
          call. = FALSE)
   }
 
   cv.failed <- FALSE
+  cv.lla.failed <- FALSE
 
   if (!is.null(result$CV.loss)) {
     selected <- which.min(rowMeans(result$CV.loss))
     cv.failed <- !all(result$converged.grid[selected, ])
+    cv.lla.failed <- any(result$lla.converged.grid[selected, ] == FALSE,
+                         na.rm = TRUE)
   }
 
-  if (!isTRUE(result$converged) || cv.failed) {
-    warning('The selected fit or its cross-validation fits did not converge.\n',
-            'Try increasing `maxiter` and inspect `converged` and `converged.grid`.',
-            call. = FALSE)
+  if (isFALSE(result$converged) || cv.failed) {
+    warning('The selected fit or its cross-validation fits did not satisfy ',
+            'the ADMM convergence criteria.\n',
+            'Try increasing `maxiter` and inspect `converged` and ',
+            '`converged.grid`.', call. = FALSE)
+  }
+
+  if (isFALSE(result$lla.converged) || cv.lla.failed) {
+    warning('The selected fit or its cross-validation fits did not satisfy ',
+            'the iterative LLA convergence criterion.\n',
+            'Try increasing `maxiter.lla` and inspect `lla.converged` and ',
+            '`lla.converged.grid`.', call. = FALSE)
   }
 
   ## Finalize the result -------------------------------------------------------

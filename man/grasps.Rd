@@ -20,6 +20,9 @@ grasps(
   growiter.lambda = 30,
   tol.lambda = 0.001,
   maxiter.lambda = 50,
+  lla = FALSE,
+  tol.lla = 1e-04,
+  maxiter.lla = 10,
   rho = 2,
   tau.incr = 2,
   tau.decr = 2,
@@ -57,8 +60,9 @@ Its length must equal the dimension \eqn{p}.
 Labels must be finite, non-missing integer values; consecutive labels are not
 required.}
 
-\item{penalty}{A character string specifying the penalty for estimating
-precision matrix. Available options include:
+\item{penalty}{A character string specifying the penalty used to estimate
+the precision matrix.
+Available options include:
 \enumerate{
 \item "lasso": Least absolute shrinkage and selection operator
 \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
@@ -89,13 +93,13 @@ include the diagonal entries in the penalty for within-group blocks when
 \code{diag.grp = TRUE}.}
 
 \item{lambda}{A positive numeric vector specifying the grid for
-the regularization parameter. The default is \code{NULL}, which generates
-its own \code{lambda} sequence based on \code{nlambda} and
-\code{lambda.min.ratio}.}
+the regularization parameter.
+The default is \code{NULL}, which generates its own \code{lambda} sequence
+based on \code{nlambda} and \code{lambda.min.ratio}.}
 
-\item{alpha}{A numeric vector in [0,1] specifying the grid for
-the mixing parameter balancing the element-wise individual L1 penalty and
-the block-wise group L2 penalty.
+\item{alpha}{A numeric vector in [0,1] specifying the grid for the mixing
+parameter balancing the element-wise individual L1 penalty and the block-wise
+group L2 penalty.
 An alpha of 1 corresponds to the individual penalty only; an alpha of 0
 corresponds to the group penalty only.
 The default value is a sequence from 0.1 to 0.9 with increments of 0.1.
@@ -135,6 +139,26 @@ the relative tolerance for the bisection stopping rule on the interval width.}
 
 \item{maxiter.lambda}{An integer (default = 50) specifying the maximum number
 of bisection iterations in the line search for  \eqn{\lambda_{\max}}.}
+
+\item{lla}{A logical value (default = FALSE) specifying whether to use
+iterative local linear approximation (LLA) for non-convex penalties.
+\enumerate{
+\item If \code{FALSE}, a one-step LLA estimator is computed.
+\item If \code{TRUE}, penalty weights are updated iteratively until the LLA
+stopping criterion is satisfied or \code{maxiter.lla} is reached.
+}
+This argument is ignored for \code{penalty = "lasso"} and
+\code{penalty = "adapt"}.}
+
+\item{tol.lla}{A numeric value > 0 (default = 1e-04) specifying the stopping
+tolerance for the relative change between successive precision matrix
+estimates in iterative LLA.
+This argument is used only when \code{lla = TRUE}.}
+
+\item{maxiter.lla}{An integer (default = 10) specifying the maximum number of
+weighted subproblems solved by iterative LLA.
+The lasso pilot estimation is not included in this count.
+This argument is used only when \code{lla = TRUE}.}
 
 \item{rho}{A numeric value > 0 (default = 2) specifying the ADMM
 augmented-Lagrangian penalty parameter (often called the ADMM step size).
@@ -186,21 +210,31 @@ the tuning parameter to calculate for \code{crit = "EBIC"}.}
 An object with S3 class \code{"grasps"} containing the following components:
 \describe{
 \item{hatOmega}{The estimated precision matrix.}
-\item{lambda}{The optimal regularization parameter.}
-\item{alpha}{The optimal mixing parameter.}
-\item{initial}{The initial estimate of \code{hatOmega} when a non-convex
-penalty is chosen via \code{penalty}.}
-\item{gamma}{The addtional parameter when a non-convex penalty is chosen
-via \code{penalty}.}
-\item{iterations}{The number of ADMM iterations.}
-\item{converged}{A logical value indicating whether the selected model
-satisfied the ADMM convergence criteria before reaching \code{maxiter}.}
-\item{initial.converged}{For non-convex penalties, a logical value indicating
-whether the lasso initializer converged.}
+\item{lambda}{The selected regularization parameter.}
+\item{alpha}{The selected mixing parameter.}
+\item{initial}{The lasso pilot estimate used to construct penalty weights
+when \code{penalty != "lasso"}.}
+\item{gamma}{The additional parameter used for the selected penalty when
+\code{penalty != "lasso"}.}
+\item{iterations}{For \code{penalty = "lasso"}, the number of ADMM iterations.
+For other penalties, the total number of ADMM iterations across all LLA
+subproblems, excluding the lasso pilot estimation.}
+\item{converged}{A logical value indicating whether all ADMM solves,
+including the lasso pilot when applicable, satisfied their convergence
+criteria before reaching \code{maxiter}.}
+\item{initial.converged}{For penalties other than \code{"lasso"}, a logical
+value indicating whether the lasso pilot estimation converged.}
+\item{lla.iterations}{The number of LLA steps performed for non-convex
+penalties. It is \code{1} for one-step LLA and \code{NA} for \code{"lasso"}
+and \code{"adapt"}.}
+\item{lla.converged}{For iterative LLA, a logical value indicating whether
+the stopping criterion was satisfied before reaching \code{maxiter.lla}.
+It is \code{NA} for one-step LLA, \code{penalty = "lasso"}, and
+\code{penalty = "adapt"}.}
 \item{lambda.safe}{The conservative upper bound used to initialize
 the line search for \eqn{\lambda_{\max}}, corresponding to each distinct
 value in \code{alpha.grid}, when \code{lambda = NULL}.}
-\item{loss}{The optimal k-fold loss when \code{crit = "CV"}.}
+\item{loss}{The minimum mean k-fold loss when \code{crit = "CV"}.}
 \item{CV.loss}{Matrix of CV losses, with rows for parameter combinations and
 columns for CV folds, when \code{crit = "CV"}.}
 \item{score}{The optimal information criterion score when \code{crit} is set
@@ -219,7 +253,16 @@ Non-finite scores and estimates that are not positive definite are assigned
 infinite scores.
 Selection stops with an error if no candidate has a finite score.
 A warning is issued if the selected fit or its selected CV fits did not
-converge.}
+satisfy the ADMM convergence criteria.}
+\item{lla.converged.grid}{The iterative LLA convergence status of
+the candidate fits.
+For information criterion selection, this is a logical vector corresponding
+to \code{lambda.grid} and \code{alpha.grid}.
+For cross-validation, this is a logical matrix with parameter combinations
+in rows and folds in columns.
+Entries are \code{NA} when iterative LLA is not used.
+A warning is issued if the selected fit or its selected CV fits did not
+satisfy the iterative LLA convergence criterion.}
 \item{lambda.grid}{The actual lambda grid used in the program.}
 \item{alpha.grid}{The actual alpha grid used in the program.}
 \item{membership}{The group membership.}
@@ -228,6 +271,25 @@ converge.}
 \description{
 Provide a collection of statistical methods that incorporate both
 element-wise and group-wise penalties to estimate a precision matrix.
+}
+\details{
+For non-convex penalties, the default \code{lla = FALSE} computes a one-step
+LLA estimator.
+Penalty weights are constructed from a lasso pilot estimate and held fixed
+while the resulting weighted subproblem is solved.
+
+When \code{lla = TRUE}, the penalty weights are updated after each weighted
+subproblem until the relative change between successive precision matrix
+estimates is no greater than \code{tol.lla}, or \code{maxiter.lla} is reached.
+This iterative procedure is intended to approach a stationary point of
+the original non-convex objective but does not guarantee a global optimum.
+
+For \code{penalty = "adapt"}, weights are constructed from the lasso pilot
+estimate and remain fixed; therefore, \code{lla} is ignored.
+The \code{converged} component concerns convergence of the lasso pilot and
+fixed-weight ADMM subproblems, not stationarity of the original non-convex
+objective.
+The \code{lla.converged} component concerns the outer iterative LLA procedure.
 }
 \examples{
 library(grasps)
