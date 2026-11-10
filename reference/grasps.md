@@ -22,6 +22,9 @@ grasps(
   growiter.lambda = 30,
   tol.lambda = 0.001,
   maxiter.lambda = 50,
+  lla = FALSE,
+  tol.lla = 1e-04,
+  maxiter.lla = 10,
   rho = 2,
   tau.incr = 2,
   tau.decr = 2,
@@ -69,8 +72,8 @@ grasps(
 
 - penalty:
 
-  A character string specifying the penalty for estimating precision
-  matrix. Available options include:
+  A character string specifying the penalty used to estimate the
+  precision matrix. Available options include:
 
   1.  "lasso": Least absolute shrinkage and selection operator
       (Tibshirani 1996; Friedman et al. 2008) .
@@ -174,6 +177,32 @@ grasps(
   An integer (default = 50) specifying the maximum number of bisection
   iterations in the line search for \\\lambda\_{\max}\\.
 
+- lla:
+
+  A logical value (default = FALSE) specifying whether to use iterative
+  local linear approximation (LLA) for non-convex penalties.
+
+  1.  If `FALSE`, a one-step LLA estimator is computed.
+
+  2.  If `TRUE`, penalty weights are updated iteratively until the LLA
+      stopping criterion is satisfied or `maxiter.lla` is reached.
+
+  This argument is ignored for `penalty = "lasso"` and
+  `penalty = "adapt"`.
+
+- tol.lla:
+
+  A numeric value \> 0 (default = 1e-04) specifying the stopping
+  tolerance for the relative change between successive precision matrix
+  estimates in iterative LLA. This argument is used only when
+  `lla = TRUE`.
+
+- maxiter.lla:
+
+  An integer (default = 10) specifying the maximum number of weighted
+  subproblems solved by iterative LLA. The lasso pilot estimation is not
+  included in this count. This argument is used only when `lla = TRUE`.
+
 - rho:
 
   A numeric value \> 0 (default = 2) specifying the ADMM
@@ -252,35 +281,49 @@ An object with S3 class `"grasps"` containing the following components:
 
 - lambda:
 
-  The optimal regularization parameter.
+  The selected regularization parameter.
 
 - alpha:
 
-  The optimal mixing parameter.
+  The selected mixing parameter.
 
 - initial:
 
-  The initial estimate of `hatOmega` when a non-convex penalty is chosen
-  via `penalty`.
+  The lasso pilot estimate used to construct penalty weights when
+  `penalty != "lasso"`.
 
 - gamma:
 
-  The addtional parameter when a non-convex penalty is chosen via
-  `penalty`.
+  The additional parameter used for the selected penalty when
+  `penalty != "lasso"`.
 
 - iterations:
 
-  The number of ADMM iterations.
+  For `penalty = "lasso"`, the number of ADMM iterations. For other
+  penalties, the total number of ADMM iterations across all LLA
+  subproblems, excluding the lasso pilot estimation.
 
 - converged:
 
-  A logical value indicating whether the selected model satisfied the
-  ADMM convergence criteria before reaching `maxiter`.
+  A logical value indicating whether all ADMM solves, including the
+  lasso pilot when applicable, satisfied their convergence criteria
+  before reaching `maxiter`.
 
 - initial.converged:
 
-  For non-convex penalties, a logical value indicating whether the lasso
-  initializer converged.
+  For penalties other than `"lasso"`, a logical value indicating whether
+  the lasso pilot estimation converged.
+
+- lla.iterations:
+
+  The number of LLA steps performed for non-convex penalties. It is `1`
+  for one-step LLA and `NA` for `"lasso"` and `"adapt"`.
+
+- lla.converged:
+
+  For iterative LLA, a logical value indicating whether the stopping
+  criterion was satisfied before reaching `maxiter.lla`. It is `NA` for
+  one-step LLA, `penalty = "lasso"`, and `penalty = "adapt"`.
 
 - lambda.safe:
 
@@ -290,7 +333,7 @@ An object with S3 class `"grasps"` containing the following components:
 
 - loss:
 
-  The optimal k-fold loss when `crit = "CV"`.
+  The minimum mean k-fold loss when `crit = "CV"`.
 
 - CV.loss:
 
@@ -317,7 +360,18 @@ An object with S3 class `"grasps"` containing the following components:
   convergence status. Non-finite scores and estimates that are not
   positive definite are assigned infinite scores. Selection stops with
   an error if no candidate has a finite score. A warning is issued if
-  the selected fit or its selected CV fits did not converge.
+  the selected fit or its selected CV fits did not satisfy the ADMM
+  convergence criteria.
+
+- lla.converged.grid:
+
+  The iterative LLA convergence status of the candidate fits. For
+  information criterion selection, this is a logical vector
+  corresponding to `lambda.grid` and `alpha.grid`. For cross-validation,
+  this is a logical matrix with parameter combinations in rows and folds
+  in columns. Entries are `NA` when iterative LLA is not used. A warning
+  is issued if the selected fit or its selected CV fits did not satisfy
+  the iterative LLA convergence criterion.
 
 - lambda.grid:
 
@@ -330,6 +384,26 @@ An object with S3 class `"grasps"` containing the following components:
 - membership:
 
   The group membership.
+
+## Details
+
+For non-convex penalties, the default `lla = FALSE` computes a one-step
+LLA estimator. Penalty weights are constructed from a lasso pilot
+estimate and held fixed while the resulting weighted subproblem is
+solved.
+
+When `lla = TRUE`, the penalty weights are updated after each weighted
+subproblem until the relative change between successive precision matrix
+estimates is no greater than `tol.lla`, or `maxiter.lla` is reached.
+This iterative procedure is intended to approach a stationary point of
+the original non-convex objective but does not guarantee a global
+optimum.
+
+For `penalty = "adapt"`, weights are constructed from the lasso pilot
+estimate and remain fixed; therefore, `lla` is ignored. The `converged`
+component concerns convergence of the lasso pilot and fixed-weight ADMM
+subproblems, not stationarity of the original non-convex objective. The
+`lla.converged` component concerns the outer iterative LLA procedure.
 
 ## References
 
@@ -455,19 +529,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8253
-#> 2  Frobenius  25.7397
-#> 3         KL   9.3274
-#> 4  quadratic 144.4687
-#> 5   spectral  11.1326
-#> 6         TP  25.0000
-#> 7         TN 336.0000
-#> 8         FP  51.0000
-#> 9         FN  23.0000
-#> 10       TPR   0.5208
-#> 11       FPR   0.1318
-#> 12        F1   0.4032
-#> 13       MCC   0.3210
+#> 1   sparsity   0.8391
+#> 2  Frobenius  25.4522
+#> 3         KL   9.3753
+#> 4  quadratic 136.2799
+#> 5   spectral  11.5183
+#> 6         TP  23.0000
+#> 7         TN 340.0000
+#> 8         FP  47.0000
+#> 9         FN  25.0000
+#> 10       TPR   0.4792
+#> 11       FPR   0.1214
+#> 12        F1   0.3898
+#> 13       MCC   0.3050
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network
