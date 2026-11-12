@@ -17,6 +17,7 @@ grasps(
   lambda = NULL,
   alpha = NULL,
   gamma = NULL,
+  initial = "lasso",
   nlambda = 10,
   lambda.min.ratio = 0.01,
   growiter.lambda = 30,
@@ -148,6 +149,22 @@ grasps(
 
   This argument is ignored when `penalty = "lasso"`.
 
+- initial:
+
+  A character string (default = "lasso") or a finite symmetric numeric
+  \\p \times p\\ matrix specifying the initial estimator used to
+  construct penalty weights. Available character options include:
+
+  1.  "lasso": Use the sparse-group graphical lasso estimate.
+
+  2.  "invS": Use the inverse of the empirical covariance matrix. The
+      relevant empirical covariance matrix must be invertible.
+
+  For `crit = "CV"`, character-specified initial estimators are
+  recomputed separately from each training fold. A user-supplied matrix
+  cannot be used when `crit = "CV"`. This argument is ignored when
+  `penalty = "lasso"`.
+
 - nlambda:
 
   An integer (default = 10) specifying the number of `lambda` values to
@@ -200,8 +217,9 @@ grasps(
 - maxiter.lla:
 
   An integer (default = 10) specifying the maximum number of weighted
-  subproblems solved by iterative LLA. The lasso pilot estimation is not
-  included in this count. This argument is used only when `lla = TRUE`.
+  subproblems solved by iterative LLA. Construction of the initial
+  estimator is not included in this count. This argument is used only
+  when `lla = TRUE`.
 
 - rho:
 
@@ -289,7 +307,7 @@ An object with S3 class `"grasps"` containing the following components:
 
 - initial:
 
-  The lasso pilot estimate used to construct penalty weights when
+  The initial estimate used to construct penalty weights when
   `penalty != "lasso"`.
 
 - gamma:
@@ -301,18 +319,20 @@ An object with S3 class `"grasps"` containing the following components:
 
   For `penalty = "lasso"`, the number of ADMM iterations. For other
   penalties, the total number of ADMM iterations across all LLA
-  subproblems, excluding the lasso pilot estimation.
+  subproblems, excluding any ADMM iterations used to construct the
+  initial estimate.
 
 - converged:
 
-  A logical value indicating whether all ADMM solves, including the
-  lasso pilot when applicable, satisfied their convergence criteria
-  before reaching `maxiter`.
+  A logical value indicating whether all ADMM subproblems and, when
+  `initial = "lasso"`, the initial lasso fit satisfied their convergence
+  criteria before reaching `maxiter`.
 
 - initial.converged:
 
-  For penalties other than `"lasso"`, a logical value indicating whether
-  the lasso pilot estimation converged.
+  For `penalty != "lasso"`, a logical value indicating whether the
+  initial lasso fit converged. It is `NA` when `initial = "invS"` or a
+  matrix.
 
 - lla.iterations:
 
@@ -388,9 +408,9 @@ An object with S3 class `"grasps"` containing the following components:
 ## Details
 
 For non-convex penalties, the default `lla = FALSE` computes a one-step
-LLA estimator. Penalty weights are constructed from a lasso pilot
-estimate and held fixed while the resulting weighted subproblem is
-solved.
+LLA estimator. Penalty weights are constructed from the estimator
+specified by `initial` and held fixed while the resulting weighted
+subproblem is solved.
 
 When `lla = TRUE`, the penalty weights are updated after each weighted
 subproblem until the relative change between successive precision matrix
@@ -399,10 +419,11 @@ This iterative procedure is intended to approach a stationary point of
 the original non-convex objective but does not guarantee a global
 optimum.
 
-For `penalty = "adapt"`, weights are constructed from the lasso pilot
-estimate and remain fixed; therefore, `lla` is ignored. The `converged`
-component concerns convergence of the lasso pilot and fixed-weight ADMM
-subproblems, not stationarity of the original non-convex objective. The
+For `penalty = "adapt"`, weights are constructed from the estimator
+specified by `initial` and remain fixed; therefore, `lla` is ignored.
+The `converged` component concerns convergence of the fixed-weight ADMM
+subproblems and, when `initial = "lasso"`, the initial lasso fit. It
+does not indicate stationarity of the original non-convex objective. The
 `lla.converged` component concerns the outer iterative LLA procedure.
 
 ## References
@@ -529,19 +550,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8391
-#> 2  Frobenius  25.4522
-#> 3         KL   9.3753
-#> 4  quadratic 136.2799
-#> 5   spectral  11.5183
-#> 6         TP  23.0000
-#> 7         TN 340.0000
-#> 8         FP  47.0000
-#> 9         FN  25.0000
-#> 10       TPR   0.4792
-#> 11       FPR   0.1214
-#> 12        F1   0.3898
-#> 13       MCC   0.3050
+#> 1   sparsity   0.8253
+#> 2  Frobenius  25.7397
+#> 3         KL   9.3274
+#> 4  quadratic 144.4687
+#> 5   spectral  11.1326
+#> 6         TP  25.0000
+#> 7         TN 336.0000
+#> 8         FP  51.0000
+#> 9         FN  23.0000
+#> 10       TPR   0.5208
+#> 11       FPR   0.1318
+#> 12        F1   0.4032
+#> 13       MCC   0.3210
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network

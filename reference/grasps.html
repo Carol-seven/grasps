@@ -69,6 +69,7 @@ element-wise and group-wise penalties to estimate a precision matrix.</p>
 <span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  initial <span class="op">=</span> <span class="st">"lasso"</span>,</span>
 <span>  nlambda <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  lambda.min.ratio <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  growiter.lambda <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -196,6 +197,19 @@ The default value and valid range depend on the penalty:</p><ol><li><p>"adapt": 
 </ol><p>This argument is ignored when <code>penalty = "lasso"</code>.</p></dd>
 
 
+<dt id="arg-initial">initial<a class="anchor" aria-label="anchor" href="#arg-initial"></a></dt>
+<dd><p>A character string (default = "lasso") or a finite symmetric
+numeric \(p \times p\) matrix specifying the initial estimator used to
+construct penalty weights.
+Available character options include:</p><ol><li><p>"lasso": Use the sparse-group graphical lasso estimate.</p></li>
+<li><p>"invS": Use the inverse of the empirical covariance matrix.
+The relevant empirical covariance matrix must be invertible.</p></li>
+</ol><p>For <code>crit = "CV"</code>, character-specified initial estimators are recomputed
+separately from each training fold.
+A user-supplied matrix cannot be used when <code>crit = "CV"</code>.
+This argument is ignored when <code>penalty = "lasso"</code>.</p></dd>
+
+
 <dt id="arg-nlambda">nlambda<a class="anchor" aria-label="anchor" href="#arg-nlambda"></a></dt>
 <dd><p>An integer (default = 10) specifying the number of
 <code>lambda</code> values to generate when <code>lambda = NULL</code>.</p></dd>
@@ -245,7 +259,7 @@ This argument is used only when <code>lla = TRUE</code>.</p></dd>
 <dt id="arg-maxiter-lla">maxiter.lla<a class="anchor" aria-label="anchor" href="#arg-maxiter-lla"></a></dt>
 <dd><p>An integer (default = 10) specifying the maximum number of
 weighted subproblems solved by iterative LLA.
-The lasso pilot estimation is not included in this count.
+Construction of the initial estimator is not included in this count.
 This argument is used only when <code>lla = TRUE</code>.</p></dd>
 
 
@@ -329,7 +343,7 @@ the tuning parameter to calculate for <code>crit = "EBIC"</code>.</p></dd>
 <dd><p>The selected mixing parameter.</p></dd>
 
 <dt>initial</dt>
-<dd><p>The lasso pilot estimate used to construct penalty weights
+<dd><p>The initial estimate used to construct penalty weights
 when <code>penalty != "lasso"</code>.</p></dd>
 
 <dt>gamma</dt>
@@ -339,16 +353,18 @@ when <code>penalty != "lasso"</code>.</p></dd>
 <dt>iterations</dt>
 <dd><p>For <code>penalty = "lasso"</code>, the number of ADMM iterations.
 For other penalties, the total number of ADMM iterations across all LLA
-subproblems, excluding the lasso pilot estimation.</p></dd>
+subproblems, excluding any ADMM iterations used to construct the initial
+estimate.</p></dd>
 
 <dt>converged</dt>
-<dd><p>A logical value indicating whether all ADMM solves,
-including the lasso pilot when applicable, satisfied their convergence
-criteria before reaching <code>maxiter</code>.</p></dd>
+<dd><p>A logical value indicating whether all ADMM subproblems and,
+when <code>initial = "lasso"</code>, the initial lasso fit satisfied their
+convergence criteria before reaching <code>maxiter</code>.</p></dd>
 
 <dt>initial.converged</dt>
-<dd><p>For penalties other than <code>"lasso"</code>, a logical
-value indicating whether the lasso pilot estimation converged.</p></dd>
+<dd><p>For <code>penalty != "lasso"</code>, a logical value
+indicating whether the initial lasso fit converged.
+It is <code>NA</code> when <code>initial = "invS"</code> or a matrix.</p></dd>
 
 <dt>lla.iterations</dt>
 <dd><p>The number of LLA steps performed for non-convex
@@ -422,18 +438,19 @@ satisfy the iterative LLA convergence criterion.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For non-convex penalties, the default <code>lla = FALSE</code> computes a one-step
 LLA estimator.
-Penalty weights are constructed from a lasso pilot estimate and held fixed
-while the resulting weighted subproblem is solved.</p>
+Penalty weights are constructed from the estimator specified by <code>initial</code>
+and held fixed while the resulting weighted subproblem is solved.</p>
 <p>When <code>lla = TRUE</code>, the penalty weights are updated after each weighted
 subproblem until the relative change between successive precision matrix
 estimates is no greater than <code>tol.lla</code>, or <code>maxiter.lla</code> is reached.
 This iterative procedure is intended to approach a stationary point of
 the original non-convex objective but does not guarantee a global optimum.</p>
-<p>For <code>penalty = "adapt"</code>, weights are constructed from the lasso pilot
-estimate and remain fixed; therefore, <code>lla</code> is ignored.
-The <code>converged</code> component concerns convergence of the lasso pilot and
-fixed-weight ADMM subproblems, not stationarity of the original non-convex
-objective.
+<p>For <code>penalty = "adapt"</code>, weights are constructed from the estimator
+specified by <code>initial</code> and remain fixed; therefore, <code>lla</code> is
+ignored.
+The <code>converged</code> component concerns convergence of the fixed-weight ADMM
+subproblems and, when <code>initial = "lasso"</code>, the initial lasso fit.
+It does not indicate stationarity of the original non-convex objective.
 The <code>lla.converged</code> component concerns the outer iterative LLA procedure.</p>
     </div>
     <div class="section level2">
@@ -539,19 +556,19 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8391</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.4522</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 136.2799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.5183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  23.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 340.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  47.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  25.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.4792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1214</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.7397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 144.4687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.1326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  25.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 336.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  51.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  23.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3210</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>
