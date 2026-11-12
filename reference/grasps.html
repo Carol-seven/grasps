@@ -317,18 +317,23 @@ selection criterion to use. Available options include:</p><ol><li><p>"AIC": Akai
 (Wang et al. 2013; Fan et al. 2017)
 .</p></li>
 <li><p>"CV": k-fold cross validation with negative log-likelihood loss.</p></li>
-</ol></dd>
+</ol><p>This argument is used only when the parameter grid contains more than one
+candidate.</p></dd>
 
 
 <dt id="arg-kfold">kfold<a class="anchor" aria-label="anchor" href="#arg-kfold"></a></dt>
 <dd><p>An integer (default = 5) specifying the number of folds used for
 <code>crit = "CV"</code>.
-It must be at least 2 and leave at least 2 observations per validation fold.</p></dd>
+It must be at least 2 and leave at least 2 observations per validation fold.
+This argument is used only when <code>crit = "CV"</code> and the parameter grid
+contains more than one candidate.</p></dd>
 
 
 <dt id="arg-ebic-tuning">ebic.tuning<a class="anchor" aria-label="anchor" href="#arg-ebic-tuning"></a></dt>
 <dd><p>A numeric value in [0,1] (default = 0.5) specifying
-the tuning parameter to calculate for <code>crit = "EBIC"</code>.</p></dd>
+the tuning parameter to calculate for <code>crit = "EBIC"</code>.
+This argument is used only when <code>crit = "EBIC"</code> and the parameter grid
+contains more than one candidate.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -556,19 +561,19 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.7397</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3274</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 144.4687</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.1326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  25.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 336.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  51.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  23.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1318</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4032</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8391</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.4522</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3753</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 136.2799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.5183</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  23.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 340.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  47.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  25.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.4792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1214</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3050</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>

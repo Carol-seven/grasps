@@ -278,16 +278,22 @@ grasps(
 
   5.  "CV": k-fold cross validation with negative log-likelihood loss.
 
+  This argument is used only when the parameter grid contains more than
+  one candidate.
+
 - kfold:
 
   An integer (default = 5) specifying the number of folds used for
   `crit = "CV"`. It must be at least 2 and leave at least 2 observations
-  per validation fold.
+  per validation fold. This argument is used only when `crit = "CV"` and
+  the parameter grid contains more than one candidate.
 
 - ebic.tuning:
 
   A numeric value in \[0,1\] (default = 0.5) specifying the tuning
-  parameter to calculate for `crit = "EBIC"`.
+  parameter to calculate for `crit = "EBIC"`. This argument is used only
+  when `crit = "EBIC"` and the parameter grid contains more than one
+  candidate.
 
 ## Value
 
@@ -550,19 +556,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8253
-#> 2  Frobenius  25.7397
-#> 3         KL   9.3274
-#> 4  quadratic 144.4687
-#> 5   spectral  11.1326
-#> 6         TP  25.0000
-#> 7         TN 336.0000
-#> 8         FP  51.0000
-#> 9         FN  23.0000
-#> 10       TPR   0.5208
-#> 11       FPR   0.1318
-#> 12        F1   0.4032
-#> 13       MCC   0.3210
+#> 1   sparsity   0.8391
+#> 2  Frobenius  25.4522
+#> 3         KL   9.3753
+#> 4  quadratic 136.2799
+#> 5   spectral  11.5183
+#> 6         TP  23.0000
+#> 7         TN 340.0000
+#> 8         FP  47.0000
+#> 9         FN  25.0000
+#> 10       TPR   0.4792
+#> 11       FPR   0.1214
+#> 12        F1   0.3898
+#> 13       MCC   0.3050
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network
