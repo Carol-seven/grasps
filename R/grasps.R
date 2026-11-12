@@ -88,6 +88,20 @@
 #' }
 #' This argument is ignored when \code{penalty = "lasso"}.
 #'
+#' @param initial A character string (default = "lasso") or a finite symmetric
+#' numeric \eqn{p \times p} matrix specifying the initial estimator used to
+#' construct penalty weights.
+#' Available character options include:
+#' \enumerate{
+#' \item "lasso": Use the sparse-group graphical lasso estimate.
+#' \item "invS": Use the inverse of the empirical covariance matrix.
+#' The relevant empirical covariance matrix must be invertible.
+#' }
+#' For \code{crit = "CV"}, character-specified initial estimators are recomputed
+#' separately from each training fold.
+#' A user-supplied matrix cannot be used when \code{crit = "CV"}.
+#' This argument is ignored when \code{penalty = "lasso"}.
+#'
 #' @param nlambda An integer (default = 10) specifying the number of
 #' \code{lambda} values to generate when \code{lambda = NULL}.
 #'
@@ -125,7 +139,7 @@
 #'
 #' @param maxiter.lla An integer (default = 10) specifying the maximum number of
 #' weighted subproblems solved by iterative LLA.
-#' The lasso pilot estimation is not included in this count.
+#' Construction of the initial estimator is not included in this count.
 #' This argument is used only when \code{lla = TRUE}.
 #'
 #' @param rho A numeric value > 0 (default = 2) specifying the ADMM
@@ -180,18 +194,20 @@
 #' \item{hatOmega}{The estimated precision matrix.}
 #' \item{lambda}{The selected regularization parameter.}
 #' \item{alpha}{The selected mixing parameter.}
-#' \item{initial}{The lasso pilot estimate used to construct penalty weights
+#' \item{initial}{The initial estimate used to construct penalty weights
 #' when \code{penalty != "lasso"}.}
 #' \item{gamma}{The additional parameter used for the selected penalty when
 #' \code{penalty != "lasso"}.}
 #' \item{iterations}{For \code{penalty = "lasso"}, the number of ADMM iterations.
 #' For other penalties, the total number of ADMM iterations across all LLA
-#' subproblems, excluding the lasso pilot estimation.}
-#' \item{converged}{A logical value indicating whether all ADMM solves,
-#' including the lasso pilot when applicable, satisfied their convergence
-#' criteria before reaching \code{maxiter}.}
-#' \item{initial.converged}{For penalties other than \code{"lasso"}, a logical
-#' value indicating whether the lasso pilot estimation converged.}
+#' subproblems, excluding any ADMM iterations used to construct the initial
+#' estimate.}
+#' \item{converged}{A logical value indicating whether all ADMM subproblems and,
+#' when \code{initial = "lasso"}, the initial lasso fit satisfied their
+#' convergence criteria before reaching \code{maxiter}.}
+#' \item{initial.converged}{For \code{penalty != "lasso"}, a logical value
+#' indicating whether the initial lasso fit converged.
+#' It is \code{NA} when \code{initial = "invS"} or a matrix.}
 #' \item{lla.iterations}{The number of LLA steps performed for non-convex
 #' penalties. It is \code{1} for one-step LLA and \code{NA} for \code{"lasso"}
 #' and \code{"adapt"}.}
@@ -239,8 +255,8 @@
 #' @details
 #' For non-convex penalties, the default \code{lla = FALSE} computes a one-step
 #' LLA estimator.
-#' Penalty weights are constructed from a lasso pilot estimate and held fixed
-#' while the resulting weighted subproblem is solved.
+#' Penalty weights are constructed from the estimator specified by \code{initial}
+#' and held fixed while the resulting weighted subproblem is solved.
 #'
 #' When \code{lla = TRUE}, the penalty weights are updated after each weighted
 #' subproblem until the relative change between successive precision matrix
@@ -248,11 +264,12 @@
 #' This iterative procedure is intended to approach a stationary point of
 #' the original non-convex objective but does not guarantee a global optimum.
 #'
-#' For \code{penalty = "adapt"}, weights are constructed from the lasso pilot
-#' estimate and remain fixed; therefore, \code{lla} is ignored.
-#' The \code{converged} component concerns convergence of the lasso pilot and
-#' fixed-weight ADMM subproblems, not stationarity of the original non-convex
-#' objective.
+#' For \code{penalty = "adapt"}, weights are constructed from the estimator
+#' specified by \code{initial} and remain fixed; therefore, \code{lla} is
+#' ignored.
+#' The \code{converged} component concerns convergence of the fixed-weight ADMM
+#' subproblems and, when \code{initial = "lasso"}, the initial lasso fit.
+#' It does not indicate stationarity of the original non-convex objective.
 #' The \code{lla.converged} component concerns the outer iterative LLA procedure.
 #'
 #' @references
@@ -268,7 +285,7 @@
 
 grasps <- function(X, n = nrow(X), membership, penalty,
                    diag.ind = TRUE, diag.grp = TRUE, diag.include = FALSE,
-                   lambda = NULL, alpha = NULL, gamma = NULL,
+                   lambda = NULL, alpha = NULL, gamma = NULL, initial = "lasso",
                    nlambda = 10, lambda.min.ratio = 0.01,
                    growiter.lambda = 30, tol.lambda = 1e-03, maxiter.lambda = 50,
                    lla = FALSE, tol.lla = 1e-04, maxiter.lla = 10,
@@ -364,6 +381,15 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     stop('`lambda` must contain positive finite numeric values.', call. = FALSE)
   }
 
+  if (lambda_null) {
+    validate_scalar(nlambda, "nlambda", integer = TRUE)
+    validate_scalar(lambda.min.ratio, "lambda.min.ratio", upper = 1)
+    validate_scalar(growiter.lambda, "growiter.lambda", integer = TRUE,
+                    lower.inclusive = TRUE)
+    validate_scalar(tol.lambda, "tol.lambda")
+    validate_scalar(maxiter.lambda, "maxiter.lambda", integer = TRUE)
+  }
+
   alpha_null <- is.null(alpha)
 
   if (!alpha_null &&
@@ -385,15 +411,19 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     if (penalty == "lq" && gamma >= 1) {
       stop('For "lq", `gamma` must be in (0,1).', call. = FALSE)
     }
-  }
 
-  if (lambda_null) {
-    validate_scalar(nlambda, "nlambda", integer = TRUE)
-    validate_scalar(lambda.min.ratio, "lambda.min.ratio", upper = 1)
-    validate_scalar(growiter.lambda, "growiter.lambda", integer = TRUE,
-                    lower.inclusive = TRUE)
-    validate_scalar(tol.lambda, "tol.lambda")
-    validate_scalar(maxiter.lambda, "maxiter.lambda", integer = TRUE)
+    valid.initial <- if (is.character(initial)) {
+      length(initial) == 1L && !is.na(initial) &&
+        initial %in% c("lasso", "invS")
+    } else {
+      is.matrix(initial) && is.numeric(initial) && !is.complex(initial) &&
+        identical(dim(initial), c(p, p)) && all(is.finite(initial)) &&
+        isSymmetric(initial)
+    }
+    if (!valid.initial) {
+      stop('`initial` must be "lasso", "invS", or a finite symmetric p-by-p ',
+           'numeric matrix.', call. = FALSE)
+    }
   }
 
   ## Validate LLA controls -----------------------------------------------------
@@ -443,6 +473,20 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       stop('`kfold` must leave at least 2 observations in every validation fold.',
            call. = FALSE)
     }
+    if (penalty != "lasso" && identical(initial, "invS") &&
+        n - ceiling(n / kfold) <= p) {
+      stop('`initial = "invS"` requires more training observations than ',
+           'variables in every cross-validation fold.', call. = FALSE)
+    }
+    if (penalty != "lasso" && is.matrix(initial)) {
+      stop('A user-supplied `initial` matrix cannot be used when `crit = "CV"`.',
+           call. = FALSE)
+    }
+  }
+
+  if (crit != "CV" && penalty != "lasso" && identical(initial, "invS") &&
+      n <= p) {
+    stop('`initial = "invS"` requires n > p.', call. = FALSE)
   }
 
   ## Construct group indices ---------------------------------------------------
@@ -524,6 +568,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
         X = X, group_idx = group.idx, penalty = penalty,
         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
         lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
+        initial = initial,
         lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
@@ -533,6 +578,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
         S = S, group_idx = group.idx, penalty = penalty,
         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
         lambda = CV$lambda.opt, alpha = CV$alpha.opt, gamma = gamma,
+        initial = initial,
         lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter
@@ -549,6 +595,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
         S = S, group_idx = group.idx, penalty = penalty,
         diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
         lambdas = parameter$lambda, alphas = parameter$alpha, gamma = gamma,
+        initial = initial,
         lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
         rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
         tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter,
@@ -568,6 +615,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
       S = S, group_idx = group.idx, penalty = penalty,
       diag_ind = diag.ind, diag_grp = diag.grp, diag_include = diag.include,
       lambda = parameter$lambda, alpha = parameter$alpha, gamma = gamma,
+      initial = initial,
       lla = lla, tol_lla = tol.lla, maxiter_lla = maxiter.lla,
       rho = rho, tau_incr = tau.incr, tau_decr = tau.decr, nu = nu,
       tol_abs = tol.abs, tol_rel = tol.rel, maxiter = maxiter

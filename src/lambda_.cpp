@@ -5,7 +5,7 @@ using namespace Rcpp;
 
 
 // Element-Wise Tuning Parameter Matrix of Individual Penalty
-arma::mat lambda_individual(const arma::mat& Omega, std::string penalty,
+arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
                             double lambda, double gamma) {
 
   arma::mat W = arma::zeros(Omega.n_rows, Omega.n_cols);
@@ -48,7 +48,7 @@ arma::mat lambda_individual(const arma::mat& Omega, std::string penalty,
 
 
 // Tuning Parameter Scalar of Group Penalty
-double lambda_group(const arma::mat& Omega, std::string penalty,
+double lambda_group(const arma::mat& Omega, const std::string& penalty,
                     double lambda, double gamma) {
 
   double Omega_norm = arma::norm(Omega, "fro");

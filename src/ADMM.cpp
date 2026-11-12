@@ -228,26 +228,33 @@ List ADMMsggn(
     const arma::mat& S, const List& group_idx, const std::string& penalty,
     bool diag_ind, bool diag_grp, bool diag_include,
     const double& lambda, const double& alpha, const double& gamma,
+    const Rcpp::RObject& initial,
     bool lla, const double tol_lla, const int maxiter_lla,
     double rho, const double tau_incr, const double tau_decr, const double nu,
     const double tol_abs, const double tol_rel, const int maxiter) {
 
-  // lasso pilot estimate
-  List sgglres = ADMMsggl(S, group_idx,
-                          diag_ind, diag_grp, diag_include,
-                          lambda, alpha,
-                          rho, tau_incr, tau_decr, nu,
-                          tol_abs, tol_rel, maxiter);
+  // initial estimate used to construct penalty weights
+  arma::mat initial_est;
+  Rcpp::LogicalVector initial_converged(1, NA_LOGICAL);
 
-  arma::mat initial = sgglres["hatOmega"];
-  bool initial_converged = Rcpp::as<bool>(sgglres["converged"]);
+  if (Rf_isString(initial)) {
+    List sgglres = ADMMsggl(S, group_idx,
+                            diag_ind, diag_grp, diag_include,
+                            lambda, alpha,
+                            rho, tau_incr, tau_decr, nu,
+                            tol_abs, tol_rel, maxiter);
+    initial_est = Rcpp::as<arma::mat>(sgglres["hatOmega"]);
+    initial_converged[0] = Rcpp::as<bool>(sgglres["converged"]);
+  } else {
+    initial_est = Rcpp::as<arma::mat>(initial);
+  }
 
-  // adaptive lasso weights remain fixed at the pilot estimate
+  // adaptive lasso weights remain fixed at the initial estimate
   bool iterative = lla && penalty != "adapt";
   int steps = iterative ? maxiter_lla : 1;
 
-  arma::mat weight_ref = initial;
-  arma::mat hatOmega = initial;
+  arma::mat weight_ref = initial_est;
+  arma::mat hatOmega = initial_est;
 
   int iterations = 0;
   int lla_iterations = 0;
@@ -265,11 +272,9 @@ List ADMMsggn(
 
     hatOmega = Rcpp::as<arma::mat>(step["hatOmega"]);
 
-    int step_iterations = Rcpp::as<int>(step["iterations"]);
-
     bool step_converged = Rcpp::as<bool>(step["converged"]);
 
-    iterations += step_iterations;
+    iterations += Rcpp::as<int>(step["iterations"]);
     ++lla_iterations;
 
     if (!step_converged) {
@@ -291,27 +296,18 @@ List ADMMsggn(
     }
   }
 
-  Rcpp::LogicalVector lla_status(1);
-
-  if (iterative) {
-    lla_status[0] = lla_converged;
-  } else {
-    lla_status[0] = NA_LOGICAL;
-  }
-
-  int lla_iterations_out = penalty == "adapt" ? NA_INTEGER : lla_iterations;
-
   return List::create(
     Named("hatOmega") = hatOmega,
     Named("lambda") = lambda,
     Named("alpha") = alpha,
-    Named("initial") = initial,
+    Named("initial") = initial_est,
     Named("gamma") = gamma,
     Named("iterations") = iterations,
-    Named("converged") = initial_converged && all_admm_converged,
+    Named("converged") = initial_converged[0] != FALSE && all_admm_converged,
     Named("initial.converged") = initial_converged,
-    Named("lla.iterations") = lla_iterations_out,
-    Named("lla.converged") = lla_status
+    Named("lla.iterations") = penalty == "adapt" ? NA_INTEGER : lla_iterations,
+    Named("lla.converged") =
+      Rcpp::LogicalVector::create(iterative ? lla_converged : NA_LOGICAL)
   );
 }
 
@@ -322,6 +318,7 @@ List ADMMsggm(
     const arma::mat& S, const List& group_idx, const std::string& penalty,
     bool diag_ind, bool diag_grp, bool diag_include,
     const double& lambda, const double& alpha, const double& gamma,
+    const Rcpp::RObject& initial,
     bool lla, const double tol_lla, const int maxiter_lla,
     double rho, const double tau_incr, const double tau_decr, const double nu,
     const double tol_abs, const double tol_rel, const int maxiter) {
@@ -336,9 +333,10 @@ List ADMMsggm(
     result["lla.converged"] = Rcpp::LogicalVector::create(NA_LOGICAL);
     return result;
   } else {
+    Rcpp::RObject initial_est = gen_initial(initial, S);
     return ADMMsggn(S, group_idx, penalty,
                     diag_ind, diag_grp, diag_include,
-                    lambda, alpha, gamma,
+                    lambda, alpha, gamma, initial_est,
                     lla, tol_lla, maxiter_lla,
                     rho, tau_incr, tau_decr, nu,
                     tol_abs, tol_rel, maxiter);
@@ -352,6 +350,7 @@ List ADMMsggm_CV(
     const arma::mat& X, const List& group_idx, const std::string& penalty,
     bool diag_ind, bool diag_grp, bool diag_include,
     const arma::colvec& lambdas, const arma::colvec& alphas, const double& gamma,
+    const Rcpp::RObject& initial,
     bool lla, const double tol_lla, const int maxiter_lla,
     double rho, const double tau_incr, const double tau_decr, const double nu,
     const double tol_abs, const double tol_rel, const int maxiter,
@@ -379,6 +378,11 @@ List ADMMsggm_CV(
     arma::mat S_test = arma::cov(X_test, 1);
     arma::mat S_train = arma::cov(X_train, 1);
 
+    Rcpp::RObject initial_cv = initial;
+    if (penalty != "lasso") {
+      initial_cv = gen_initial(initial, S_train);
+    }
+
     for (int i = 0; i < nlambda; ++i) {
 
       double lambda = lambdas[i];
@@ -386,7 +390,7 @@ List ADMMsggm_CV(
 
       List result = ADMMsggm(S_train, group_idx, penalty,
                              diag_ind, diag_grp, diag_include,
-                             lambda, alpha, gamma,
+                             lambda, alpha, gamma, initial_cv,
                              lla, tol_lla, maxiter_lla,
                              rho, tau_incr, tau_decr, nu,
                              tol_abs, tol_rel, maxiter);
@@ -432,6 +436,7 @@ List ADMMsggm_IC(
     const arma::mat& S, const List& group_idx, const std::string& penalty,
     bool diag_ind, bool diag_grp, bool diag_include,
     const arma::colvec& lambdas, const arma::colvec& alphas, const double& gamma,
+    const Rcpp::RObject& initial,
     bool lla, const double tol_lla, const int maxiter_lla,
     double rho, const double tau_incr, const double tau_decr, const double nu,
     const double tol_abs, const double tol_rel, const int maxiter,
@@ -443,13 +448,18 @@ List ADMMsggm_IC(
   Rcpp::LogicalVector lla_converged_grid(nlambda, NA_LOGICAL);
   List result_list(nlambda);
 
+  Rcpp::RObject initial_ic = initial;
+  if (penalty != "lasso") {
+    initial_ic = gen_initial(initial, S);
+  }
+
   for (int i = 0; i < nlambda; ++i) {
 
     double lambda = lambdas[i];
     double alpha = alphas[i];
     List result = ADMMsggm(S, group_idx, penalty,
                            diag_ind, diag_grp, diag_include,
-                           lambda, alpha, gamma,
+                           lambda, alpha, gamma, initial_ic,
                            lla, tol_lla, maxiter_lla,
                            rho, tau_incr, tau_decr, nu,
                            tol_abs, tol_rel, maxiter);

@@ -70,6 +70,38 @@ for (penalty in names(bad.gamma)) {
 }
 expect_error(fit(penalty = "scad", gamma = c(3, 4)), "`gamma`")
 
+## validate initial estimators -------------------------------------------------
+
+expect_error(fit(penalty = "scad", initial = "invalid"), "`initial`")
+expect_error(fit(penalty = "scad", initial = diag(3)), "`initial`")
+expect_error(fit(penalty = "scad",
+                 initial = matrix(c(1, 0, 1, 1), 2)), "`initial`")
+expect_error(fit(penalty = "scad",
+                 initial = matrix(c(1, Inf, Inf, 1), 2)), "`initial`")
+expect_error(fit(penalty = "scad", initial = diag(2) + 1i), "`initial`")
+expect_error(fit(X = diag(2), n = 2, penalty = "scad", initial = "invS"),
+             "requires n > p")
+expect_error(fit(X = matrix(1, 2, 2), penalty = "scad", initial = "invS"),
+             "not invertible")
+
+lasso.initial <- fit(penalty = "scad", initial = "lasso")
+inverse.initial <- fit(penalty = "scad", initial = "invS")
+matrix.initial <- fit(penalty = "scad", initial = diag(2))
+stopifnot(isTRUE(lasso.initial$initial.converged),
+          is.na(inverse.initial$initial.converged),
+          is.na(matrix.initial$initial.converged),
+          isTRUE(all.equal(inverse.initial$initial, diag(2))),
+          isTRUE(all.equal(matrix.initial$initial, diag(2))))
+
+# `initial` is inactive for the lasso penalty and must therefore be ignored.
+lasso.initial.inactive <- fit(initial = "invalid")
+stopifnot(lasso.initial.inactive$converged)
+
+inverse.grid <- fit(penalty = "scad", lambda = c(0.1, 0.2),
+                    initial = "invS")
+stopifnot(length(inverse.grid$converged.grid) == 2L,
+          is.na(inverse.grid$initial.converged))
+
 ## validate iterative LLA controls only when they are active -------------------
 
 expect_error(fit(penalty = "scad", lla = 1), "`lla`")
@@ -107,6 +139,16 @@ expect_error(fit(crit = "CV"), "CV requires")
 expect_error(fit(X = X, n = 12, crit = "CV", kfold = 2.5), "`kfold`")
 expect_error(fit(X = X, n = 12, crit = "CV", kfold = 12),
              "at least 2 observations")
+expect_error(fit(X = X, n = 12, penalty = "scad", crit = "CV",
+                 initial = diag(2)), "cannot be used")
+expect_error(fit(X = X[1:4, ], n = 4, penalty = "scad", crit = "CV",
+                 kfold = 2, initial = "invS"), "training observations")
+
+set.seed(2026)
+inverse.cv <- fit(X = X, n = 12, penalty = "scad", crit = "CV", kfold = 3,
+                  lambda = c(0.1, 0.2), initial = "invS")
+stopifnot(identical(dim(inverse.cv$converged.grid), c(2L, 3L)),
+          is.na(inverse.cv$initial.converged))
 
 ## retain valid legacy inputs --------------------------------------------------
 

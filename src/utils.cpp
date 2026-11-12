@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
+#include "internals.h"
 using namespace Rcpp;
 
 
@@ -8,6 +9,19 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 arma::mat soft_matrix(const arma::mat& M, const arma::mat& Thres) {
   return arma::sign(M) % arma::max(arma::abs(M) - Thres, arma::zeros<arma::mat>(M.n_rows, M.n_cols));
+}
+
+
+// Initial Estimator
+Rcpp::RObject gen_initial(const Rcpp::RObject& initial, const arma::mat& S) {
+  if (Rf_isString(initial) && Rcpp::as<std::string>(initial) == "invS") {
+    arma::mat initial_est;
+    if (!arma::inv(initial_est, S)) {
+      stop("The empirical covariance matrix is not invertible.");
+    }
+    return Rcpp::wrap(initial_est);
+  }
+  return initial;
 }
 
 
@@ -21,7 +35,7 @@ arma::uvec index_kfold(const int n, const int kfold) {
 }
 
 
-// criterion
+// Criterion
 double criterion(const arma::mat& hatOmega, const arma::mat& S, int n,
                  const std::string& crit, double ebic_tuning) {
 

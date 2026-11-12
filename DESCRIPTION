@@ -28,7 +28,6 @@ License: GPL (>= 3)
 URL: https://github.com/Carol-seven/grasps, https://shiying-xiao.com/grasps/
 BugReports: https://github.com/Carol-seven/grasps/issues
 Encoding: UTF-8
-LazyData: true
 Imports: 
     igraph,
     ggforce,

@@ -5,15 +5,17 @@ static const double eps = 1e-10;
 
 arma::mat soft_matrix(const arma::mat& M, const arma::mat& Thres);
 
+Rcpp::RObject gen_initial(const Rcpp::RObject& initial, const arma::mat& S);
+
 arma::uvec index_kfold(const int n, const int kfold);
 
 double criterion(const arma::mat& hatOmega, const arma::mat& S, int n,
                  const std::string& crit, double ebic_tuning);
 
-arma::mat lambda_individual(const arma::mat& Omega, std::string penalty,
+arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
                             double lambda, double gamma);
 
-double lambda_group(const arma::mat& Omega, std::string penalty,
+double lambda_group(const arma::mat& Omega, const std::string& penalty,
                     double lambda, double gamma);
 
 arma::mat update_Omega(const arma::mat& M, double rho);
