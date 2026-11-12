@@ -180,13 +180,19 @@
 #' \insertCite{wang2013calibrating,fan2017high}{grasps}.
 #' \item "CV": k-fold cross validation with negative log-likelihood loss.
 #' }
+#' This argument is used only when the parameter grid contains more than one
+#' candidate.
 #'
 #' @param kfold An integer (default = 5) specifying the number of folds used for
 #' \code{crit = "CV"}.
 #' It must be at least 2 and leave at least 2 observations per validation fold.
+#' This argument is used only when \code{crit = "CV"} and the parameter grid
+#' contains more than one candidate.
 #'
 #' @param ebic.tuning A numeric value in [0,1] (default = 0.5) specifying
 #' the tuning parameter to calculate for \code{crit = "EBIC"}.
+#' This argument is used only when \code{crit = "EBIC"} and the parameter grid
+#' contains more than one candidate.
 #'
 #' @return
 #' An object with S3 class \code{"grasps"} containing the following components:
@@ -426,6 +432,10 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     }
   }
 
+  if (penalty != "lasso" && identical(initial, "invS") && n <= p) {
+    stop('`initial = "invS"` requires n > p.', call. = FALSE)
+  }
+
   ## Validate LLA controls -----------------------------------------------------
 
   if (!is.logical(lla) || length(lla) != 1L || is.na(lla)) {
@@ -447,46 +457,53 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   validate_scalar(tol.rel, "tol.rel")
   validate_scalar(maxiter, "maxiter", integer = TRUE)
 
+  ## Construct the alpha grid --------------------------------------------------
+
+  if (alpha_null) {
+    alpha <- seq(0.1, 0.9, 0.1)
+  }
+
   ## Validate model-selection controls -----------------------------------------
 
-  criteria <- c("AIC", "BIC", "EBIC", "HBIC", "CV")
+  ncandidate <- length(alpha) *
+    if (lambda_null) nlambda else length(lambda)
 
-  if (!is.character(crit) || length(crit) != 1L ||
-      is.na(crit) || !(crit %in% criteria)) {
-    stop(sprintf("Invalid `crit`.\nAvailable options: %s.",
-                 paste(sprintf('"%s"', criteria), collapse = ", ")),
-         call. = FALSE)
-  }
+  if (ncandidate > 1L) {
 
-  if (crit == "EBIC") {
-    validate_scalar(ebic.tuning, "ebic.tuning", upper = 1,
-                    lower.inclusive = TRUE)
-  }
+    criteria <- c("AIC", "BIC", "EBIC", "HBIC", "CV")
 
-  if (crit == "CV") {
-    if (cov.input) {
-      stop('CV requires the n-by-p data matrix.', call. = FALSE)
-    }
-    validate_scalar(kfold, "kfold", lower = 2, integer = TRUE,
-                    lower.inclusive = TRUE)
-    if (kfold > floor(n / 2)) {
-      stop('`kfold` must leave at least 2 observations in every validation fold.',
+    if (!is.character(crit) || length(crit) != 1L ||
+        is.na(crit) || !(crit %in% criteria)) {
+      stop(sprintf("Invalid `crit`.\nAvailable options: %s.",
+                   paste(sprintf('"%s"', criteria), collapse = ", ")),
            call. = FALSE)
     }
-    if (penalty != "lasso" && identical(initial, "invS") &&
-        n - ceiling(n / kfold) <= p) {
-      stop('`initial = "invS"` requires more training observations than ',
-           'variables in every cross-validation fold.', call. = FALSE)
-    }
-    if (penalty != "lasso" && is.matrix(initial)) {
-      stop('A user-supplied `initial` matrix cannot be used when `crit = "CV"`.',
-           call. = FALSE)
-    }
-  }
 
-  if (crit != "CV" && penalty != "lasso" && identical(initial, "invS") &&
-      n <= p) {
-    stop('`initial = "invS"` requires n > p.', call. = FALSE)
+    if (crit == "EBIC") {
+      validate_scalar(ebic.tuning, "ebic.tuning", upper = 1,
+                      lower.inclusive = TRUE)
+    }
+
+    if (crit == "CV") {
+      if (cov.input) {
+        stop('CV requires the n-by-p data matrix.', call. = FALSE)
+      }
+      validate_scalar(kfold, "kfold", lower = 2, integer = TRUE,
+                      lower.inclusive = TRUE)
+      if (kfold > floor(n / 2)) {
+        stop('`kfold` must leave at least 2 observations in every validation fold.',
+             call. = FALSE)
+      }
+      if (penalty != "lasso" && identical(initial, "invS") &&
+          n - ceiling(n / kfold) <= p) {
+        stop('`initial = "invS"` requires more training observations than ',
+             'variables in every cross-validation fold.', call. = FALSE)
+      }
+      if (penalty != "lasso" && is.matrix(initial)) {
+        stop('A user-supplied `initial` matrix cannot be used when ',
+             '`crit = "CV"`.', call. = FALSE)
+      }
+    }
   }
 
   ## Construct group indices ---------------------------------------------------
@@ -494,12 +511,6 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   grp <- sort(unique(membership))
   group.idx <- lapply(grp, function(g) which(membership == g) - 1)
   names(group.idx) <- grp
-
-  ## Construct the alpha grid --------------------------------------------------
-
-  if (alpha_null) {
-    alpha <- seq(0.1, 0.9, 0.1)
-  }
 
   ## Construct the lambda grid -------------------------------------------------
 
@@ -562,7 +573,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
 
   ## Fit the model -------------------------------------------------------------
 
-  if (nrow(parameter) > 1) {
+  if (ncandidate > 1L) {
     if (crit == "CV") {
       CV <- ADMMsggm_CV(
         X = X, group_idx = group.idx, penalty = penalty,

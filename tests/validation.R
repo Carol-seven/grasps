@@ -42,7 +42,7 @@ expect_error(fit(membership = c(1, NA)), "`membership`")
 expect_error(fit(membership = c(1, 1.5)), "`membership`")
 expect_error(fit(membership = c("a", "b")), "`membership`")
 expect_error(fit(penalty = c("lasso", "scad")), "`penalty`")
-expect_error(fit(crit = NA_character_), "`crit`")
+expect_error(fit(crit = NA_character_, lambda = c(0.1, 0.2)), "`crit`")
 expect_error(fit(diag.ind = 1), "`diag.ind`")
 
 ## validate scalar and active controls -----------------------------------------
@@ -57,7 +57,8 @@ expect_error(fit(maxiter = 1.5), "`maxiter`")
 expect_error(fit(maxiter = 2^31), "`maxiter`")
 expect_error(fit(lambda = 1i), "`lambda`")
 expect_error(fit(alpha = NaN), "`alpha`")
-expect_error(fit(crit = "EBIC", ebic.tuning = 1.1), "`ebic.tuning`")
+expect_error(fit(crit = "EBIC", ebic.tuning = 1.1, lambda = c(0.1, 0.2)),
+             "`ebic.tuning`")
 expect_error(fit(lambda = NULL, nlambda = "ten"), "`nlambda`")
 expect_error(fit(lambda = NULL, tol.lambda = 0), "`tol.lambda`")
 expect_error(fit(lambda = NULL, maxiter.lambda = 0), "`maxiter.lambda`")
@@ -74,8 +75,8 @@ expect_error(fit(penalty = "scad", gamma = c(3, 4)), "`gamma`")
 
 expect_error(fit(penalty = "scad", initial = "invalid"), "`initial`")
 expect_error(fit(penalty = "scad", initial = diag(3)), "`initial`")
-expect_error(fit(penalty = "scad",
-                 initial = matrix(c(1, 0, 1, 1), 2)), "`initial`")
+expect_error(fit(penalty = "scad", initial = matrix(c(1, 0, 1, 1), 2)),
+             "`initial`")
 expect_error(fit(penalty = "scad",
                  initial = matrix(c(1, Inf, Inf, 1), 2)), "`initial`")
 expect_error(fit(penalty = "scad", initial = diag(2) + 1i), "`initial`")
@@ -83,7 +84,6 @@ expect_error(fit(X = diag(2), n = 2, penalty = "scad", initial = "invS"),
              "requires n > p")
 expect_error(fit(X = matrix(1, 2, 2), penalty = "scad", initial = "invS"),
              "not invertible")
-
 lasso.initial <- fit(penalty = "scad", initial = "lasso")
 inverse.initial <- fit(penalty = "scad", initial = "invS")
 matrix.initial <- fit(penalty = "scad", initial = diag(2))
@@ -135,20 +135,37 @@ X <- cbind(sin(1:12), cos((1:12) / 2))
 set.seed(2026)
 expect_error(fit(X = X, n = 11), "must equal `nrow(X)`")
 expect_error(fit(X = cbind(1:12, rep(1, 12)), n = 12), "positive diagonal")
-expect_error(fit(crit = "CV"), "CV requires")
-expect_error(fit(X = X, n = 12, crit = "CV", kfold = 2.5), "`kfold`")
-expect_error(fit(X = X, n = 12, crit = "CV", kfold = 12),
+expect_error(grasps(matrix(1), n = 20, membership = 1L,
+                    penalty = "lasso", crit = "CV"), "CV requires")
+expect_error(fit(crit = "CV", lambda = c(0.1, 0.2)), "CV requires")
+expect_error(fit(X = X, n = 12, crit = "CV", kfold = 2.5, lambda = c(0.1, 0.2)),
+             "`kfold`")
+expect_error(fit(X = X, n = 12, crit = "CV", kfold = 12, lambda = c(0.1, 0.2)),
              "at least 2 observations")
 expect_error(fit(X = X, n = 12, penalty = "scad", crit = "CV",
-                 initial = diag(2)), "cannot be used")
-expect_error(fit(X = X[1:4, ], n = 4, penalty = "scad", crit = "CV",
-                 kfold = 2, initial = "invS"), "training observations")
-
+                 lambda = c(0.1, 0.2), initial = diag(2)),
+             "cannot be used")
+expect_error(fit(X = X[1:4, ], n = 4, penalty = "scad", crit = "CV", kfold = 2,
+                 lambda = c(0.1, 0.2), initial = "invS"),
+             "training observations")
 set.seed(2026)
 inverse.cv <- fit(X = X, n = 12, penalty = "scad", crit = "CV", kfold = 3,
                   lambda = c(0.1, 0.2), initial = "invS")
 stopifnot(identical(dim(inverse.cv$converged.grid), c(2L, 3L)),
           is.na(inverse.cv$initial.converged))
+
+## do not validate model-selection controls for a single candidate -------------
+
+single.inactive <- fit(crit = NA_character_, kfold = 1, ebic.tuning = Inf)
+stopifnot(single.inactive$converged)
+single.matrix <- fit(penalty = "scad", initial = diag(2),
+                     crit = "CV", kfold = 1)
+stopifnot(is.na(single.matrix$initial.converged))
+single.auto <- fit(X = X, n = 12, lambda = NULL, alpha = 0.5, nlambda = 1,
+                   crit = NA_character_, kfold = 1, ebic.tuning = Inf)
+stopifnot(length(single.auto$lambda.grid) == 1L,
+          is.null(single.auto$IC.score),
+          single.auto$converged)
 
 ## retain valid legacy inputs --------------------------------------------------
 

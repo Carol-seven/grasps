@@ -212,14 +212,20 @@ selection criterion to use. Available options include:
 \item "HBIC": high dimensional Bayesian information criterion
 \insertCite{wang2013calibrating,fan2017high}{grasps}.
 \item "CV": k-fold cross validation with negative log-likelihood loss.
-}}
+}
+This argument is used only when the parameter grid contains more than one
+candidate.}
 
 \item{kfold}{An integer (default = 5) specifying the number of folds used for
 \code{crit = "CV"}.
-It must be at least 2 and leave at least 2 observations per validation fold.}
+It must be at least 2 and leave at least 2 observations per validation fold.
+This argument is used only when \code{crit = "CV"} and the parameter grid
+contains more than one candidate.}
 
 \item{ebic.tuning}{A numeric value in [0,1] (default = 0.5) specifying
-the tuning parameter to calculate for \code{crit = "EBIC"}.}
+the tuning parameter to calculate for \code{crit = "EBIC"}.
+This argument is used only when \code{crit = "EBIC"} and the parameter grid
+contains more than one candidate.}
 }
 \value{
 An object with S3 class \code{"grasps"} containing the following components:
