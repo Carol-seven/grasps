@@ -4,32 +4,39 @@
 #' Generate a precision matrix that exhibits block structure induced by
 #' a stochastic block model (SBM).
 #'
-#' @param p An integer specifying the number of variables (dimensions).
+#' @param p An integer > 1 specifying the number of variables (dimensions).
 #'
-#' @param block.sizes An integer vector (default = \code{NULL}) specifying
-#' the size of each group. If \code{NULL}, the \eqn{p} variables are divided
-#' as evenly as possible across \eqn{K} groups.
+#' @param block.sizes A vector of positive integers (default = \code{NULL})
+#' specifying the size of each group.
+#' Its sum must equal \code{p}.
+#' If \code{NULL}, the \eqn{p} variables are divided as evenly as possible
+#' across \eqn{K} groups.
 #'
-#' @param K An integer (default = 3) specifying the number of groups.
-#' Ignored if \code{block.sizes} is provided; then \code{K <- length(block.sizes)}.
+#' @param K An integer > 0 (default = 3) specifying the number of groups.
+#' It must not exceed \code{p}.
+#' This argument is ignored if \code{block.sizes} is provided; in that case,
+#' \code{K <- length(block.sizes)}.
 #'
-#' @param prob.mat A \eqn{K \times K} symmetric matrix (default = \code{NULL})
-#' specifying the Bernoulli rates. Element \eqn{(i, j)} gives the probability of
-#' creating an edge between vertices from groups \eqn{i} and \eqn{j}.
+#' @param prob.mat A numeric \eqn{K \times K} symmetric matrix
+#' (default = \code{NULL}) with entries in [0, 1], specifying
+#' the Bernoulli rates.
+#' Element \eqn{(i, j)} gives the probability of creating an edge between
+#' vertices from groups \eqn{i} and \eqn{j}.
 #' If \code{NULL}, a matrix with \code{within.prob} on the diagonal and
 #' \code{between.prob} on the off-diagonal is used.
 #'
-#' @param within.prob A numeric value in [0,1] (default = 0.25) specifying
+#' @param within.prob A numeric value in [0, 1] (default = 0.25) specifying
 #' the probability of creating an edge between vertices within the same group.
 #' This argument is used only when \code{prob.mat = NULL}.
 #'
-#' @param between.prob A numeric value in [0,1] (default = 0.05) specifying
+#' @param between.prob A numeric value in [0, 1] (default = 0.05) specifying
 #' the probability of creating an edge between vertices from different groups.
 #' This argument is used only when \code{prob.mat = NULL}.
 #'
-#' @param weight.mat A \eqn{p \times p} symmetric matrix (default = \code{NULL})
-#' specifying the edge weights. If \code{NULL}, weights are generated block-wise
-#' according to \code{weight.dists} and \code{weight.paras}.
+#' @param weight.mat A numeric \eqn{p \times p} symmetric matrix
+#' (default = \code{NULL}) specifying the edge weights.
+#' If \code{NULL}, weights are generated block-wise according to
+#' \code{weight.dists} and \code{weight.paras}.
 #'
 #' @param weight.dists A list (default = \code{list("gamma", "unif")})
 #' specifying the sampling distribution for each block of weights.
@@ -51,7 +58,7 @@
 #' \item A character string specifying the distribution family.
 #' Accepted distributions (base R samplers in parentheses) include:
 #' \itemize{
-#' \item "beta": Beta distribution (\code{\link[stats]{rbeta}})
+#' \item "beta": Beta distribution (\code{\link[stats]{rbeta}}).
 #' \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
 #' \item "chisq": Chi-squared distribution (\code{\link[stats]{rchisq}}).
 #' \item "exp": Exponential distribution (\code{\link[stats]{rexp}}).
@@ -67,13 +74,15 @@
 #'
 #' @param weight.paras A list
 #' (default = \code{list(c(shape = 100, rate = 10), c(min = 0, max = 5))})
-#' specifying the parameters associated with \code{weight.dists}. It must follow
-#' the same length rules as \code{weight.dists}. Each element should be a named
-#' vector or list suitable for the corresponding sampler.
+#' specifying the parameters associated with \code{weight.dists}.
+#' It must follow the same length rules as \code{weight.dists}.
+#' Each element should be a named vector or list suitable for the corresponding
+#' sampler.
 #'
 #' @param cond.target A numeric value > 1 (default = 100) specifying the target
-#' condition number for the precision matrix. When necessary, a diagonal shift
-#' is applied to ensure positive definiteness and numerical stability.
+#' condition number for the precision matrix.
+#' When necessary, a diagonal shift is applied to ensure positive definiteness
+#' and numerical stability.
 #'
 #' @return
 #' An object with S3 class \code{"gen_prec_sbm"} containing the following
@@ -146,40 +155,83 @@
 
 gen_prec_sbm <- function(p,
                          block.sizes = NULL, K = 3,
-                         prob.mat = NULL, within.prob = 0.25, between.prob = 0.05,
+                         prob.mat = NULL,
+                         within.prob = 0.25, between.prob = 0.05,
                          weight.mat = NULL,
                          weight.dists = list("gamma", "unif"),
                          weight.paras = list(c(shape = 100, rate = 10),
                                              c(min = 0, max = 5)),
                          cond.target = 100) {
 
-  if (!is.numeric(cond.target) || length(cond.target) != 1 ||
-      !is.finite(cond.target) || cond.target <= 1) {
-    stop("`cond.target` must be a finite numeric value greater than 1.")
-  }
+  ## validate `p`
+  validate_scalar(p, "p", lower = 1, integer = TRUE)
 
+  ## validate `block.sizes`, `K`
   ## block sizes (allow p not divisible by K)
   if (is.null(block.sizes)) {
+    validate_scalar(K, "K", upper = p, integer = TRUE)
     block.sizes <- rep(floor(p / K), K)
     rem <- p - sum(block.sizes)
     if (rem > 0) {
       block.sizes[seq_len(rem)] <- block.sizes[seq_len(rem)] + 1
     }
+  } else {
+    if (!is.numeric(block.sizes) || is.complex(block.sizes) ||
+        anyNA(block.sizes) || any(!is.finite(block.sizes)) ||
+        any(block.sizes < 1) || any(block.sizes != floor(block.sizes)) ||
+        any(block.sizes > .Machine$integer.max)) {
+      stop("`block.sizes` must contain positive integers.", call. = FALSE)
+    }
+    if (sum(block.sizes) != p) {
+      stop("The sum of `block.sizes` must equal `p`.", call. = FALSE)
+    }
+    K <- length(block.sizes)
   }
-  stopifnot(sum(block.sizes) == p)
-  K <- length(block.sizes)
 
-  ## membership and indices
-  membership <- rep(1:K, times = block.sizes)
-  idx_list <- split(1:p, membership)
-
+  ## validate `prob.mat`, `within.prob`, `between.prob`
   ## probability matrix
   if (is.null(prob.mat)) {
+    validate_scalar(within.prob, "within.prob", lower = 0, upper = 1,
+                    lower.inclusive = TRUE)
+    validate_scalar(between.prob, "between.prob", lower = 0, upper = 1,
+                    lower.inclusive = TRUE)
     prob.mat <- matrix(between.prob, K, K)
     diag(prob.mat) <- within.prob
   } else {
-    stopifnot(all(dim(prob.mat) == c(K, K)))
+    if (!is.matrix(prob.mat) || !is.numeric(prob.mat) ||
+        is.complex(prob.mat) || !all(dim(prob.mat) == c(K, K)) ||
+        anyNA(prob.mat) || any(!is.finite(prob.mat)) ||
+        any(prob.mat < 0) || any(prob.mat > 1)) {
+      stop(sprintf(paste("`prob.mat` must be a finite numeric %d-by-%d matrix",
+                         "with entries in [0, 1]."), K, K), call. = FALSE)
+    }
+    if (!isTRUE(all.equal(prob.mat, t(prob.mat)))) {
+      stop("`prob.mat` must be symmetric.", call. = FALSE)
+    }
   }
+
+  ## validate `weight.mat`
+  if (!is.null(weight.mat)) {
+    if (!is.matrix(weight.mat) || !is.numeric(weight.mat) ||
+        is.complex(weight.mat) || !all(dim(weight.mat) == c(p, p)) ||
+        anyNA(weight.mat) || any(!is.finite(weight.mat))) {
+      stop(sprintf("`weight.mat` must be a finite numeric %d-by-%d matrix.",
+                   p, p), call. = FALSE)
+    }
+    if (!isTRUE(all.equal(weight.mat, t(weight.mat)))) {
+      stop("`weight.mat` must be symmetric.", call. = FALSE)
+    }
+  } else {
+    dists_expand <- expand_spec(weight.dists, K)
+    paras_expand <- expand_spec(weight.paras, K)
+  }
+
+  ## validate `cond.target`
+  validate_scalar(cond.target, "cond.target", lower = 1)
+
+  ## membership and indices
+  membership <- rep(seq_len(K), times = block.sizes)
+  idx_list <- split(seq_len(p), membership)
 
   ## SBM adjacency (undirected, no loops)
   SBM_sim <- igraph::sample_sbm(n = p, pref.matrix = prob.mat,
@@ -188,12 +240,10 @@ gen_prec_sbm <- function(p,
   SBM_adj <- as.matrix(igraph::as_adjacency_matrix(SBM_sim, sparse = FALSE))
 
   ## build weights
-  ## fill upper-triangular; mirror to keep symmetric.
+  ## fill upper-triangular; mirror to preserve symmetry
   if (is.null(weight.mat)) {
-    dists_expand <- expand_spec(weight.dists, K)
-    paras_expand <- expand_spec(weight.paras, K)
     weight.mat <- matrix(0, p, p)
-    for (i in 1:K) {
+    for (i in seq_len(K)) {
       rows <- idx_list[[i]]
       nr <- length(rows)
       ## within-group weights: sample each undirected edge once
@@ -201,17 +251,21 @@ gen_prec_sbm <- function(p,
       upper.idx <- upper.tri(weight.block, diag = FALSE)
       n.edges <- sum(upper.idx)
       if (n.edges > 0) {
-        weight.block[upper.idx] <- draw_sample(dists_expand[[i]], paras_expand[[i]], n.edges)
+        weight.block[upper.idx] <- draw_sample(dists_expand[[i]],
+                                               paras_expand[[i]],
+                                               n.edges)
         weight.block <- weight.block + t(weight.block)
       }
       weight.mat[rows, rows] <- weight.block
       ## between-group weights
       if (i < K) {
-        for (j in (i+1):K) {
+        for (j in seq.int(i + 1, K)) {
           cols <- idx_list[[j]]
           nc <- length(cols)
-          k <- K + ((i-1)*(2*K-i))/2 + (j-i)
-          weight.mat[rows, cols] <- draw_sample(dists_expand[[k]], paras_expand[[k]], nr*nc)
+          k <- K + ((i - 1) * (2 * K - i)) / 2 + (j - i)
+          weight.mat[rows, cols] <- draw_sample(dists_expand[[k]],
+                                                paras_expand[[k]],
+                                                nr * nc)
           weight.mat[cols, rows] <- t(weight.mat[rows, cols])
         }
       }
@@ -238,7 +292,9 @@ gen_prec_sbm <- function(p,
   eigval_min <- min(eigvals)
   tau <- max(0, ## no adjustment
              -eigval_min, ## ensure positive definiteness
-             (eigval_max - cond.target * eigval_min) / (cond.target - 1)) ## enforce kappa <= cond.target
+             (eigval_max - cond.target * eigval_min) /
+               (cond.target - 1)) ## enforce kappa <= cond.target
+
   diag(Omega) <- diag(Omega) + tau
 
   ## covariance matrix

@@ -1,9 +1,6 @@
-# Standalone regression tests for input validation and failed fits.
-# The broader published-reference suite remains on test/numerical-validation.
-
 library(grasps)
 
-## test helpers ----------------------------------------------------------------
+## test helpers
 
 # Check that an expression raises an error containing the expected text.
 expect_error <- function(expr, pattern) {
@@ -20,6 +17,11 @@ with_warnings <- function(expr) {
   })
   list(result = result, messages = messages)
 }
+
+##------------------------------------------------------------------------------
+##############
+## grasps() ##
+##############
 
 # Fit a small default model, replacing arguments supplied through `...`.
 fit <- function(...) {
@@ -285,3 +287,93 @@ stopifnot(is.infinite(indefinite$result$IC.score[1]),
           is.finite(indefinite$result$IC.score[2]),
           indefinite$result$lambda == 0.001,
           length(indefinite$messages) == 1L)
+
+##------------------------------------------------------------------------------
+####################
+## gen_prec_sbm() ##
+####################
+
+## validate SBM generator inputs -----------------------------------------------
+
+expect_error(gen_prec_sbm(p = 1), "`p`")
+expect_error(gen_prec_sbm(p = 4, K = 5), "`K`")
+expect_error(gen_prec_sbm(p = 4, block.sizes = c(2, 1)), "must equal `p`")
+expect_error(gen_prec_sbm(p = 4, block.sizes = c(2, 1.5, 0.5)),
+             "positive integers")
+expect_error(gen_prec_sbm(p = 4, within.prob = -0.1), "`within.prob`")
+expect_error(gen_prec_sbm(p = 4, between.prob = 1.1), "`between.prob`")
+expect_error(gen_prec_sbm(p = 4, K = 2, prob.mat = matrix(0.5, 3, 3)),
+             "`prob.mat`")
+expect_error(gen_prec_sbm(p = 4, K = 2,
+                          prob.mat = matrix(c(0.5, 0.2, 0.3, 0.5), 2, 2)),
+             "symmetric")
+expect_error(gen_prec_sbm(p = 4, weight.mat = diag(3)), "`weight.mat`")
+expect_error(gen_prec_sbm(p = 4, weight.mat = matrix(c(0, 1, 0, 0,
+                                                       0, 0, 1, 0,
+                                                       0, 1, 0, 1,
+                                                       0, 0, 1, 0), 4, 4)),
+             "symmetric")
+expect_error(gen_prec_sbm(p = 4, cond.target = 1), "`cond.target`")
+expect_error(gen_prec_sbm(p = 6, K = 3, weight.dists = rep("norm", 3)),
+             "`weight.dists`/`weight.paras`")
+expect_error(gen_prec_sbm(p = 4, K = 2, within.prob = 1, between.prob = 1,
+                          weight.dists = list(function(n) rep(NA_real_, n)),
+                          weight.paras = list(list())),
+             "finite numeric")
+expect_error(gen_prec_sbm(p = 4, K = 2,
+                          within.prob = 1, between.prob = 1,
+                          weight.dists = list(function(n) 1),
+                          weight.paras = list(list())),
+             "finite numeric")
+expect_error(gen_prec_sbm(p = 4, K = 2,
+                          within.prob = 1, between.prob = 1,
+                          weight.dists = list(c("norm", "unif")),
+                          weight.paras = list(list())),
+             "`sampler`")
+expect_error(gen_prec_sbm(p = 4, within.prob = 0, between.prob = 0),
+             "no nonzero edges")
+
+## retain valid SBM generator inputs -------------------------------------------
+
+# Construct a deterministic full graph for checking dimensions and conditioning.
+full.weights <- matrix(1, 5, 5)
+diag(full.weights) <- 0
+full.sbm <- gen_prec_sbm(p = 5, block.sizes = c(2, 3),
+                         prob.mat = matrix(1, 2, 2),
+                         weight.mat = full.weights,
+                         cond.target = 10)
+full.eigenvalues <- eigen(full.sbm$Omega, symmetric = TRUE,
+                          only.values = TRUE)$values
+stopifnot(identical(dim(full.sbm$Omega), c(5L, 5L)),
+          identical(full.sbm$membership, c(1L, 1L, 2L, 2L, 2L)),
+          isTRUE(all.equal(full.sbm$Omega, t(full.sbm$Omega))),
+          min(full.eigenvalues) > 0,
+          max(full.eigenvalues) / min(full.eigenvalues) <= 10 * (1 + 1e-12),
+          isTRUE(all.equal(full.sbm$Sigma, solve(full.sbm$Omega))))
+
+# User-supplied weights make weight-distribution controls inactive.
+inactive.weights <- gen_prec_sbm(p = 4, K = 2, prob.mat = matrix(1, 2, 2),
+                                 weight.mat = matrix(1, 4, 4),
+                                 weight.dists = NULL, weight.paras = NULL)
+stopifnot(all(is.finite(inactive.weights$Omega)))
+
+## preserve full SBM block-specification order ---------------------------------
+
+# Assign one constant weight to each within- and between-group block.
+constant_sampler <- function(value) {
+  force(value)
+  function(n) rep(value, n)
+}
+block.samplers <- lapply(seq_len(6), constant_sampler)
+block.sbm <- gen_prec_sbm(p = 6, block.sizes = c(2, 2, 2),
+                          prob.mat = matrix(1, 3, 3),
+                          weight.dists = block.samplers,
+                          weight.paras = rep(list(list()), 6))
+block.weights <- block.sbm$Omega
+diag(block.weights) <- 0
+stopifnot(block.weights[1, 2] == 1,
+          block.weights[3, 4] == 2,
+          block.weights[5, 6] == 3,
+          block.weights[1, 3] == 4,
+          block.weights[1, 5] == 5,
+          block.weights[3, 5] == 6)

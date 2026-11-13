@@ -12,7 +12,7 @@
 #' Supported distribution families (corresponding base R generators
 #' in parentheses) include:
 #' \itemize{
-#' \item "beta": Beta distribution (\code{\link[stats]{rbeta}})
+#' \item "beta": Beta distribution (\code{\link[stats]{rbeta}}).
 #' \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
 #' \item "chisq": Chi-squared distribution (\code{\link[stats]{rchisq}}).
 #' \item "exp": Exponential distribution (\code{\link[stats]{rexp}}).
@@ -26,13 +26,13 @@
 #' }
 #' }
 #'
-#' @param para A list (default = \code{list()}) specifying the required
-#' additional parameters passed to \code{sampler}.
+#' @param para A list or vector (default = \code{list()}) specifying additional
+#' parameters passed to \code{sampler}.
 #'
 #' @param n An integer specifying the number of samples to generate.
 #'
 #' @return
-#' A numeric vector of length \eqn{n} containing simulated data.
+#' A finite numeric vector of length \eqn{n}.
 #'
 #' @noRd
 
@@ -42,28 +42,40 @@ draw_sample <- function(sampler, para = list(), n) {
   args <- c(list(n = n), para)
 
   if (is.function(sampler)) { ## user-defined sampler
-    tryCatch(
+    result <- tryCatch(
       do.call(sampler, args),
       error = function(e) {
-        stop("Error in custom sampler: ", conditionMessage(e))
+        stop("Error in custom sampler: ", conditionMessage(e),
+             call. = FALSE)
       }
     )
-  } else if (is.character(sampler)) { ## base R distribution
+  } else if (is.character(sampler) && length(sampler) == 1L &&
+             !is.na(sampler) && nzchar(sampler)) { ## base R distribution
     ## match distribution keyword to base R generator (e.g., "norm" -> "rnorm")
-    # rfun <- match.fun(rfun_name)
     rfun_name <- paste0("r", sampler)
-    rfun <- get0(rfun_name, mode = "function", inherits = TRUE)
+    rfun <- get0(rfun_name, envir = asNamespace("stats"),
+                 mode = "function", inherits = FALSE)
     if (is.null(rfun)) {
       stop(sprintf("Unknown sampler '%s' (expected base R generator '%s').",
-                   sampler, rfun_name))
+                   sampler, rfun_name), call. = FALSE)
     }
-    tryCatch(
+    result <- tryCatch(
       do.call(rfun, args),
       error = function(e) {
-        stop("Error calling ", rfun_name, ": ", conditionMessage(e))
+        stop("Error calling ", rfun_name, ": ", conditionMessage(e),
+             call. = FALSE)
       }
     )
   } else {
-    stop("`sampler` must be either a string or a function.")
+    stop("`sampler` must be a nonempty character scalar or a function.",
+         call. = FALSE)
   }
+
+  if (!is.numeric(result) || is.complex(result) || !is.null(dim(result)) ||
+      length(result) != n || anyNA(result) || any(!is.finite(result))) {
+    stop(sprintf("The sampler must return %d finite numeric value%s.", n,
+                 if (n == 1L) "" else "s"), call. = FALSE)
+  }
+
+  return(result)
 }

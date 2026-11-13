@@ -18,32 +18,39 @@ gen_prec_sbm(
 )
 }
 \arguments{
-\item{p}{An integer specifying the number of variables (dimensions).}
+\item{p}{An integer > 1 specifying the number of variables (dimensions).}
 
-\item{block.sizes}{An integer vector (default = \code{NULL}) specifying
-the size of each group. If \code{NULL}, the \eqn{p} variables are divided
-as evenly as possible across \eqn{K} groups.}
+\item{block.sizes}{A vector of positive integers (default = \code{NULL})
+specifying the size of each group.
+Its sum must equal \code{p}.
+If \code{NULL}, the \eqn{p} variables are divided as evenly as possible
+across \eqn{K} groups.}
 
-\item{K}{An integer (default = 3) specifying the number of groups.
-Ignored if \code{block.sizes} is provided; then \code{K <- length(block.sizes)}.}
+\item{K}{An integer > 0 (default = 3) specifying the number of groups.
+It must not exceed \code{p}.
+This argument is ignored if \code{block.sizes} is provided; in that case,
+\code{K <- length(block.sizes)}.}
 
-\item{prob.mat}{A \eqn{K \times K} symmetric matrix (default = \code{NULL})
-specifying the Bernoulli rates. Element \eqn{(i, j)} gives the probability of
-creating an edge between vertices from groups \eqn{i} and \eqn{j}.
+\item{prob.mat}{A numeric \eqn{K \times K} symmetric matrix
+(default = \code{NULL}) with entries in [0, 1], specifying
+the Bernoulli rates.
+Element \eqn{(i, j)} gives the probability of creating an edge between
+vertices from groups \eqn{i} and \eqn{j}.
 If \code{NULL}, a matrix with \code{within.prob} on the diagonal and
 \code{between.prob} on the off-diagonal is used.}
 
-\item{within.prob}{A numeric value in [0,1] (default = 0.25) specifying
+\item{within.prob}{A numeric value in [0, 1] (default = 0.25) specifying
 the probability of creating an edge between vertices within the same group.
 This argument is used only when \code{prob.mat = NULL}.}
 
-\item{between.prob}{A numeric value in [0,1] (default = 0.05) specifying
+\item{between.prob}{A numeric value in [0, 1] (default = 0.05) specifying
 the probability of creating an edge between vertices from different groups.
 This argument is used only when \code{prob.mat = NULL}.}
 
-\item{weight.mat}{A \eqn{p \times p} symmetric matrix (default = \code{NULL})
-specifying the edge weights. If \code{NULL}, weights are generated block-wise
-according to \code{weight.dists} and \code{weight.paras}.}
+\item{weight.mat}{A numeric \eqn{p \times p} symmetric matrix
+(default = \code{NULL}) specifying the edge weights.
+If \code{NULL}, weights are generated block-wise according to
+\code{weight.dists} and \code{weight.paras}.}
 
 \item{weight.dists}{A list (default = \code{list("gamma", "unif")})
 specifying the sampling distribution for each block of weights.
@@ -65,7 +72,7 @@ Each element of \code{weight.dists} can be:
 \item A character string specifying the distribution family.
 Accepted distributions (base R samplers in parentheses) include:
 \itemize{
-\item "beta": Beta distribution (\code{\link[stats]{rbeta}})
+\item "beta": Beta distribution (\code{\link[stats]{rbeta}}).
 \item "cauchy": Cauchy distribution (\code{\link[stats]{rcauchy}}).
 \item "chisq": Chi-squared distribution (\code{\link[stats]{rchisq}}).
 \item "exp": Exponential distribution (\code{\link[stats]{rexp}}).
@@ -81,13 +88,15 @@ Accepted distributions (base R samplers in parentheses) include:
 
 \item{weight.paras}{A list
 (default = \code{list(c(shape = 100, rate = 10), c(min = 0, max = 5))})
-specifying the parameters associated with \code{weight.dists}. It must follow
-the same length rules as \code{weight.dists}. Each element should be a named
-vector or list suitable for the corresponding sampler.}
+specifying the parameters associated with \code{weight.dists}.
+It must follow the same length rules as \code{weight.dists}.
+Each element should be a named vector or list suitable for the corresponding
+sampler.}
 
 \item{cond.target}{A numeric value > 1 (default = 100) specifying the target
-condition number for the precision matrix. When necessary, a diagonal shift
-is applied to ensure positive definiteness and numerical stability.}
+condition number for the precision matrix.
+When necessary, a diagonal shift is applied to ensure positive definiteness
+and numerical stability.}
 }
 \value{
 An object with S3 class \code{"gen_prec_sbm"} containing the following

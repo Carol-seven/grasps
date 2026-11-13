@@ -2,11 +2,15 @@
 #'
 #' @description
 #' Expand specifications for within-group and between-group block
-#' weight-generation rules into a full list of length \eqn{K + K(K-1)/2}, where:
-#' - The first \eqn{K} elements correspond to within-group blocks, and
-#' - The remaining \eqn{K(K-1)/2} elements correspond to between-group blocks.
+#' weight-generation rules into a list of length \eqn{K + K(K-1)/2}:
+#' \itemize{
+#' \item The first \eqn{K} elements correspond to within-group blocks.
+#' \item The remaining \eqn{K(K-1)/2} elements correspond to between-group
+#' blocks.
+#' }
 #'
-#' @param spec A list specifying specifications. Acceptable forms:
+#' @param spec A list or vector specifying specifications.
+#' Acceptable forms:
 #' \enumerate{
 #' \item length = 1: Same specification for all blocks.
 #' \item length = 2: First for within-group blocks, second for between-group
@@ -27,7 +31,7 @@ expand_spec <- function(spec, K) {
 
   ## number of within-group and between-group blocks
   n_within <- K
-  n_between <- K*(K-1)/2
+  n_between <- K * (K - 1) / 2
   n_total <- n_within + n_between
 
   ## ensure the input is a list
@@ -53,6 +57,8 @@ expand_spec <- function(spec, K) {
   }
 
   ## otherwise: invalid specification length
-  stop(paste0("`weight.dists`/`weight.paras` length must be 1, 2, or K + K*(K-1)/2.\n",
-              sprintf("For K = %d, expected lengths: 1, 2, or %d.", K, n_total)))
+  stop(paste0(
+    "`weight.dists`/`weight.paras` length must be 1, 2, or K + K*(K-1)/2.\n",
+    sprintf("For K = %d, expected lengths: 1, 2, or %d.", K, n_total)
+  ), call. = FALSE)
 }
