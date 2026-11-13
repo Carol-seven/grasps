@@ -13,12 +13,14 @@ performance(hatOmega, Omega)
 
 - hatOmega:
 
-  A numeric \\p \times p\\ matrix giving the estimated precision matrix.
+  A numeric symmetric \\p \times p\\ matrix, with \\p\\ \> 1, specifying
+  the estimated precision matrix.
 
 - Omega:
 
-  A numeric \\p \times p\\ matrix giving the reference (typically true)
-  precision matrix.
+  A numeric symmetric \\p \times p\\ matrix, with \\p\\ \> 1, specifying
+  the reference (typically true) precision matrix. It must have the same
+  dimensions as `hatOmega`.
 
 ## Value
 
@@ -35,15 +37,27 @@ metric and two columns:
 
 - value:
 
-  The corresponding numeric value.
+  The corresponding numeric value. Undefined measures are returned as
+  `NA`.
 
 ## Details
 
 Let \\\Omega\_{p \times p}\\ and \\\hat{\Omega}\_{p \times p}\\ be the
-reference (true) and estimated precision matrices, respectively, with
-\\\Sigma = \Omega^{-1}\\ being the corresponding covariance matrix.
-Edges are defined by nonzero off-diagonal entries in the upper triangle
-of the precision matrices.
+reference (true) and estimated precision matrices, respectively. When
+\\\Omega\\ is positive definite, \\\Sigma = \Omega^{-1}\\ is the
+corresponding covariance matrix. Edges are defined by nonzero
+off-diagonal entries in the upper triangle of the precision matrices.
+
+The input matrices are not required to be positive definite. If either
+matrix is not positive definite, the function issues a warning but
+continues computing the performance measures. In this case, covariance-
+and likelihood-based measures may not have their usual statistical
+interpretation. If \\\Omega\\ is singular, the KL and quadratic losses
+are returned as `NA`, while the remaining measures are still computed.
+For non-positive-definite but invertible matrices, the reported KL value
+uses the log absolute determinant and need not be non-negative. A
+classification-based measure is returned as `NA` when its denominator is
+zero.
 
 Sparsity is treated as a structural summary, while the remaining
 measures are grouped into loss-based measures, raw confusion-matrix
