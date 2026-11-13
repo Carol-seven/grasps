@@ -4,11 +4,12 @@
 #' Compute a collection of loss-based and structure-based measures to evaluate
 #' the performance of an estimated precision matrix.
 #'
-#' @param hatOmega A numeric \eqn{p \times p} matrix giving the estimated
-#' precision matrix.
+#' @param hatOmega A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+#' specifying the estimated precision matrix.
 #'
-#' @param Omega A numeric \eqn{p \times p} matrix giving the reference
-#' (typically true) precision matrix.
+#' @param Omega A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+#' specifying the reference (typically true) precision matrix.
+#' It must have the same dimensions as \code{hatOmega}.
 #'
 #' @return
 #' A data frame of S3 class \code{"performance"}, with one row per performance
@@ -19,15 +20,29 @@
 #' quadratic norm loss, spectral norm loss, true positive, true negative,
 #' false positive, false negative, true positive rate, false positive rate,
 #' F1 score, and Matthews correlation coefficient.}
-#' \item{value}{The corresponding numeric value.}
+#' \item{value}{The corresponding numeric value.
+#' Undefined measures are returned as \code{NA}.}
 #' }
 #'
 #' @details
 #' Let \eqn{\Omega_{p \times p}} and \eqn{\hat{\Omega}_{p \times p}} be
-#' the reference (true) and estimated precision matrices, respectively, with
-#' \eqn{\Sigma = \Omega^{-1}} being the corresponding covariance matrix.
+#' the reference (true) and estimated precision matrices, respectively.
+#' When \eqn{\Omega} is positive definite, \eqn{\Sigma = \Omega^{-1}} is
+#' the corresponding covariance matrix.
 #' Edges are defined by nonzero off-diagonal entries in the upper triangle of
 #' the precision matrices.
+#'
+#' The input matrices are not required to be positive definite.
+#' If either matrix is not positive definite, the function issues a warning
+#' but continues computing the performance measures.
+#' In this case, covariance- and likelihood-based measures may not have their
+#' usual statistical interpretation.
+#' If \eqn{\Omega} is singular, the KL and quadratic losses are returned as
+#' \code{NA}, while the remaining measures are still computed.
+#' For non-positive-definite but invertible matrices, the reported KL value uses
+#' the log absolute determinant and need not be non-negative.
+#' A classification-based measure is returned as \code{NA} when its denominator
+#' is zero.
 #'
 #' Sparsity is treated as a structural summary, while the remaining measures
 #' are grouped into loss-based measures, raw confusion-matrix counts, and
@@ -97,8 +112,36 @@
 
 performance <- function(hatOmega, Omega) {
 
+  ## validate `hatOmega`, `Omega`
+  validate_symmat(hatOmega, "hatOmega", min.dim = 2)
+  validate_symmat(Omega, "Omega", min.dim = 2)
+  if (!identical(dim(hatOmega), dim(Omega))) {
+    stop("`hatOmega` and `Omega` must have the same dimensions.", call. = FALSE)
+  }
+
+  ## check positive definiteness
+  chol.hatOmega <- tryCatch(chol(hatOmega), error = function(e) NULL)
+  if (is.null(chol.hatOmega)) {
+    warning(paste(
+      "`hatOmega` is not positive definite.",
+      "Likelihood-based measures may not have their usual interpretation."
+    ), call. = FALSE)
+  }
+  chol.Omega <- tryCatch(chol(Omega), error = function(e) NULL)
+
   ## true covariance
-  Sigma <- solve(Omega)
+  Sigma <- tryCatch(solve(Omega), error = function(e) NULL)
+  if (is.null(Sigma)) {
+    warning(paste("`Omega` is singular.",
+                  "KL and quadratic losses are returned as `NA`."),
+            call. = FALSE)
+  } else if (is.null(chol.Omega)) {
+    warning(paste(
+      "`Omega` is not positive definite.",
+      "Covariance- and likelihood-based measures may not have their",
+      "usual interpretation."
+    ), call. = FALSE)
+  }
 
   ## dimension
   p <- ncol(hatOmega)
@@ -107,11 +150,16 @@ performance <- function(hatOmega, Omega) {
   FL <- norm(Omega - hatOmega, "F")
 
   ## Kullback-Leibler divergence
-  KL <- sum(diag(Sigma %*% hatOmega)) -
-    determinant(Sigma %*% hatOmega, logarithm = TRUE)$modulus[1] - p
-
   ## quadratic loss
-  QL <- norm(Sigma %*% hatOmega - diag(p), "F")^2
+  if (is.null(Sigma)) {
+    KL <- NA_real_
+    QL <- NA_real_
+  } else {
+    Sigma.hatOmega <- Sigma %*% hatOmega
+    KL <- sum(diag(Sigma.hatOmega)) -
+      determinant(Sigma.hatOmega, logarithm = TRUE)$modulus[1] - p
+    QL <- norm(Sigma.hatOmega - diag(p), "F")^2
+  }
 
   ## spectral norm loss
   SL <- svd(Omega - hatOmega)$d[1]
@@ -125,7 +173,7 @@ performance <- function(hatOmega, Omega) {
   hatOmega_edge <- hatOmega[upper.tri(hatOmega)]
 
   ## sparsity
-  sparsity <- sum(hatOmega_edge == 0) /length(hatOmega_edge)
+  sparsity <- sum(hatOmega_edge == 0) / length(hatOmega_edge)
 
   ## confusion-matrix counts
   TP <- sum(Omega_edge != 0 & hatOmega_edge != 0)
@@ -134,10 +182,15 @@ performance <- function(hatOmega, Omega) {
   FN <- sum(Omega_edge != 0 & hatOmega_edge == 0)
 
   ## classification-based (structure-recovery) measures
-  TPR <- TP / (TP + FN)
-  FPR <- FP / (TN + FP)
-  F1 <- 2 * TP / (2*TP + FN + FP)
-  MCC <- (TP * TN - FP * FN) / (sqrt(TP + FP) * sqrt(TP + FN) * sqrt(TN + FP) * sqrt(TN + FN))
+  TPR <- if (TP + FN > 0) TP / (TP + FN) else NA_real_
+  FPR <- if (TN + FP > 0) FP / (TN + FP) else NA_real_
+  F1 <- if (2 * TP + FN + FP > 0) 2 * TP / (2 * TP + FN + FP) else NA_real_
+  MCC <- if (all(c(TP + FP, TP + FN, TN + FP, TN + FN) > 0)) {
+    (TP * TN - FP * FN) /
+      (sqrt(TP + FP) * sqrt(TP + FN) * sqrt(TN + FP) * sqrt(TN + FN))
+  } else {
+    NA_real_
+  }
 
   result <- data.frame(
     measure = c("sparsity", "Frobenius", "KL", "quadratic", "spectral",

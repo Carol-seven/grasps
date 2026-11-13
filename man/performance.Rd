@@ -7,11 +7,12 @@
 performance(hatOmega, Omega)
 }
 \arguments{
-\item{hatOmega}{A numeric \eqn{p \times p} matrix giving the estimated
-precision matrix.}
+\item{hatOmega}{A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+specifying the estimated precision matrix.}
 
-\item{Omega}{A numeric \eqn{p \times p} matrix giving the reference
-(typically true) precision matrix.}
+\item{Omega}{A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+specifying the reference (typically true) precision matrix.
+It must have the same dimensions as \code{hatOmega}.}
 }
 \value{
 A data frame of S3 class \code{"performance"}, with one row per performance
@@ -22,7 +23,8 @@ include: sparsity, Frobenius norm loss, Kullback-Leibler divergence,
 quadratic norm loss, spectral norm loss, true positive, true negative,
 false positive, false negative, true positive rate, false positive rate,
 F1 score, and Matthews correlation coefficient.}
-\item{value}{The corresponding numeric value.}
+\item{value}{The corresponding numeric value.
+Undefined measures are returned as \code{NA}.}
 }
 }
 \description{
@@ -31,10 +33,23 @@ the performance of an estimated precision matrix.
 }
 \details{
 Let \eqn{\Omega_{p \times p}} and \eqn{\hat{\Omega}_{p \times p}} be
-the reference (true) and estimated precision matrices, respectively, with
-\eqn{\Sigma = \Omega^{-1}} being the corresponding covariance matrix.
+the reference (true) and estimated precision matrices, respectively.
+When \eqn{\Omega} is positive definite, \eqn{\Sigma = \Omega^{-1}} is
+the corresponding covariance matrix.
 Edges are defined by nonzero off-diagonal entries in the upper triangle of
 the precision matrices.
+
+The input matrices are not required to be positive definite.
+If either matrix is not positive definite, the function issues a warning
+but continues computing the performance measures.
+In this case, covariance- and likelihood-based measures may not have their
+usual statistical interpretation.
+If \eqn{\Omega} is singular, the KL and quadratic losses are returned as
+\code{NA}, while the remaining measures are still computed.
+For non-positive-definite but invertible matrices, the reported KL value uses
+the log absolute determinant and need not be non-negative.
+A classification-based measure is returned as \code{NA} when its denominator
+is zero.
 
 Sparsity is treated as a structural summary, while the remaining measures
 are grouped into loss-based measures, raw confusion-matrix counts, and
