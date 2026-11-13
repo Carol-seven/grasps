@@ -1,7 +1,7 @@
 # Groupwise Block-Banded Sparsifier
 
-Make a precision-like matrix block-banded according to group membership,
-keeping only entries within specified group neighborhoods.
+Apply a groupwise block-banded mask to a symmetric matrix, keeping only
+entries within specified group neighborhoods.
 
 ## Usage
 
@@ -13,19 +13,20 @@ sparsify_block_banded(mat, membership, neighbor.range = 1)
 
 - mat:
 
-  A \\p \times p\\ precision-like matrix specifying the base matrix to
-  be masked.
+  A numeric symmetric \\p \times p\\ matrix, with \\p\\ \> 1, specifying
+  the matrix to be masked.
 
 - membership:
 
-  An integer vector specifying the group membership. The length of
-  `membership` must be consistent with the dimension \\p\\.
+  An integer vector specifying the group membership. Its length must
+  equal \\p\\. The numerical differences between group labels determine
+  which groups are considered neighbors.
 
 - neighbor.range:
 
-  An integer (default = 1) specifying the neighbor range, where groups
-  whose labels differ by at most `neighbor.range` are considered
-  neighbors and kept in the mask.
+  A non-negative integer (default = 1) specifying the neighbor range.
+  Groups whose labels differ by at most `neighbor.range` are retained in
+  the mask.
 
 ## Value
 
@@ -34,19 +35,31 @@ following components:
 
 - Omega:
 
-  The masked precision matrix.
+  The block-banded matrix.
 
 - Sigma:
 
-  The covariance matrix, i.e., the inverse of `Omega`.
+  The inverse of `Omega` if `Omega` is positive definite; otherwise,
+  `NULL`.
 
 - sparsity:
 
-  Proportion of zero entries in `Omega`.
+  Proportion of absent edges among all possible undirected edges in
+  `Omega`.
 
 - membership:
 
   An integer vector specifying the group membership.
+
+## Details
+
+Entry \\(i, j)\\ is retained when the absolute difference between the
+group labels of variables \\i\\ and \\j\\ does not exceed
+`neighbor.range`.
+
+Applying the block-banded mask does not necessarily preserve positive
+definiteness. If the masked matrix is not positive definite, the
+function issues a warning and returns `Sigma = NULL`.
 
 ## Examples
 
@@ -58,8 +71,9 @@ set.seed(1234)
 
 ## precision matrix estimation
 X <- matrix(rnorm(200), 10, 20)
-membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
-est <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
+membership <- rep(1:5, each = 4)
+est <- grasps(X, membership = membership, penalty = "lasso",
+              lambda = 0.1, alpha = 0.5)
 
 ## default: keep blocks within ±1 of each group
 res1 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 1)

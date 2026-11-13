@@ -5,9 +5,9 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Groupwise Block-Banded Sparsifier — sparsify_block_banded"><meta name="description" content="Make a precision-like matrix block-banded according to group membership,
-keeping only entries within specified group neighborhoods."><meta property="og:description" content="Make a precision-like matrix block-banded according to group membership,
-keeping only entries within specified group neighborhoods."><meta property="og:image" content="https://raw.githubusercontent.com/Carol-seven/grasps/blob/main/man/figures/logo.png"></head><body>
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Groupwise Block-Banded Sparsifier — sparsify_block_banded"><meta name="description" content="Apply a groupwise block-banded mask to a symmetric matrix, keeping only
+entries within specified group neighborhoods."><meta property="og:description" content="Apply a groupwise block-banded mask to a symmetric matrix, keeping only
+entries within specified group neighborhoods."><meta property="og:image" content="https://raw.githubusercontent.com/Carol-seven/grasps/blob/main/man/figures/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -52,8 +52,8 @@ keeping only entries within specified group neighborhoods."><meta property="og:i
     </div>
 
     <div class="ref-description section level2">
-    <p>Make a precision-like matrix block-banded according to group membership,
-keeping only entries within specified group neighborhoods.</p>
+    <p>Apply a groupwise block-banded mask to a symmetric matrix, keeping only
+entries within specified group neighborhoods.</p>
     </div>
 
     <div class="section level2">
@@ -66,38 +66,52 @@ keeping only entries within specified group neighborhoods.</p>
 
 
 <dl><dt id="arg-mat">mat<a class="anchor" aria-label="anchor" href="#arg-mat"></a></dt>
-<dd><p>A \(p \times p\) precision-like matrix specifying the base
-matrix to be masked.</p></dd>
+<dd><p>A numeric symmetric \(p \times p\) matrix, with \(p\) &gt; 1,
+specifying the matrix to be masked.</p></dd>
 
 
 <dt id="arg-membership">membership<a class="anchor" aria-label="anchor" href="#arg-membership"></a></dt>
 <dd><p>An integer vector specifying the group membership.
-The length of <code>membership</code> must be consistent with the dimension \(p\).</p></dd>
+Its length must equal \(p\).
+The numerical differences between group labels determine which groups are
+considered neighbors.</p></dd>
 
 
 <dt id="arg-neighbor-range">neighbor.range<a class="anchor" aria-label="anchor" href="#arg-neighbor-range"></a></dt>
-<dd><p>An integer (default = 1) specifying the neighbor range,
-where groups whose labels differ by at most <code>neighbor.range</code> are
-considered neighbors and kept in the mask.</p></dd>
+<dd><p>A non-negative integer (default = 1) specifying
+the neighbor range.
+Groups whose labels differ by at most <code>neighbor.range</code> are retained
+in the mask.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object with S3 class <code>"sparsify_block_banded"</code> containing
 the following components:</p><dl><dt>Omega</dt>
-<dd><p>The masked precision matrix.</p></dd>
+<dd><p>The block-banded matrix.</p></dd>
 
 <dt>Sigma</dt>
-<dd><p>The covariance matrix, i.e., the inverse of <code>Omega</code>.</p></dd>
+<dd><p>The inverse of <code>Omega</code> if <code>Omega</code> is positive definite;
+otherwise, <code>NULL</code>.</p></dd>
 
 <dt>sparsity</dt>
-<dd><p>Proportion of zero entries in <code>Omega</code>.</p></dd>
+<dd><p>Proportion of absent edges among all possible undirected
+edges in <code>Omega</code>.</p></dd>
 
 <dt>membership</dt>
 <dd><p>An integer vector specifying the group membership.</p></dd>
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Entry \((i, j)\) is retained when the absolute difference between the group
+labels of variables \(i\) and \(j\) does not exceed <code>neighbor.range</code>.</p>
+<p>Applying the block-banded mask does not necessarily preserve positive
+definiteness.
+If the masked matrix is not positive definite, the function issues a warning
+and returns <code>Sigma = NULL</code>.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -108,8 +122,9 @@ the following components:</p><dl><dt>Omega</dt>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## precision matrix estimation</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">membership</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="grasps.html">grasps</a></span><span class="op">(</span><span class="va">X</span>, membership <span class="op">=</span> <span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"lasso"</span>, crit <span class="op">=</span> <span class="st">"BIC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">membership</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="grasps.html">grasps</a></span><span class="op">(</span><span class="va">X</span>, membership <span class="op">=</span> <span class="va">membership</span>, penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span></span>
+<span class="r-in"><span>              lambda <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## default: keep blocks within ±1 of each group</span></span></span>
 <span class="r-in"><span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu">sparsify_block_banded</span><span class="op">(</span><span class="va">est</span><span class="op">$</span><span class="va">hatOmega</span>, <span class="va">membership</span>, neighbor.range <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
