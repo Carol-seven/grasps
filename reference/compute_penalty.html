@@ -66,12 +66,13 @@ vectorized specifications of <code>penalty</code>, <code>lambda</code>, and <cod
 
 
 <dl><dt id="arg-omega">omega<a class="anchor" aria-label="anchor" href="#arg-omega"></a></dt>
-<dd><p>A numeric value or vector at which the penalty is evaluated.</p></dd>
+<dd><p>A numeric vector specifying the values at which the penalty is
+evaluated.</p></dd>
 
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
-<dd><p>A character string or vector specifying one or more penalty
-types. Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and selection operator
+<dd><p>A character vector specifying one or more penalty types.
+Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and selection operator
 (Tibshirani 1996; Friedman et al. 2008)
 .</p></li>
 <li><p>"atan": Arctangent type penalty
@@ -97,23 +98,23 @@ determined by <code>penalty</code>, <code>lambda</code>, and <code>gamma</code>.
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A non-negative numeric value or vector specifying
-the regularization parameter.
+<dd><p>A non-negative numeric vector specifying the regularization
+parameter.
 If <code>lambda</code> has length 1, it is recycled to the common length
 determined by <code>penalty</code>, <code>lambda</code>, and <code>gamma</code>.</p></dd>
 
 
 <dt id="arg-gamma">gamma<a class="anchor" aria-label="anchor" href="#arg-gamma"></a></dt>
-<dd><p>A numeric value or vector specifying the additional parameter
-for the penalty function.
-If <code>lambda</code> has length 1, it is recycled to the common length
+<dd><p>A numeric vector specifying the additional parameter for
+the penalty function.
+If <code>gamma</code> has length 1, it is recycled to the common length
 determined by <code>penalty</code>, <code>lambda</code>, and <code>gamma</code>.
-The penalty-specific defaults are:</p><ol><li><p>"atan": 0.005</p></li>
-<li><p>"exp": 0.01</p></li>
-<li><p>"lq": 0.5</p></li>
-<li><p>"lsp": 0.1</p></li>
-<li><p>"mcp": 3</p></li>
-<li><p>"scad": 3.7</p></li>
+The default value and valid range depend on the penalty:</p><ol><li><p>"atan": default 0.005; must be positive.</p></li>
+<li><p>"exp": default 0.01; must be positive.</p></li>
+<li><p>"lq": default 0.5; must be in \((0, 1)\).</p></li>
+<li><p>"lsp": default 0.1; must be positive.</p></li>
+<li><p>"mcp": default 3; must be greater than 1.</p></li>
+<li><p>"scad": default 3.7; must be greater than 2.</p></li>
 </ol><p>For <code>"lasso"</code>, <code>gamma</code> is ignored.</p></dd>
 
 </dl></div>
@@ -135,10 +136,11 @@ The penalty-specific defaults are:</p><ol><li><p>"atan": 0.005</p></li>
 <dd><p>The computed penalty value.</p></dd>
 
 
-</dl><p>The number of rows equals
+</dl><p>The number of rows equals <code>length(omega)</code> multiplied by
 <code>max(length(penalty), length(lambda), length(gamma))</code>.
-Any of <code>penalty</code>, <code>lambda</code>, or <code>gamma</code> with length 1
-is recycled to this common length.</p>
+Each of <code>penalty</code>, <code>lambda</code>, and <code>gamma</code> must have length 1
+or the same common length.
+Arguments of length 1 are recycled to this common length.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
