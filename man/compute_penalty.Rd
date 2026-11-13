@@ -7,10 +7,11 @@
 compute_penalty(omega, penalty, lambda, gamma = NA)
 }
 \arguments{
-\item{omega}{A numeric value or vector at which the penalty is evaluated.}
+\item{omega}{A numeric vector specifying the values at which the penalty is
+evaluated.}
 
-\item{penalty}{A character string or vector specifying one or more penalty
-types. Available options include:
+\item{penalty}{A character vector specifying one or more penalty types.
+Available options include:
 \enumerate{
 \item "lasso": Least absolute shrinkage and selection operator
 \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
@@ -30,23 +31,23 @@ types. Available options include:
 If \code{penalty} has length 1, it is recycled to the common length
 determined by \code{penalty}, \code{lambda}, and \code{gamma}.}
 
-\item{lambda}{A non-negative numeric value or vector specifying
-the regularization parameter.
+\item{lambda}{A non-negative numeric vector specifying the regularization
+parameter.
 If \code{lambda} has length 1, it is recycled to the common length
 determined by \code{penalty}, \code{lambda}, and \code{gamma}.}
 
-\item{gamma}{A numeric value or vector specifying the additional parameter
-for the penalty function.
-If \code{lambda} has length 1, it is recycled to the common length
+\item{gamma}{A numeric vector specifying the additional parameter for
+the penalty function.
+If \code{gamma} has length 1, it is recycled to the common length
 determined by \code{penalty}, \code{lambda}, and \code{gamma}.
-The penalty-specific defaults are:
+The default value and valid range depend on the penalty:
 \enumerate{
-\item "atan": 0.005
-\item "exp": 0.01
-\item "lq": 0.5
-\item "lsp": 0.1
-\item "mcp": 3
-\item "scad": 3.7
+\item "atan": default 0.005; must be positive.
+\item "exp": default 0.01; must be positive.
+\item "lq": default 0.5; must be in \eqn{(0, 1)}.
+\item "lsp": default 0.1; must be positive.
+\item "mcp": default 3; must be greater than 1.
+\item "scad": default 3.7; must be greater than 2.
 }
 For \code{"lasso"}, \code{gamma} is ignored.}
 }
@@ -59,10 +60,11 @@ A data frame with S3 class \code{"penalty"} containing:
 \item{gamma}{The additional penalty parameter used.}
 \item{value}{The computed penalty value.}
 }
-The number of rows equals
+The number of rows equals \code{length(omega)} multiplied by
 \code{max(length(penalty), length(lambda), length(gamma))}.
-Any of \code{penalty}, \code{lambda}, or \code{gamma} with length 1
-is recycled to this common length.
+Each of \code{penalty}, \code{lambda}, and \code{gamma} must have length 1
+or the same common length.
+Arguments of length 1 are recycled to this common length.
 }
 \description{
 Compute one or more penalty values for a given \code{omega}, allowing

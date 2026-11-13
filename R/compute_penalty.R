@@ -4,10 +4,11 @@
 #' Compute one or more penalty values for a given \code{omega}, allowing
 #' vectorized specifications of \code{penalty}, \code{lambda}, and \code{gamma}.
 #'
-#' @param omega A numeric value or vector at which the penalty is evaluated.
+#' @param omega A numeric vector specifying the values at which the penalty is
+#' evaluated.
 #'
-#' @param penalty A character string or vector specifying one or more penalty
-#' types. Available options include:
+#' @param penalty A character vector specifying one or more penalty types.
+#' Available options include:
 #' \enumerate{
 #' \item "lasso": Least absolute shrinkage and selection operator
 #' \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
@@ -27,23 +28,23 @@
 #' If \code{penalty} has length 1, it is recycled to the common length
 #' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
 #'
-#' @param lambda A non-negative numeric value or vector specifying
-#' the regularization parameter.
+#' @param lambda A non-negative numeric vector specifying the regularization
+#' parameter.
 #' If \code{lambda} has length 1, it is recycled to the common length
 #' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
 #'
-#' @param gamma A numeric value or vector specifying the additional parameter
-#' for the penalty function.
-#' If \code{lambda} has length 1, it is recycled to the common length
+#' @param gamma A numeric vector specifying the additional parameter for
+#' the penalty function.
+#' If \code{gamma} has length 1, it is recycled to the common length
 #' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
-#' The penalty-specific defaults are:
+#' The default value and valid range depend on the penalty:
 #' \enumerate{
-#' \item "atan": 0.005
-#' \item "exp": 0.01
-#' \item "lq": 0.5
-#' \item "lsp": 0.1
-#' \item "mcp": 3
-#' \item "scad": 3.7
+#' \item "atan": default 0.005; must be positive.
+#' \item "exp": default 0.01; must be positive.
+#' \item "lq": default 0.5; must be in \eqn{(0, 1)}.
+#' \item "lsp": default 0.1; must be positive.
+#' \item "mcp": default 3; must be greater than 1.
+#' \item "scad": default 3.7; must be greater than 2.
 #' }
 #' For \code{"lasso"}, \code{gamma} is ignored.
 #'
@@ -56,10 +57,11 @@
 #' \item{gamma}{The additional penalty parameter used.}
 #' \item{value}{The computed penalty value.}
 #' }
-#' The number of rows equals
+#' The number of rows equals \code{length(omega)} multiplied by
 #' \code{max(length(penalty), length(lambda), length(gamma))}.
-#' Any of \code{penalty}, \code{lambda}, or \code{gamma} with length 1
-#' is recycled to this common length.
+#' Each of \code{penalty}, \code{lambda}, and \code{gamma} must have length 1
+#' or the same common length.
+#' Arguments of length 1 are recycled to this common length.
 #'
 #' @references
 #' \insertAllCited{}
@@ -71,20 +73,32 @@
 
 compute_penalty <- function(omega, penalty, lambda, gamma = NA) {
 
+  validate_vector(omega, "omega")
+  penalties <- c("lasso", "atan", "exp", "lq", "lsp", "mcp", "scad")
+  if (!is.character(penalty) || length(penalty) == 0L ||
+      anyNA(penalty) || any(!penalty %in% penalties)) {
+    stop(sprintf("Invalid `penalty`.\nAvailable options: %s.",
+                 paste(sprintf('"%s"', penalties), collapse = ", ")),
+         call. = FALSE)
+  }
+  validate_vector(lambda, "lambda", lower = 0)
+  validate_vector(gamma, "gamma", allow.na = TRUE)
+
   para_len <- lengths(list(penalty, lambda, gamma))
   n <- max(para_len)
-  if(para_len[1] == 1) {
-    penalty <- rep(penalty, n)
+  if (any(!para_len %in% c(1L, n))) {
+    stop("`penalty`, `lambda`, and `gamma` must each have length 1 ",
+         "or the same common length.", call. = FALSE)
   }
-  if (para_len[2] == 1) {
-    lambda <- rep(lambda, n)
-  }
-  if (para_len[3] == 1) {
-    gamma <- rep(gamma, n)
-  }
+  penalty <- rep(penalty, length.out = n)
+  lambda <- rep(lambda, length.out = n)
+  gamma <- rep(gamma, length.out = n)
 
   res <- do.call(rbind, lapply(seq_len(n), function(k) {
-    pen_internal(omega = omega, penalty = penalty[k], lambda = lambda[k], gamma = gamma[k])
+    pen_internal(omega = omega,
+                 penalty = penalty[k],
+                 lambda = lambda[k],
+                 gamma = gamma[k])
   }))
   class(res) <- c("penalty", "penderiv", class(res))
 
@@ -96,69 +110,54 @@ compute_penalty <- function(omega, penalty, lambda, gamma = NA) {
 
 pen_internal <- function(omega, penalty, lambda, gamma) {
 
-  if (!(penalty %in% c("lasso", "atan", "exp", "lq", "lsp", "mcp", "scad"))) {
-    stop('Error in `penalty`!\nAvailable options: "lasso", "atan", "exp", "lq", "lsp", "mcp", "scad".')
-  }
-
-  if (lambda < 0) {
-    stop('The parameter `lambda` must be non-negative!')
-  }
-
   ## default gamma by penalty
-  if (missing(gamma) || is.na(gamma)) {
-    gamma <- switch(penalty,
-                    "atan" = 0.005, "exp"  = 0.01, "lq"   = 0.5,
-                    "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7, NA)
+  if (penalty != "lasso") {
+    if (missing(gamma) || is.na(gamma)) {
+      gamma <- switch(penalty,
+                      "atan" = 0.005, "exp" = 0.01, "lq" = 0.5,
+                      "lsp" = 0.1, "mcp" = 3, "scad" = 3.7)
+    }
+    lower <- switch(penalty, "mcp" = 1, "scad" = 2, 0)
+    validate_scalar(gamma, "gamma", lower = lower)
+    if (penalty == "lq" && gamma >= 1) {
+      stop('For "lq", `gamma` must be in (0,1).', call. = FALSE)
+    }
+  } else {
+    gamma <- NA_real_
   }
 
   a <- abs(omega)
 
   if (penalty == "atan") {
-    if (gamma <= 0) {
-      warning(sprintf('For "%s", typically `gamma` > 0.', penalty), call. = FALSE)
-    }
-    res <- lambda * (gamma + 2/pi) * atan(a / gamma)
+    res <- lambda * (gamma + 2 / pi) * atan(a / gamma)
 
   } else if (penalty == "exp") {
-    if (gamma <= 0) {
-      warning(sprintf('For "%s", typically `gamma` > 0.', penalty), call. = FALSE)
-    }
     res <- lambda * (1 - exp(-a / gamma))
 
   } else if (penalty == "lasso") {
-    gamma <- NA
     res <- lambda * a
 
   } else if (penalty == "lq") {
-    if (gamma <= 0 || gamma >= 1) {
-      warning(sprintf('For "%s", typically 0 < `gamma` < 1.', penalty), call. = FALSE)
-    }
     epsilon <- 1e-10
-    res <- lambda * ((a + epsilon)^gamma)
-    # res <- lambda * (pmax(a, epsilon)^gamma)
-    # res <- lambda * (a^gamma)
+    res <- lambda * (a + epsilon)^gamma
 
   } else if (penalty == "lsp") {
-    if (gamma <= 0) {
-      warning(sprintf('For "%s", typically `gamma` > 0.', penalty), call. = FALSE)
-    }
     res <- lambda * log1p(a / gamma)
 
   } else if (penalty == "mcp") {
-    if (gamma <= 1) {
-      warning(sprintf('For "%s", typically `gamma` > 1.', penalty), call. = FALSE)
-    }
-    res <- (lambda * a - a^2/(2*gamma)) * (a <= gamma * lambda) +
+    res <- (lambda * a - a^2 / (2 * gamma)) * (a <= gamma * lambda) +
       (0.5 * gamma * lambda^2) * (a > gamma * lambda)
 
   } else if (penalty == "scad") {
-    if (gamma <= 2) {
-      warning(sprintf('For "%s", typically `gamma` > 2.', penalty), call. = FALSE)
-    }
     res <- lambda * a * (a <= lambda) +
-      (2 * gamma * lambda * a - a^2 - lambda^2) / (2 * (gamma-1)) * (lambda < a & a <= gamma * lambda) +
-      lambda^2 * (gamma+1) / 2 * (a > gamma*lambda)
+      (2 * gamma * lambda * a - a^2 - lambda^2) / (2 * (gamma - 1)) *
+      (lambda < a & a <= gamma * lambda) +
+      lambda^2 * (gamma + 1) / 2 * (a > gamma * lambda)
   }
 
-  return(data.frame(omega = omega, penalty = penalty, lambda = lambda, gamma = gamma, value = res))
+  return(data.frame(omega = omega,
+                    penalty = penalty,
+                    lambda = lambda,
+                    gamma = gamma,
+                    value = res))
 }
