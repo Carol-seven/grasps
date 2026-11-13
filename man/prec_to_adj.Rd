@@ -13,7 +13,8 @@ prec_to_adj(
 )
 }
 \arguments{
-\item{prec.mat}{A numeric precision matrix.}
+\item{prec.mat}{A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+specifying the precision matrix.}
 
 \item{diag.zero}{A logical value (default = TRUE) specifying whether to
 set the diagonal entries of the adjacency matrix to 0.
@@ -24,7 +25,7 @@ always forced to 0 to avoid self-loops.}
 \item{absolute}{A logical value (default = FALSE) specifying whether to
 take the absolute values of the partial correlations.}
 
-\item{threshold}{A nonnegative numeric value (default = \code{NULL})
+\item{threshold}{A non-negative numeric value (default = \code{NULL})
 specifying the threshold for edge filtering.
 Entries with absolute values smaller than the threshold are set to 0.}
 
@@ -43,6 +44,11 @@ Convert a precision matrix to a partial-correlation-based adjacency matrix.
 For a precision matrix \eqn{\Omega}, the partial correlation between nodes
 \eqn{i} and \eqn{j} is computed as
 \deqn{\rho_{ij} = - \frac{\Omega_{ij}}{\sqrt{\Omega_{ii}\Omega_{jj}}}.}
+
+The input matrix is not required to be positive definite.
+If \code{prec.mat} is not positive definite, the function issues a warning
+but continues the conversion.
+In that case, the result may not represent valid partial correlations.
 }
 \examples{
 library(grasps)
