@@ -1,27 +1,41 @@
 #' Groupwise Block-Banded Sparsifier
 #'
 #' @description
-#' Make a precision-like matrix block-banded according to group membership,
-#' keeping only entries within specified group neighborhoods.
+#' Apply a groupwise block-banded mask to a symmetric matrix, keeping only
+#' entries within specified group neighborhoods.
 #'
-#' @param mat A \eqn{p \times p} precision-like matrix specifying the base
-#' matrix to be masked.
+#' @param mat A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+#' specifying the matrix to be masked.
 #'
 #' @param membership An integer vector specifying the group membership.
-#' The length of \code{membership} must be consistent with the dimension \eqn{p}.
+#' Its length must equal \eqn{p}.
+#' The numerical differences between group labels determine which groups are
+#' considered neighbors.
 #'
-#' @param neighbor.range An integer (default = 1) specifying the neighbor range,
-#' where groups whose labels differ by at most \code{neighbor.range} are
-#' considered neighbors and kept in the mask.
+#' @param neighbor.range A non-negative integer (default = 1) specifying
+#' the neighbor range.
+#' Groups whose labels differ by at most \code{neighbor.range} are retained
+#' in the mask.
 #'
 #' @return An object with S3 class \code{"sparsify_block_banded"} containing
 #' the following components:
 #' \describe{
-#' \item{Omega}{The masked precision matrix.}
-#' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
-#' \item{sparsity}{Proportion of zero entries in \code{Omega}.}
+#' \item{Omega}{The block-banded matrix.}
+#' \item{Sigma}{The inverse of \code{Omega} if \code{Omega} is positive definite;
+#' otherwise, \code{NULL}.}
+#' \item{sparsity}{Proportion of absent edges among all possible undirected
+#' edges in \code{Omega}.}
 #' \item{membership}{An integer vector specifying the group membership.}
 #' }
+#'
+#' @details
+#' Entry \eqn{(i, j)} is retained when the absolute difference between the group
+#' labels of variables \eqn{i} and \eqn{j} does not exceed \code{neighbor.range}.
+#'
+#' Applying the block-banded mask does not necessarily preserve positive
+#' definiteness.
+#' If the masked matrix is not positive definite, the function issues a warning
+#' and returns \code{Sigma = NULL}.
 #'
 #' @example
 #' inst/example/ex-sparsify_block_banded.R
@@ -30,22 +44,54 @@
 
 sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
 
-  p <- ncol(mat)
-  if (length(membership) != p) {
-    stop(sprintf("Length of 'membership' (%d) must equal the matrix dimension p (%d).",
-                 length(membership), p))
+  ## validate `mat`
+  if (!is.matrix(mat) || !is.numeric(mat) || is.complex(mat) || nrow(mat) < 2 ||
+      nrow(mat) != ncol(mat) || anyNA(mat) || any(!is.finite(mat))) {
+    stop("`mat` must be a finite numeric square matrix with dimension at least 2.",
+         call. = FALSE)
   }
+  if (!isTRUE(all.equal(mat, t(mat)))) {
+    stop("`mat` must be symmetric.", call. = FALSE)
+  }
+
+  ## validate `membership`
+  p <- ncol(mat)
+  if (!is.numeric(membership) || is.complex(membership) ||
+      length(membership) != p || anyNA(membership) ||
+      any(!is.finite(membership)) || any(membership != floor(membership))) {
+    stop(sprintf("`membership` must contain %d finite integer values.", p),
+         call. = FALSE)
+  }
+
+  ## validate `neighbor.range`
+  validate_scalar(neighbor.range, "neighbor.range", lower = 0,
+                  integer = TRUE, lower.inclusive = TRUE)
 
   ## determine which entries to keep: membership within 'neighbor.range'
   mask <- abs(outer(membership, membership, `-`)) <= neighbor.range
 
   ## apply mask to matrix
   Omega <- mat * mask
-  ## compute covariance
-  Sigma <- solve(Omega)
 
-  result <- list(Omega = Omega, Sigma = Sigma,
-                 sparsity = sum(Omega == 0) / length(Omega),
+  ## verify positive definiteness and compute the covariance matrix
+  chol.Omega <- tryCatch(
+    chol(Omega),
+    error = function(e) NULL
+  )
+  if (!is.null(chol.Omega)) {
+    Sigma <- chol2inv(chol.Omega)
+  } else {
+    Sigma <- NULL
+    warning(paste("The block-banded matrix is not positive definite.",
+                  "`Sigma` is returned as `NULL`."), call. = FALSE)
+  }
+
+  Omega_edge <- Omega[upper.tri(Omega)]
+  sparsity <- sum(Omega_edge == 0) / length(Omega_edge)
+
+  result <- list(Omega = Omega,
+                 Sigma = Sigma,
+                 sparsity = sparsity,
                  membership = membership)
   class(result) <- c("sparsify_block_banded", "blkmat")
   return(result)

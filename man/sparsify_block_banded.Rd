@@ -7,29 +7,43 @@
 sparsify_block_banded(mat, membership, neighbor.range = 1)
 }
 \arguments{
-\item{mat}{A \eqn{p \times p} precision-like matrix specifying the base
-matrix to be masked.}
+\item{mat}{A numeric symmetric \eqn{p \times p} matrix, with \eqn{p} > 1,
+specifying the matrix to be masked.}
 
 \item{membership}{An integer vector specifying the group membership.
-The length of \code{membership} must be consistent with the dimension \eqn{p}.}
+Its length must equal \eqn{p}.
+The numerical differences between group labels determine which groups are
+considered neighbors.}
 
-\item{neighbor.range}{An integer (default = 1) specifying the neighbor range,
-where groups whose labels differ by at most \code{neighbor.range} are
-considered neighbors and kept in the mask.}
+\item{neighbor.range}{A non-negative integer (default = 1) specifying
+the neighbor range.
+Groups whose labels differ by at most \code{neighbor.range} are retained
+in the mask.}
 }
 \value{
 An object with S3 class \code{"sparsify_block_banded"} containing
 the following components:
 \describe{
-\item{Omega}{The masked precision matrix.}
-\item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
-\item{sparsity}{Proportion of zero entries in \code{Omega}.}
+\item{Omega}{The block-banded matrix.}
+\item{Sigma}{The inverse of \code{Omega} if \code{Omega} is positive definite;
+otherwise, \code{NULL}.}
+\item{sparsity}{Proportion of absent edges among all possible undirected
+edges in \code{Omega}.}
 \item{membership}{An integer vector specifying the group membership.}
 }
 }
 \description{
-Make a precision-like matrix block-banded according to group membership,
-keeping only entries within specified group neighborhoods.
+Apply a groupwise block-banded mask to a symmetric matrix, keeping only
+entries within specified group neighborhoods.
+}
+\details{
+Entry \eqn{(i, j)} is retained when the absolute difference between the group
+labels of variables \eqn{i} and \eqn{j} does not exceed \code{neighbor.range}.
+
+Applying the block-banded mask does not necessarily preserve positive
+definiteness.
+If the masked matrix is not positive definite, the function issues a warning
+and returns \code{Sigma = NULL}.
 }
 \examples{
 library(grasps)
@@ -39,8 +53,9 @@ set.seed(1234)
 
 ## precision matrix estimation
 X <- matrix(rnorm(200), 10, 20)
-membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
-est <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
+membership <- rep(1:5, each = 4)
+est <- grasps(X, membership = membership, penalty = "lasso",
+              lambda = 0.1, alpha = 0.5)
 
 ## default: keep blocks within ±1 of each group
 res1 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 1)

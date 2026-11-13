@@ -5,8 +5,9 @@ set.seed(1234)
 
 ## precision matrix estimation
 X <- matrix(rnorm(200), 10, 20)
-membership <- c(rep(1,5), rep(2,5), rep(3,4), rep(4,6))
-est <- grasps(X, membership = membership, penalty = "lasso", crit = "BIC")
+membership <- rep(1:5, each = 4)
+est <- grasps(X, membership = membership, penalty = "lasso",
+              lambda = 0.1, alpha = 0.5)
 
 ## default: keep blocks within ±1 of each group
 res1 <- sparsify_block_banded(est$hatOmega, membership, neighbor.range = 1)
