@@ -156,7 +156,8 @@ the relative tolerance for the bisection stopping rule on the interval width.}
 of bisection iterations in the line search for  \eqn{\lambda_{\max}}.}
 
 \item{lla}{A logical value (default = FALSE) specifying whether to use
-iterative local linear approximation (LLA) for non-convex penalties.
+iterative local linear approximation (LLA) \insertCite{zou2008one}{grasps}
+for non-convex penalties.
 \enumerate{
 \item If \code{FALSE}, a one-step LLA estimator is computed.
 \item If \code{TRUE}, penalty weights are updated iteratively until the LLA
