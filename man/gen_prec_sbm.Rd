@@ -104,7 +104,8 @@ components:
 \describe{
 \item{Omega}{The precision matrix with SBM block structure.}
 \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
-\item{sparsity}{Proportion of zero entries in \code{Omega}.}
+\item{sparsity}{Proportion of absent edges among all possible undirected
+edges in \code{Omega}.}
 \item{membership}{An integer vector specifying the group membership.}
 }
 }

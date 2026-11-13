@@ -90,7 +90,8 @@
 #' \describe{
 #' \item{Omega}{The precision matrix with SBM block structure.}
 #' \item{Sigma}{The covariance matrix, i.e., the inverse of \code{Omega}.}
-#' \item{sparsity}{Proportion of zero entries in \code{Omega}.}
+#' \item{sparsity}{Proportion of absent edges among all possible undirected
+#' edges in \code{Omega}.}
 #' \item{membership}{An integer vector specifying the group membership.}
 #' }
 #'
@@ -300,8 +301,12 @@ gen_prec_sbm <- function(p,
   ## covariance matrix
   Sigma <- solve(Omega)
 
-  result <- list(Omega = Omega, Sigma = Sigma,
-                 sparsity = sum(Omega == 0) / length(Omega),
+  Omega_edge <- Omega[upper.tri(Omega)]
+  sparsity <- sum(Omega_edge == 0) / length(Omega_edge)
+
+  result <- list(Omega = Omega,
+                 Sigma = Sigma,
+                 sparsity = sparsity,
                  membership = membership)
   class(result) <- c("gen_prec_sbm", "blkmat")
   return(result)
