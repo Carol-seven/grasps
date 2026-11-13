@@ -242,7 +242,9 @@ of bisection iterations in the line search for  \(\lambda_{\max}\).</p></dd>
 
 <dt id="arg-lla">lla<a class="anchor" aria-label="anchor" href="#arg-lla"></a></dt>
 <dd><p>A logical value (default = FALSE) specifying whether to use
-iterative local linear approximation (LLA) for non-convex penalties.</p><ol><li><p>If <code>FALSE</code>, a one-step LLA estimator is computed.</p></li>
+iterative local linear approximation (LLA) (Zou and Li 2008)
+
+for non-convex penalties.</p><ol><li><p>If <code>FALSE</code>, a one-step LLA estimator is computed.</p></li>
 <li><p>If <code>TRUE</code>, penalty weights are updated iteratively until the LLA
 stopping criterion is satisfied or <code>maxiter.lla</code> is reached.</p></li>
 </ol><p>This argument is ignored for <code>penalty = "lasso"</code> and
@@ -526,6 +528,10 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 “The Adaptive Lasso and Its Oracle Properties.”
 <em>Journal of the American Statistical Association</em>, <b>101</b>(476), 1418–1429.
 <a href="https://doi.org/10.1198/016214506000000735" class="external-link">doi:10.1198/016214506000000735</a>
+.<br><br> Zou H, Li R (2008).
+“One-Step Sparse Estimates in Nonconcave Penalized Likelihood Models.”
+<em>The Annals of statistics</em>, <b>36</b>(4), 1509–1533.
+<a href="https://doi.org/10.1214/009053607000000802" class="external-link">doi:10.1214/009053607000000802</a>
 .</p>
     </div>
 
@@ -561,19 +567,19 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8391</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.4522</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 136.2799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.5183</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  23.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 340.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  47.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  25.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.4792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1214</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.7397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 144.4687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.1326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  25.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 336.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  51.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  23.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3210</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>

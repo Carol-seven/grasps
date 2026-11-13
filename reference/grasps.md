@@ -197,7 +197,8 @@ grasps(
 - lla:
 
   A logical value (default = FALSE) specifying whether to use iterative
-  local linear approximation (LLA) for non-convex penalties.
+  local linear approximation (LLA) (Zou and Li 2008) for non-convex
+  penalties.
 
   1.  If `FALSE`, a one-step LLA estimator is computed.
 
@@ -521,6 +522,11 @@ Concave Penalty.” *The Annals of Statistics*, **38**(2), 894–942.
 Zou H (2006). “The Adaptive Lasso and Its Oracle Properties.” *Journal
 of the American Statistical Association*, **101**(476), 1418–1429.
 [doi:10.1198/016214506000000735](https://doi.org/10.1198/016214506000000735)
+.  
+  
+Zou H, Li R (2008). “One-Step Sparse Estimates in Nonconcave Penalized
+Likelihood Models.” *The Annals of statistics*, **36**(4), 1509–1533.
+[doi:10.1214/009053607000000802](https://doi.org/10.1214/009053607000000802)
 .
 
 ## Examples
@@ -556,19 +562,19 @@ plot(prec)
 ## performance
 performance(hatOmega = prec$hatOmega, Omega = sim$Omega)
 #>      measure    value
-#> 1   sparsity   0.8391
-#> 2  Frobenius  25.4522
-#> 3         KL   9.3753
-#> 4  quadratic 136.2799
-#> 5   spectral  11.5183
-#> 6         TP  23.0000
-#> 7         TN 340.0000
-#> 8         FP  47.0000
-#> 9         FN  25.0000
-#> 10       TPR   0.4792
-#> 11       FPR   0.1214
-#> 12        F1   0.3898
-#> 13       MCC   0.3050
+#> 1   sparsity   0.8253
+#> 2  Frobenius  25.7397
+#> 3         KL   9.3274
+#> 4  quadratic 144.4687
+#> 5   spectral  11.1326
+#> 6         TP  25.0000
+#> 7         TN 336.0000
+#> 8         FP  51.0000
+#> 9         FN  23.0000
+#> 10       TPR   0.5208
+#> 11       FPR   0.1318
+#> 12        F1   0.4032
+#> 13       MCC   0.3210
 
 ## adjacency matrix: diagonal = 0; raw partial correlations;
 ##                   no thresholding; weighted network

@@ -119,7 +119,7 @@ Estimate the precision matrix <span class="math inline">\(\Omega = \Sigma^{-1} =
 <li><p><span class="math inline">\(S = n^{-1} \sum_{i=1}^n (X_i-\bar{X})(X_i-\bar{X})^\top\)</span> is the empirical covariance matrix.</p></li>
 <li><p><span class="math inline">\(\lambda \geq 0\)</span> is the global regularization parameter controlling overall shrinkage.</p></li>
 <li><p><span class="math inline">\(\alpha \in [0,1]\)</span> is the mixing parameter controlling the balance between element-wise and block-wise penalties.</p></li>
-<li><p><span class="math inline">\(\gamma\)</span> is the additional parameter for non-convex penalties, controlling the degree of nonconvexity (or concavity) of the penalty function.</p></li>
+<li><p><span class="math inline">\(\gamma\)</span> is the additional parameter for the adaptive lasso and non-convex penalties. It controls the adaptive weights for the former and the degree of nonconvexity (or concavity) of the penalty function for the latter, respectively.</p></li>
 <li><p><span class="math inline">\(\mathcal{P}_{\lambda,\alpha,\gamma}(\Omega)\)</span> is a generic bi-level penalty template that combines element-wise and block-wise regularization, allowing convex or non-convex regularizers while preserving the intrinsic group structure among variables.</p></li>
 <li><p><span class="math inline">\(\mathcal{P}^\text{idv}_{\lambda,\gamma}(\Omega)\)</span> is the element-wise individual penalty component.</p></li>
 <li><p><span class="math inline">\(\mathcal{P}^\text{grp}_{\lambda,\gamma}(\Omega)\)</span> is the block-wise group penalty component.</p></li>
@@ -129,7 +129,7 @@ Estimate the precision matrix <span class="math inline">\(\Omega = \Sigma^{-1} =
 </ul>
 <div class="note">
 <p><strong>Note</strong>:</p>
-<ul><li>The parameter <span class="math inline">\(\gamma\)</span> is only relevant for non-convex penalties. The Lasso penalty can be viewed as a special case in which <span class="math inline">\(\gamma\)</span> is not required.
+<ul><li>The parameter <span class="math inline">\(\gamma\)</span> is used for the adaptive lasso and non-convex penalties. The lasso penalty can be viewed as a special case in which <span class="math inline">\(\gamma\)</span> is not required.
 </li></ul>
 </div>
 
@@ -146,7 +146,7 @@ Estimate the precision matrix <span class="math inline">\(\Omega = \Sigma^{-1} =
 </ol>
 <p><span class="math display">\[
 P_{\lambda,\gamma}(\omega_{ij}) = \lambda\frac{\vert\omega_{ij}\vert}{v_{ij}},
-\]</span> where <span class="math inline">\(V = (v_{ij})_{d \times d} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{d \times d}\)</span> is a matrix of adaptive weights, and <span class="math inline">\(\tilde{\omega}_{ij}\)</span> is the initial estimate obtained using <code>penalty = "lasso"</code>.</p>
+\]</span> where <span class="math inline">\(V = (v_{ij})_{p \times p} = (\vert\tilde{\omega}_{ij}\vert^\gamma)_{p \times p}\)</span> is constructed from the initial estimator <span class="math inline">\(\tilde{\Omega}\)</span>. The adaptive weights remain fixed during optimization.</p>
 <ol start="3" type="1">
 <li>Atan: Arctangent type penalty <span class="citation" data-cites="wang2016variable">(<a href="#ref-wang2016variable" role="doc-biblioref">Wang and Zhu 2016</a>)</span>
 </li>
@@ -215,7 +215,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 \]</span></p>
 <div class="note">
 <p><strong>Note</strong>:</p>
-<ul><li>For Lasso, which is convex, the additional parameter <span class="math inline">\(\gamma\)</span> is not required, and the penalty function <span class="math inline">\(P_{\lambda,\gamma}(\cdot)\)</span> simplifies to <span class="math inline">\(P_\lambda(\cdot)\)</span>.
+<ul><li>For lasso, which is convex, the additional parameter <span class="math inline">\(\gamma\)</span> is not required, and the penalty function <span class="math inline">\(P_{\lambda,\gamma}(\cdot)\)</span> simplifies to <span class="math inline">\(P_\lambda(\cdot)\)</span>.
 </li></ul>
 </div>
 
@@ -248,7 +248,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 Figure 1: Illustrative penalty functions.
 </figcaption></figure>
 </div>
-<p><a href="#fig-deriv" class="quarto-xref">Figure 2</a> displays the derivative function <span class="math inline">\(P^\prime(\omega)\)</span> associated with a range of penalty types. The Lasso exhibits a constant derivative, corresponding to uniform shrinkage. For MCP and SCAD, the derivatives are piecewise: initially equal to the Lasso derivative, then decreasing over an intermediate region, and eventually dropping to zero, indicating that large <span class="math inline">\(\vert\omega\vert\)</span> receive no shrinkage. Other non-convex penalties show smoothly diminishing derivatives as <span class="math inline">\(\vert\omega\vert\)</span> increases, reflecting their tendency to shrink small <span class="math inline">\(\vert\omega\vert\)</span> strongly while exerting little to no shrinkage on large ones.</p>
+<p><a href="#fig-deriv" class="quarto-xref">Figure 2</a> displays the derivative function <span class="math inline">\(P^\prime(\omega)\)</span> associated with a range of penalty types. The lasso exhibits a constant derivative, corresponding to uniform shrinkage. For MCP and SCAD, the derivatives are piecewise: initially equal to the lasso derivative, then decreasing over an intermediate region, and eventually dropping to zero, indicating that large <span class="math inline">\(\vert\omega\vert\)</span> receive no shrinkage. Other non-convex penalties show smoothly diminishing derivatives as <span class="math inline">\(\vert\omega\vert\)</span> increases, reflecting their tendency to shrink small <span class="math inline">\(\vert\omega\vert\)</span> strongly while exerting little to no shrinkage on large ones.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deriv_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_derivative.html">compute_derivative</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>, <span class="va">penalties</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>

@@ -39,9 +39,10 @@ where:
 - \\\alpha \in \[0,1\]\\ is the mixing parameter controlling the balance
   between element-wise and block-wise penalties.
 
-- \\\gamma\\ is the additional parameter for non-convex penalties,
-  controlling the degree of nonconvexity (or concavity) of the penalty
-  function.
+- \\\gamma\\ is the additional parameter for the adaptive lasso and
+  non-convex penalties. It controls the adaptive weights for the former
+  and the degree of nonconvexity (or concavity) of the penalty function
+  for the latter, respectively.
 
 - \\\mathcal{P}\_{\lambda,\alpha,\gamma}(\Omega)\\ is a generic bi-level
   penalty template that combines element-wise and block-wise
@@ -66,9 +67,9 @@ where:
 
 **Note**:
 
-- The parameter \\\gamma\\ is only relevant for non-convex penalties.
-  The Lasso penalty can be viewed as a special case in which \\\gamma\\
-  is not required.
+- The parameter \\\gamma\\ is used for the adaptive lasso and non-convex
+  penalties. The lasso penalty can be viewed as a special case in which
+  \\\gamma\\ is not required.
 
 ## Penalties
 
@@ -83,10 +84,10 @@ where:
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) =
 \lambda\frac{\vert\omega\_{ij}\vert}{v\_{ij}}, \\ where \\V =
-(v\_{ij})\_{d \times d} = (\vert\tilde{\omega}\_{ij}\vert^\gamma)\_{d
-\times d}\\ is a matrix of adaptive weights, and
-\\\tilde{\omega}\_{ij}\\ is the initial estimate obtained using
-`penalty = "lasso"`.
+(v\_{ij})\_{p \times p} = (\vert\tilde{\omega}\_{ij}\vert^\gamma)\_{p
+\times p}\\ is constructed from the initial estimator
+\\\tilde{\Omega}\\. The adaptive weights remain fixed during
+optimization.
 
 3.  Atan: Arctangent type penalty ([Wang and Zhu
     2016](#ref-wang2016variable))
@@ -137,7 +138,7 @@ where:
 
 **Note**:
 
-- For Lasso, which is convex, the additional parameter \\\gamma\\ is not
+- For lasso, which is convex, the additional parameter \\\gamma\\ is not
   required, and the penalty function \\P\_{\lambda,\gamma}(\cdot)\\
   simplifies to \\P\_\lambda(\cdot)\\.
 
@@ -166,10 +167,10 @@ plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
 Figure 1: Illustrative penalty functions.
 
 [Figure 2](#fig-deriv) displays the derivative function
-\\P^\prime(\omega)\\ associated with a range of penalty types. The Lasso
+\\P^\prime(\omega)\\ associated with a range of penalty types. The lasso
 exhibits a constant derivative, corresponding to uniform shrinkage. For
 MCP and SCAD, the derivatives are piecewise: initially equal to the
-Lasso derivative, then decreasing over an intermediate region, and
+lasso derivative, then decreasing over an intermediate region, and
 eventually dropping to zero, indicating that large \\\vert\omega\vert\\
 receive no shrinkage. Other non-convex penalties show smoothly
 diminishing derivatives as \\\vert\omega\vert\\ increases, reflecting
