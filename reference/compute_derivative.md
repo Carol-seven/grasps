@@ -13,12 +13,13 @@ compute_derivative(omega, penalty, lambda, gamma = NA)
 
 - omega:
 
-  A numeric value or vector at which the penalty is evaluated.
+  A numeric vector specifying the values at which the penalty derivative
+  is evaluated.
 
 - penalty:
 
-  A character string or vector specifying one or more penalty types.
-  Available options include:
+  A character vector specifying one or more penalty types. Available
+  options include:
 
   1.  "lasso": Least absolute shrinkage and selection operator
       (Tibshirani 1996; Friedman et al. 2008) .
@@ -42,28 +43,28 @@ compute_derivative(omega, penalty, lambda, gamma = NA)
 
 - lambda:
 
-  A non-negative numeric value or vector specifying the regularization
-  parameter. If `lambda` has length 1, it is recycled to the common
-  length determined by `penalty`, `lambda`, and `gamma`.
+  A non-negative numeric vector specifying the regularization parameter.
+  If `lambda` has length 1, it is recycled to the common length
+  determined by `penalty`, `lambda`, and `gamma`.
 
 - gamma:
 
-  A numeric value or vector specifying the additional parameter for the
-  penalty function. If `lambda` has length 1, it is recycled to the
-  common length determined by `penalty`, `lambda`, and `gamma`. The
-  penalty-specific defaults are:
+  A numeric vector specifying the additional parameter for the penalty
+  function. If `gamma` has length 1, it is recycled to the common length
+  determined by `penalty`, `lambda`, and `gamma`. The default value and
+  valid range depend on the penalty:
 
-  1.  "atan": 0.005
+  1.  "atan": default 0.005; must be positive.
 
-  2.  "exp": 0.01
+  2.  "exp": default 0.01; must be positive.
 
-  3.  "lq": 0.5
+  3.  "lq": default 0.5; must be in \\(0, 1)\\.
 
-  4.  "lsp": 0.1
+  4.  "lsp": default 0.1; must be positive.
 
-  5.  "mcp": 3
+  5.  "mcp": default 3; must be greater than 1.
 
-  6.  "scad": 3.7
+  6.  "scad": default 3.7; must be greater than 2.
 
   For `"lasso"`, `gamma` is ignored.
 
@@ -91,9 +92,10 @@ A data frame with S3 class `"derivative"` containing:
 
   The computed derivative value.
 
-The number of rows equals
-`max(length(penalty), length(lambda), length(gamma))`. Any of `penalty`,
-`lambda`, or `gamma` with length 1 is recycled to this common length.
+The number of rows equals `length(omega)` multiplied by
+`max(length(penalty), length(lambda), length(gamma))`. Each of
+`penalty`, `lambda`, and `gamma` must have length 1 or the same common
+length. Arguments of length 1 are recycled to this common length.
 
 ## References
 
