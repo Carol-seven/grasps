@@ -67,10 +67,7 @@ sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
   Omega <- mat * mask
 
   ## verify positive definiteness and compute the covariance matrix
-  chol.Omega <- tryCatch(
-    chol(Omega),
-    error = function(e) NULL
-  )
+  chol.Omega <- tryCatch(chol(Omega), error = function(e) NULL)
   if (!is.null(chol.Omega)) {
     Sigma <- chol2inv(chol.Omega)
   } else {
