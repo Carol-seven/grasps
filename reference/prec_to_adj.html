@@ -69,7 +69,8 @@
 
 
 <dl><dt id="arg-prec-mat">prec.mat<a class="anchor" aria-label="anchor" href="#arg-prec-mat"></a></dt>
-<dd><p>A numeric precision matrix.</p></dd>
+<dd><p>A numeric symmetric \(p \times p\) matrix, with \(p\) &gt; 1,
+specifying the precision matrix.</p></dd>
 
 
 <dt id="arg-diag-zero">diag.zero<a class="anchor" aria-label="anchor" href="#arg-diag-zero"></a></dt>
@@ -86,7 +87,7 @@ take the absolute values of the partial correlations.</p></dd>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>A nonnegative numeric value (default = <code>NULL</code>)
+<dd><p>A non-negative numeric value (default = <code>NULL</code>)
 specifying the threshold for edge filtering.
 Entries with absolute values smaller than the threshold are set to 0.</p></dd>
 
@@ -107,6 +108,10 @@ entries equal to 0 or 1.</p></dd>
     <p>For a precision matrix \(\Omega\), the partial correlation between nodes
 \(i\) and \(j\) is computed as
 $$\rho_{ij} = - \frac{\Omega_{ij}}{\sqrt{\Omega_{ii}\Omega_{jj}}}.$$</p>
+<p>The input matrix is not required to be positive definite.
+If <code>prec.mat</code> is not positive definite, the function issues a warning
+but continues the conversion.
+In that case, the result may not represent valid partial correlations.</p>
     </div>
 
     <div class="section level2">
@@ -141,19 +146,19 @@ $$\rho_{ij} = - \frac{\Omega_{ij}}{\sqrt{\Omega_{ii}\Omega_{jj}}}.$$</p>
 <span class="r-in"><span><span class="co">## performance</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="performance.html">performance</a></span><span class="op">(</span>hatOmega <span class="op">=</span> <span class="va">prec</span><span class="op">$</span><span class="va">hatOmega</span>, Omega <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">Omega</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      measure    value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.7397</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3274</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 144.4687</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.1326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  25.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 336.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  51.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  23.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.5208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1318</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.4032</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   sparsity   0.8391</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Frobenius  25.4522</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         KL   9.3753</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  quadratic 136.2799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   spectral  11.5183</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         TP  23.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         TN 340.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         FP  47.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         FN  25.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       TPR   0.4792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       FPR   0.1214</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        F1   0.3898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       MCC   0.3050</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## adjacency matrix: diagonal = 0; raw partial correlations;</span></span></span>
 <span class="r-in"><span><span class="co">##                   no thresholding; weighted network</span></span></span>
