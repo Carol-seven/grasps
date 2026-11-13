@@ -377,3 +377,150 @@ stopifnot(block.weights[1, 2] == 1,
           block.weights[1, 3] == 4,
           block.weights[1, 5] == 5,
           block.weights[3, 5] == 6)
+
+##------------------------------------------------------------------------------
+#############################
+## sparsify_block_banded() ##
+#############################
+
+## validate block-banded sparsifier inputs -------------------------------------
+
+expect_error(sparsify_block_banded(matrix(1:6, 2, 3), 1:2), "`mat`")
+expect_error(sparsify_block_banded(matrix(c(1, 2, 0, 1), 2), 1:2), "symmetric")
+expect_error(sparsify_block_banded(diag(3), 1:2), "`membership`")
+expect_error(sparsify_block_banded(diag(3), c(1, 2, 2.5)), "`membership`")
+expect_error(sparsify_block_banded(diag(3), 1:3, neighbor.range = -1),
+             "`neighbor.range`")
+expect_error(sparsify_block_banded(diag(3), 1:3, neighbor.range = 1.5),
+             "`neighbor.range`")
+
+## retain valid blocks and report non-positive-definite results ----------------
+
+banded.mat <- diag(4) + matrix(0.1, 4, 4)
+banded <- sparsify_block_banded(banded.mat, c(1, 1, 2, 2), neighbor.range = 0)
+stopifnot(inherits(banded, "sparsify_block_banded"),
+          isTRUE(all.equal(banded$Sigma, solve(banded$Omega))),
+          isTRUE(all.equal(banded$sparsity, 4 / 6)))
+
+indefinite.banded <- with_warnings(sparsify_block_banded(
+  matrix(c(1, 2, 2, 1), 2), membership = c(1, 1), neighbor.range = 0
+))
+stopifnot(is.null(indefinite.banded$result$Sigma),
+          length(indefinite.banded$messages) == 1L,
+          grepl("not positive definite", indefinite.banded$messages,
+                fixed = TRUE))
+
+##------------------------------------------------------------------------------
+###################
+## performance() ##
+###################
+
+## validate performance inputs -------------------------------------------------
+
+expect_error(performance(matrix(1:6, 2, 3), diag(2)), "`hatOmega`")
+expect_error(performance(matrix(c(1, 2, 0, 1), 2), diag(2)), "symmetric")
+expect_error(performance(diag(2), diag(3)), "same dimensions")
+expect_error(performance(matrix(NA_real_, 2, 2), diag(2)), "`hatOmega`")
+
+## retain defined metrics and mark undefined metrics ---------------------------
+
+perfect <- performance(diag(3), diag(3))
+perfect.values <- setNames(perfect$value, perfect$measure)
+stopifnot(inherits(perfect, "performance"),
+          perfect.values["sparsity"] == 1,
+          all(perfect.values[c("Frobenius", "KL", "quadratic",
+                               "spectral", "TP", "FP", "FN")] == 0),
+          perfect.values["TN"] == 3,
+          is.na(perfect.values["TPR"]),
+          perfect.values["FPR"] == 0,
+          is.na(perfect.values["F1"]),
+          is.na(perfect.values["MCC"]))
+
+singular.performance <- with_warnings(performance(
+  hatOmega = diag(2), Omega = matrix(1, 2, 2)
+))
+singular.values <- setNames(singular.performance$result$value,
+                            singular.performance$result$measure)
+stopifnot(is.na(singular.values["KL"]),
+          is.na(singular.values["quadratic"]),
+          length(singular.performance$messages) == 1L,
+          grepl("singular", singular.performance$messages, fixed = TRUE))
+
+##------------------------------------------------------------------------------
+###################
+## prec_to_adj() ##
+###################
+
+## validate adjacency-conversion inputs ----------------------------------------
+
+expect_error(prec_to_adj(matrix(1:6, 2, 3)), "`prec.mat`")
+expect_error(prec_to_adj(matrix(c(1, 2, 0, 1), 2)), "symmetric")
+expect_error(prec_to_adj(diag(c(0, 1))), "positive")
+expect_error(prec_to_adj(diag(2), diag.zero = NA), "`diag.zero`")
+expect_error(prec_to_adj(diag(2), absolute = 1), "`absolute`")
+expect_error(prec_to_adj(diag(2), weighted = c(TRUE, FALSE)), "`weighted`")
+expect_error(prec_to_adj(diag(2), threshold = -1), "`threshold`")
+
+## retain weighted, thresholded, and binary adjacency settings -----------------
+
+precision <- matrix(c(2, -1, -1, 2), 2)
+weighted <- prec_to_adj(precision)
+weighted.diagonal <- prec_to_adj(precision, diag.zero = FALSE)
+thresholded <- prec_to_adj(precision, threshold = 0.6)
+binary <- prec_to_adj(precision, weighted = FALSE)
+stopifnot(inherits(weighted, "adjmat"),
+          isTRUE(all.equal(weighted[1, 2], 0.5)),
+          all(diag(weighted) == 0),
+          all(diag(weighted.diagonal) == 1),
+          thresholded[1, 2] == 0,
+          binary[1, 2] == 1,
+          all(diag(binary) == 0))
+
+indefinite.adjacency <- with_warnings(
+  prec_to_adj(matrix(c(1, 2, 2, 1), 2))
+)
+stopifnot(length(indefinite.adjacency$messages) == 1L,
+          grepl("not positive definite", indefinite.adjacency$messages,
+                fixed = TRUE))
+
+##------------------------------------------------------------------------------
+#############################################
+## compute_penalty(), compute_derivative() ##
+#############################################
+
+## validate common penalty-function inputs -------------------------------------
+
+penalty.functions <- list(compute_penalty, compute_derivative)
+for (fun in penalty.functions) {
+  expect_error(fun(NA_real_, "lasso", 1), "`omega`")
+  expect_error(fun(matrix(1, 1, 1), "lasso", 1), "`omega`")
+  expect_error(fun(1, character(), 1), "Invalid")
+  expect_error(fun(1, "invalid", 1), "Invalid")
+  expect_error(fun(1, "lasso", -1), "`lambda`")
+  expect_error(fun(1, "lasso", Inf), "`lambda`")
+  expect_error(fun(1, c("lasso", "mcp"), 1:3),
+               "or the same common length")
+  expect_error(fun(1, "atan", 1, 0), "`gamma`")
+  expect_error(fun(1, "lq", 1, 1), "`gamma`")
+  expect_error(fun(1, "mcp", 1, 1), "`gamma`")
+  expect_error(fun(1, "scad", 1, 2), "`gamma`")
+}
+
+## retain vectorized penalty and derivative calculations -----------------------
+
+penalty.values <- compute_penalty(omega = c(0, 1),
+                                  penalty = c("lasso", "mcp"),
+                                  lambda = 1)
+derivative.values <- compute_derivative(omega = c(0, 1),
+                                        penalty = c("lasso", "mcp"),
+                                        lambda = 1)
+stopifnot(inherits(penalty.values, "penalty"),
+          inherits(derivative.values, "derivative"),
+          nrow(penalty.values) == 4L,
+          nrow(derivative.values) == 4L,
+          isTRUE(all.equal(penalty.values$value[1:2], c(0, 1))),
+          isTRUE(all.equal(derivative.values$value[1:2], c(1, 1))),
+          all(is.finite(penalty.values$value)),
+          all(is.finite(derivative.values$value)),
+          is.numeric(penalty.values$gamma),
+          is.numeric(derivative.values$gamma))
