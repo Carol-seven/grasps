@@ -45,14 +45,7 @@
 sparsify_block_banded <- function(mat, membership, neighbor.range = 1) {
 
   ## validate `mat`
-  if (!is.matrix(mat) || !is.numeric(mat) || is.complex(mat) || nrow(mat) < 2 ||
-      nrow(mat) != ncol(mat) || anyNA(mat) || any(!is.finite(mat))) {
-    stop("`mat` must be a finite numeric square matrix with dimension at least 2.",
-         call. = FALSE)
-  }
-  if (!isTRUE(all.equal(mat, t(mat)))) {
-    stop("`mat` must be symmetric.", call. = FALSE)
-  }
+  validate_symmat(mat, "mat", min.dim = 2)
 
   ## validate `membership`
   p <- ncol(mat)
