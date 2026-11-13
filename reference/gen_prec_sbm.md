@@ -151,7 +151,8 @@ components:
 
 - sparsity:
 
-  Proportion of zero entries in `Omega`.
+  Proportion of absent edges among all possible undirected edges in
+  `Omega`.
 
 - membership:
 
