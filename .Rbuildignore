@@ -1,11 +1,11 @@
+^_pkgdown\.yml$
 ^.*\.Rproj$
+^\.github$
+^\.Rproj\.user$
+^AGENTS\.md$
+^docs$
 ^LICENSE\.md$
 ^Makefile$
-^README\.Rmd$
-^\.Rproj\.user$
-^\.github$
-^_pkgdown\.yml$
-^docs$
 ^pkgdown$
+^README\.Rmd$
 ^vignettes/\.quarto$
-^AGENTS\.md$
