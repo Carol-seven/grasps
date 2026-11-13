@@ -50,10 +50,23 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.3" id="grasps-013">grasps 0.1.3<a class="anchor" aria-label="anchor" href="#grasps-013"></a></h2>
-<ul><li>Validate data, covariance matrices, group labels, scalar controls, and penalty-specific <code>gamma</code> domains before calling the native solvers.</li>
-<li>Require an explicit sample size for covariance input and reject CV fold counts that would leave singleton validation folds.</li>
-<li>Use positive-definiteness checks when scoring candidates and stop when no candidate has a finite score. Warn when the selected fit or its selected cross-validation fits did not converge.</li>
-<li>Add standalone regression checks for validation and failed-fit handling.</li>
+<ul><li>Fixed within-group local linear approximation (LLA) weights so that diagonal entries are excluded when <code>diag.include = FALSE</code>.</li>
+<li>Revised adaptive group weights so that <code>gamma</code> is applied consistently when constructing Frobenius-norm-based weights.</li>
+<li>Added optional iterative LLA for non-convex penalties through <code>lla</code>, <code>tol.lla</code>, and <code>maxiter.lla</code>; one-step LLA remains the default.</li>
+<li>Added configurable initial estimators for adaptive and non-convex penalties through <code>initial</code>, including the lasso estimate (default), the inverse empirical covariance matrix, and a user-supplied symmetric matrix.</li>
+<li>Added <code>iterations</code>, <code>converged</code>, <code>initial.converged</code>, <code>lla.iterations</code>, and <code>lla.converged</code> to report inner ADMM and outer LLA convergence information.</li>
+<li>Added <code>converged.grid</code> and <code>lla.converged.grid</code> to retain convergence status for every tuning-parameter candidate and cross-validation fold.</li>
+<li>Added warnings when the selected estimate, its selected cross-validation fits, or the iterative LLA procedure does not satisfy its convergence criterion.</li>
+<li>Strengthened validation of data, covariance matrices, group labels, penalty parameters, initial estimators, and solver controls before calling the native solvers.</li>
+<li>Required an explicit sample size for covariance-matrix input and strengthened validation of cross-validation folds and training-fold initial estimators.</li>
+<li>Limited validation of model-selection and automatic-grid controls to cases where those controls are active.</li>
+<li>Added positive-definiteness and finite-score checks during model selection. Invalid candidates receive infinite scores, and selection stops when no candidate has a finite score.</li>
+<li>Strengthened validation in <code><a href="../reference/gen_prec_sbm.html">gen_prec_sbm()</a></code> and corrected its reported sparsity to use undirected off-diagonal edges.</li>
+<li>Strengthened validation in <code><a href="../reference/sparsify_block_banded.html">sparsify_block_banded()</a></code>, corrected its reported sparsity, and added explicit handling of non-positive-definite results.</li>
+<li>Strengthened validation in <code><a href="../reference/performance.html">performance()</a></code>, retained computable metrics for non-positive-definite inputs, and returned <code>NA</code> for undefined metrics.</li>
+<li>Strengthened validation in <code><a href="../reference/prec_to_adj.html">prec_to_adj()</a></code> and clarified the handling of diagonal entries, thresholding, and non-positive-definite inputs.</li>
+<li>Added vectorized input validation and penalty-specific <code>gamma</code> checks to <code><a href="../reference/compute_penalty.html">compute_penalty()</a></code> and <code><a href="../reference/compute_derivative.html">compute_derivative()</a></code>.</li>
+<li>Expanded standalone regression tests for input validation, convergence reporting, invalid candidate handling, simulation utilities, performance measures, adjacency conversion, and penalty calculations.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="grasps-012">grasps 0.1.2<a class="anchor" aria-label="anchor" href="#grasps-012"></a></h2><p class="text-muted">CRAN release: 2026-09-12</p>
@@ -62,7 +75,7 @@
 <li>Validation of <code>nlambda</code> and <code>lambda.min.ratio</code> is now performed only when <code>lambda = NULL</code>.</li>
 <li>Added a check for a non-positive or non-finite <code>lambda.max</code> to prevent the generation of invalid lambda sequences.</li>
 <li>Fixed within-group weight generation in <code><a href="../reference/gen_prec_sbm.html">gen_prec_sbm()</a></code> so that each edge weight is sampled once and assigned symmetrically to the corresponding entries of the precision matrix.</li>
-<li>Added input validation for <code>cond.target</code> and support for empty graphs in <code><a href="../reference/gen_prec_sbm.html">gen_prec_sbm()</a></code>.</li>
+<li>Added input validation for <code>cond.target</code> and explicit handling of empty graphs in <code><a href="../reference/gen_prec_sbm.html">gen_prec_sbm()</a></code>.</li>
 <li>Clarified the roles of <code>lambda.safe</code> and <code>lambda.max</code> in the documentation of the automatic lambda-grid construction.</li>
 <li>Expanded the documentation of the positive-definiteness and condition-number adjustment in <code><a href="../reference/gen_prec_sbm.html">gen_prec_sbm()</a></code> and added relevant references.</li>
 </ul></div>
