@@ -77,44 +77,51 @@ a stochastic block model (SBM).</p>
 
 
 <dl><dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
-<dd><p>An integer specifying the number of variables (dimensions).</p></dd>
+<dd><p>An integer &gt; 1 specifying the number of variables (dimensions).</p></dd>
 
 
 <dt id="arg-block-sizes">block.sizes<a class="anchor" aria-label="anchor" href="#arg-block-sizes"></a></dt>
-<dd><p>An integer vector (default = <code>NULL</code>) specifying
-the size of each group. If <code>NULL</code>, the \(p\) variables are divided
-as evenly as possible across \(K\) groups.</p></dd>
+<dd><p>A vector of positive integers (default = <code>NULL</code>)
+specifying the size of each group.
+Its sum must equal <code>p</code>.
+If <code>NULL</code>, the \(p\) variables are divided as evenly as possible
+across \(K\) groups.</p></dd>
 
 
 <dt id="arg-k">K<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>An integer (default = 3) specifying the number of groups.
-Ignored if <code>block.sizes</code> is provided; then <code>K &lt;- length(block.sizes)</code>.</p></dd>
+<dd><p>An integer &gt; 0 (default = 3) specifying the number of groups.
+It must not exceed <code>p</code>.
+This argument is ignored if <code>block.sizes</code> is provided; in that case,
+<code>K &lt;- length(block.sizes)</code>.</p></dd>
 
 
 <dt id="arg-prob-mat">prob.mat<a class="anchor" aria-label="anchor" href="#arg-prob-mat"></a></dt>
-<dd><p>A \(K \times K\) symmetric matrix (default = <code>NULL</code>)
-specifying the Bernoulli rates. Element \((i, j)\) gives the probability of
-creating an edge between vertices from groups \(i\) and \(j\).
+<dd><p>A numeric \(K \times K\) symmetric matrix
+(default = <code>NULL</code>) with entries in [0, 1], specifying
+the Bernoulli rates.
+Element \((i, j)\) gives the probability of creating an edge between
+vertices from groups \(i\) and \(j\).
 If <code>NULL</code>, a matrix with <code>within.prob</code> on the diagonal and
 <code>between.prob</code> on the off-diagonal is used.</p></dd>
 
 
 <dt id="arg-within-prob">within.prob<a class="anchor" aria-label="anchor" href="#arg-within-prob"></a></dt>
-<dd><p>A numeric value in [0,1] (default = 0.25) specifying
+<dd><p>A numeric value in [0, 1] (default = 0.25) specifying
 the probability of creating an edge between vertices within the same group.
 This argument is used only when <code>prob.mat = NULL</code>.</p></dd>
 
 
 <dt id="arg-between-prob">between.prob<a class="anchor" aria-label="anchor" href="#arg-between-prob"></a></dt>
-<dd><p>A numeric value in [0,1] (default = 0.05) specifying
+<dd><p>A numeric value in [0, 1] (default = 0.05) specifying
 the probability of creating an edge between vertices from different groups.
 This argument is used only when <code>prob.mat = NULL</code>.</p></dd>
 
 
 <dt id="arg-weight-mat">weight.mat<a class="anchor" aria-label="anchor" href="#arg-weight-mat"></a></dt>
-<dd><p>A \(p \times p\) symmetric matrix (default = <code>NULL</code>)
-specifying the edge weights. If <code>NULL</code>, weights are generated block-wise
-according to <code>weight.dists</code> and <code>weight.paras</code>.</p></dd>
+<dd><p>A numeric \(p \times p\) symmetric matrix
+(default = <code>NULL</code>) specifying the edge weights.
+If <code>NULL</code>, weights are generated block-wise according to
+<code>weight.dists</code> and <code>weight.paras</code>.</p></dd>
 
 
 <dt id="arg-weight-dists">weight.dists<a class="anchor" aria-label="anchor" href="#arg-weight-dists"></a></dt>
@@ -131,7 +138,7 @@ between-group blocks ordered as \((1,2)\), \((1,3)\), \((1,4)\), ...,
 </ul><p>Each element of <code>weight.dists</code> can be:</p><ol><li><p>A user-supplied sampling function. The function must accept an argument
 <code>n</code> specifying the number of samples.</p></li>
 <li><p>A character string specifying the distribution family.
-Accepted distributions (base R samplers in parentheses) include:</p><ul><li><p>"beta": Beta distribution (<code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></code>)</p></li>
+Accepted distributions (base R samplers in parentheses) include:</p><ul><li><p>"beta": Beta distribution (<code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></code>).</p></li>
 <li><p>"cauchy": Cauchy distribution (<code><a href="https://rdrr.io/r/stats/Cauchy.html" class="external-link">rcauchy</a></code>).</p></li>
 <li><p>"chisq": Chi-squared distribution (<code><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">rchisq</a></code>).</p></li>
 <li><p>"exp": Exponential distribution (<code><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></code>).</p></li>
@@ -149,15 +156,17 @@ Accepted distributions (base R samplers in parentheses) include:</p><ul><li><p>"
 <dt id="arg-weight-paras">weight.paras<a class="anchor" aria-label="anchor" href="#arg-weight-paras"></a></dt>
 <dd><p>A list
 (default = <code>list(c(shape = 100, rate = 10), c(min = 0, max = 5))</code>)
-specifying the parameters associated with <code>weight.dists</code>. It must follow
-the same length rules as <code>weight.dists</code>. Each element should be a named
-vector or list suitable for the corresponding sampler.</p></dd>
+specifying the parameters associated with <code>weight.dists</code>.
+It must follow the same length rules as <code>weight.dists</code>.
+Each element should be a named vector or list suitable for the corresponding
+sampler.</p></dd>
 
 
 <dt id="arg-cond-target">cond.target<a class="anchor" aria-label="anchor" href="#arg-cond-target"></a></dt>
 <dd><p>A numeric value &gt; 1 (default = 100) specifying the target
-condition number for the precision matrix. When necessary, a diagonal shift
-is applied to ensure positive definiteness and numerical stability.</p></dd>
+condition number for the precision matrix.
+When necessary, a diagonal shift is applied to ensure positive definiteness
+and numerical stability.</p></dd>
 
 </dl></div>
     <div class="section level2">

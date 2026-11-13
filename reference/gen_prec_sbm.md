@@ -24,44 +24,45 @@ gen_prec_sbm(
 
 - p:
 
-  An integer specifying the number of variables (dimensions).
+  An integer \> 1 specifying the number of variables (dimensions).
 
 - block.sizes:
 
-  An integer vector (default = `NULL`) specifying the size of each
-  group. If `NULL`, the \\p\\ variables are divided as evenly as
-  possible across \\K\\ groups.
+  A vector of positive integers (default = `NULL`) specifying the size
+  of each group. Its sum must equal `p`. If `NULL`, the \\p\\ variables
+  are divided as evenly as possible across \\K\\ groups.
 
 - K:
 
-  An integer (default = 3) specifying the number of groups. Ignored if
-  `block.sizes` is provided; then `K <- length(block.sizes)`.
+  An integer \> 0 (default = 3) specifying the number of groups. It must
+  not exceed `p`. This argument is ignored if `block.sizes` is provided;
+  in that case, `K <- length(block.sizes)`.
 
 - prob.mat:
 
-  A \\K \times K\\ symmetric matrix (default = `NULL`) specifying the
-  Bernoulli rates. Element \\(i, j)\\ gives the probability of creating
-  an edge between vertices from groups \\i\\ and \\j\\. If `NULL`, a
-  matrix with `within.prob` on the diagonal and `between.prob` on the
-  off-diagonal is used.
+  A numeric \\K \times K\\ symmetric matrix (default = `NULL`) with
+  entries in \[0, 1\], specifying the Bernoulli rates. Element \\(i,
+  j)\\ gives the probability of creating an edge between vertices from
+  groups \\i\\ and \\j\\. If `NULL`, a matrix with `within.prob` on the
+  diagonal and `between.prob` on the off-diagonal is used.
 
 - within.prob:
 
-  A numeric value in \[0,1\] (default = 0.25) specifying the probability
-  of creating an edge between vertices within the same group. This
-  argument is used only when `prob.mat = NULL`.
+  A numeric value in \[0, 1\] (default = 0.25) specifying the
+  probability of creating an edge between vertices within the same
+  group. This argument is used only when `prob.mat = NULL`.
 
 - between.prob:
 
-  A numeric value in \[0,1\] (default = 0.05) specifying the probability
-  of creating an edge between vertices from different groups. This
-  argument is used only when `prob.mat = NULL`.
+  A numeric value in \[0, 1\] (default = 0.05) specifying the
+  probability of creating an edge between vertices from different
+  groups. This argument is used only when `prob.mat = NULL`.
 
 - weight.mat:
 
-  A \\p \times p\\ symmetric matrix (default = `NULL`) specifying the
-  edge weights. If `NULL`, weights are generated block-wise according to
-  `weight.dists` and `weight.paras`.
+  A numeric \\p \times p\\ symmetric matrix (default = `NULL`)
+  specifying the edge weights. If `NULL`, weights are generated
+  block-wise according to `weight.dists` and `weight.paras`.
 
 - weight.dists:
 
@@ -89,7 +90,7 @@ gen_prec_sbm(
       distributions (base R samplers in parentheses) include:
 
       - "beta": Beta distribution
-        ([`rbeta`](https://rdrr.io/r/stats/Beta.html))
+        ([`rbeta`](https://rdrr.io/r/stats/Beta.html)).
 
       - "cauchy": Cauchy distribution
         ([`rcauchy`](https://rdrr.io/r/stats/Cauchy.html)).
