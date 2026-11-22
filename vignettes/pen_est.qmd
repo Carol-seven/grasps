@@ -161,12 +161,13 @@ P_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
 $$
 
 
-6. LSP: Log-sum penalty [@candes2008enhancing]
+6. LSP: Log-sum penalty [@candes2008enhancing; @mazumder2011sparsenet]
 
 
 $$
 P_{\lambda,\gamma}(\omega_{ij})
-= \lambda\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
+= \frac{\lambda}{\log\left(1+\frac{1}{\gamma}\right)}
+\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
 \quad \gamma > 0.
 $$
 

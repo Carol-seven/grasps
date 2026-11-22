@@ -43,7 +43,7 @@
 #' \item "lq": Lq penalty
 #' \insertCite{frank1993statistical,fu1998penalized,fan2001variable}{grasps}.
 #' \item "lsp": Log-sum penalty
-#' \insertCite{candes2008enhancing}{grasps}.
+#' \insertCite{candes2008enhancing, mazumder2011sparsenet}{grasps}.
 #' \item "mcp": Minimax concave penalty
 #' \insertCite{zhang2010nearly}{grasps}.
 #' \item "scad": Smoothly clipped absolute deviation
