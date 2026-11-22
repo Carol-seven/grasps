@@ -96,7 +96,9 @@ grasps(
   8.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
-  9.  "sica": Smooth integration of counting and absolute deviation (Lv
+  9.  "selo": Seamless-L0 penalty (Dicker et al. 2013) .
+
+  10. "sica": Smooth integration of counting and absolute deviation (Lv
       and Fan 2009) .
 
 - diag.ind:
@@ -151,7 +153,9 @@ grasps(
 
   7.  "scad": default 3.7; must be greater than 2.
 
-  8.  "sica": default 1; must be positive.
+  8.  "selo": default 0.01; must be positive.
+
+  9.  "sica": default 1; must be positive.
 
   This argument is ignored when `penalty = "lasso"`.
 
@@ -457,6 +461,10 @@ Applications*, **14**(5), 877–905.
 Chen J, Chen Z (2008). “Extended Bayesian Information Criteria for Model
 Selection with Large Model Spaces.” *Biometrika*, **95**(3), 759–771.
 [doi:10.1093/biomet/asn034](https://doi.org/10.1093/biomet/asn034) .  
+  
+Dicker L, Huang B, Lin X (2013). “Variable Selection and Estimation with
+the Seamless-\\L_0\\ Penalty.” *Statistica Sinica*, **23**(2), 929–962.
+<https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html>.  
   
 Fan J, Feng Y, Wu Y (2009). “Network Exploration via the Adaptive LASSO
 and SCAD Penalties.” *The Annals of Applied Statistics*, **3**(2),

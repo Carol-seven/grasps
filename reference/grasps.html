@@ -147,6 +147,9 @@ Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and s
 <li><p>"scad": Smoothly clipped absolute deviation
 (Fan and Li 2001; Fan et al. 2009)
 .</p></li>
+<li><p>"selo": Seamless-L0 penalty
+(Dicker et al. 2013)
+.</p></li>
 <li><p>"sica": Smooth integration of counting and absolute deviation
 (Lv and Fan 2009)
 .</p></li>
@@ -197,6 +200,7 @@ The default value and valid range depend on the penalty:</p><ol><li><p>"adapt": 
 <li><p>"lsp": default 0.1; must be positive.</p></li>
 <li><p>"mcp": default 3; must be greater than 1.</p></li>
 <li><p>"scad": default 3.7; must be greater than 2.</p></li>
+<li><p>"selo": default 0.01; must be positive.</p></li>
 <li><p>"sica": default 1; must be positive.</p></li>
 </ol><p>This argument is ignored when <code>penalty = "lasso"</code>.</p></dd>
 
@@ -480,7 +484,10 @@ Akadémiai Kiadó, Budapest, Hungary.<br><br> Candès EJ, Wakin MB, Boyd SP (200
 “Extended Bayesian Information Criteria for Model Selection with Large Model Spaces.”
 <em>Biometrika</em>, <b>95</b>(3), 759–771.
 <a href="https://doi.org/10.1093/biomet/asn034" class="external-link">doi:10.1093/biomet/asn034</a>
-.<br><br> Fan J, Feng Y, Wu Y (2009).
+.<br><br> Dicker L, Huang B, Lin X (2013).
+“Variable Selection and Estimation with the Seamless-\(L_0\) Penalty.”
+<em>Statistica Sinica</em>, <b>23</b>(2), 929–962.
+<a href="https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html" class="external-link">https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html</a>.<br><br> Fan J, Feng Y, Wu Y (2009).
 “Network Exploration via the Adaptive LASSO and SCAD Penalties.”
 <em>The Annals of Applied Statistics</em>, <b>3</b>(2), 521–541.
 <a href="https://doi.org/10.1214/08-aoas215" class="external-link">doi:10.1214/08-aoas215</a>

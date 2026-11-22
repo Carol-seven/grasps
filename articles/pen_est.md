@@ -138,7 +138,14 @@ optimization.
 \dfrac{\lambda^2(\gamma+1)}{2} & \text{if } \vert\omega\_{ij}\vert \geq
 \gamma\lambda. \end{cases} \quad \gamma \> 2. \\
 
-9.  SICA: Smooth integration of counting and absolute deviation ([Lv and
+9.  SELO: Seamless-L0 penalty ([Dicker et al.
+    2013](#ref-dicker2013variable))
+
+\\ P\_{\lambda,\gamma}(\omega\_{ij}) = \frac{\lambda}{\log(2)}
+\log\left(\frac{\lvert\omega\_{ij}\rvert}{\lvert\omega\_{ij}\rvert+\gamma}+1\right),
+\quad \gamma \> 0. \\
+
+10. SICA: Smooth integration of counting and absolute deviation ([Lv and
     Fan 2009](#ref-lv2009unified))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) =
@@ -164,11 +171,11 @@ magnifies the region near zero \\\[-1, 1\]\\.
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
-penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "sica")
+penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "selo", "sica")
 
 pen_df <- compute_penalty(seq(-4, 4, by = 0.01), penalties, lambda = 1)
 plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+  guides(color = guide_legend(nrow = 3, byrow = TRUE))
 ```
 
 ![](pen_est_files/figure-html/unnamed-chunk-3-1.png)
@@ -191,7 +198,7 @@ exerting little to no shrinkage on large ones.
 deriv_df <- compute_derivative(seq(0, 4, by = 0.01), penalties, lambda = 1)
 plot(deriv_df) +
   scale_y_continuous(limits = c(0, 1.5)) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+  guides(color = guide_legend(nrow = 3, byrow = TRUE))
 ```
 
 ![](pen_est_files/figure-html/unnamed-chunk-6-1.png)
@@ -204,6 +211,11 @@ Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008.
 “Enhancing Sparsity by Reweighted \\\ell_1\\ Minimization.” *Journal of
 Fourier Analysis and Applications* 14 (5): 877–905.
 <https://doi.org/10.1007/s00041-008-9045-x>.
+
+Dicker, Lee, Baosheng Huang, and Xihong Lin. 2013. “Variable Selection
+and Estimation with the Seamless-\\L_0\\ Penalty.” *Statistica Sinica*
+23 (2): 929–62.
+<https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html>.
 
 Fan, Jianqing, Yang Feng, and Yichao Wu. 2009. “Network Exploration via
 the Adaptive LASSO and SCAD Penalties.” *The Annals of Applied

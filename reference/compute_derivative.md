@@ -39,7 +39,9 @@ compute_derivative(omega, penalty, lambda, gamma = NA)
   7.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
-  8.  "sica": Smooth integration of counting and absolute deviation (Lv
+  8.  "selo": Seamless-L0 penalty (Dicker et al. 2013) .
+
+  9.  "sica": Smooth integration of counting and absolute deviation (Lv
       and Fan 2009) .
 
   If `penalty` has length 1, it is recycled to the common length
@@ -70,7 +72,9 @@ compute_derivative(omega, penalty, lambda, gamma = NA)
 
   6.  "scad": default 3.7; must be greater than 2.
 
-  7.  "sica": default 1; must be positive.
+  7.  "selo": default 0.01; must be positive.
+
+  8.  "sica": default 1; must be positive.
 
   For `"lasso"`, `gamma` is ignored.
 
@@ -110,6 +114,10 @@ Candès EJ, Wakin MB, Boyd SP (2008). “Enhancing Sparsity by Reweighted
 Applications*, **14**(5), 877–905.
 [doi:10.1007/s00041-008-9045-x](https://doi.org/10.1007/s00041-008-9045-x)
 .  
+  
+Dicker L, Huang B, Lin X (2013). “Variable Selection and Estimation with
+the Seamless-\\L_0\\ Penalty.” *Statistica Sinica*, **23**(2), 929–962.
+<https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html>.  
   
 Fan J, Feng Y, Wu Y (2009). “Network Exploration via the Adaptive LASSO
 and SCAD Penalties.” *The Annals of Applied Statistics*, **3**(2),
@@ -178,12 +186,12 @@ library(ggplot2)
 
 deriv_df <- compute_derivative(
   omega = seq(0, 4, by = 0.01),
-  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad"),
+  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "selo", "sica"),
   lambda = 1)
 
 plot(deriv_df) +
   scale_y_continuous(limits = c(0, 1.5)) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE))
-#> Warning: Removed 40 rows containing missing values or values outside the scale range
+  guides(color = guide_legend(nrow = 3, byrow = TRUE))
+#> Warning: Removed 63 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```

@@ -215,6 +215,16 @@ P_{\lambda,\gamma}(\omega_{ij})
 \quad \gamma &gt; 2.
 \]</span></p>
 <ol start="9" type="1">
+<li>SELO: Seamless-L0 penalty <span class="citation" data-cites="dicker2013variable">(<a href="#ref-dicker2013variable" role="doc-biblioref">Dicker et al. 2013</a>)</span>
+</li>
+</ol>
+<p><span class="math display">\[
+P_{\lambda,\gamma}(\omega_{ij})
+= \frac{\lambda}{\log(2)}
+\log\left(\frac{\lvert\omega_{ij}\rvert}{\lvert\omega_{ij}\rvert+\gamma}+1\right),
+\quad \gamma &gt; 0.
+\]</span></p>
+<ol start="10" type="1">
 <li>SICA: Smooth integration of counting and absolute deviation <span class="citation" data-cites="lv2009unified">(<a href="#ref-lv2009unified" role="doc-biblioref">Lv and Fan 2009</a>)</span>
 </li>
 </ol>
@@ -237,11 +247,11 @@ P_{\lambda,\gamma}(\omega_{ij})
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Carol-seven/grasps" class="external-link">grasps</a></span><span class="op">)</span> <span class="co">## for penalty computation</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co">## for visualization</span></span>
 <span></span>
-<span><span class="va">penalties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"atan"</span>, <span class="st">"exp"</span>, <span class="st">"lasso"</span>, <span class="st">"lq"</span>, <span class="st">"lsp"</span>, <span class="st">"mcp"</span>, <span class="st">"scad"</span>, <span class="st">"sica"</span><span class="op">)</span></span>
+<span><span class="va">penalties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"atan"</span>, <span class="st">"exp"</span>, <span class="st">"lasso"</span>, <span class="st">"lq"</span>, <span class="st">"lsp"</span>, <span class="st">"mcp"</span>, <span class="st">"scad"</span>, <span class="st">"selo"</span>, <span class="st">"sica"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pen_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_penalty.html">compute_penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">4</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>, <span class="va">penalties</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pen_df</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, zoom.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="fig-pen" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-pen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -264,7 +274,7 @@ Figure 1: Illustrative penalty functions.
 <code class="sourceCode R"><span><span class="va">deriv_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_derivative.html">compute_derivative</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>, <span class="va">penalties</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">deriv_df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="fig-deriv" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-deriv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -286,6 +296,9 @@ Figure 2: Illustrative penalty derivatives.
 </section></section><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-candes2008enhancing" class="csl-entry" role="listitem">
 Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008. <span>“Enhancing Sparsity by Reweighted <span class="math inline">\(\ell_1\)</span> Minimization.”</span> <em>Journal of Fourier Analysis and Applications</em> 14 (5): 877–905. <a href="https://doi.org/10.1007/s00041-008-9045-x" class="external-link">https://doi.org/10.1007/s00041-008-9045-x</a>.
+</div>
+<div id="ref-dicker2013variable" class="csl-entry" role="listitem">
+Dicker, Lee, Baosheng Huang, and Xihong Lin. 2013. <span>“Variable Selection and Estimation with the Seamless-<span><span class="math inline">\(L_0\)</span></span> Penalty.”</span> <em>Statistica Sinica</em> 23 (2): 929–62. <a href="https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html" class="external-link">https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html</a>.
 </div>
 <div id="ref-fan2009network" class="csl-entry" role="listitem">
 Fan, Jianqing, Yang Feng, and Yichao Wu. 2009. <span>“Network Exploration via the Adaptive <span>LASSO</span> and <span>SCAD</span> Penalties.”</span> <em>The Annals of Applied Statistics</em> 3 (2): 521–41. <a href="https://doi.org/10.1214/08-aoas215" class="external-link">https://doi.org/10.1214/08-aoas215</a>.
