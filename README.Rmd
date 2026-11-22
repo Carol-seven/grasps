@@ -75,9 +75,10 @@ the following penalties:
 | Atan (`penalty = "atan"`) | @wang2016variable |
 | Exp (`penalty = "exp"`) | @wang2018variable |
 | Lq (`penalty = "lq"`) | @frank1993statistical; @fu1998penalized; @fan2001variable |
-| LSP (`penalty = "lsp"`) | @candes2008enhancing |
+| LSP (`penalty = "lsp"`) | @candes2008enhancing; @mazumder2011sparsenet |
 | MCP (`penalty = "mcp"`) | @zhang2010nearly |
 | SCAD (`penalty = "scad"`) | @fan2001variable; @fan2009network |
+| SICA (`penalty = "sica"`) | @lv2009unified |
 
 
 See the vignette

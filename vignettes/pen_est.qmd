@@ -204,6 +204,16 @@ P_{\lambda,\gamma}(\omega_{ij})
 $$
 
 
+9. SICA: Smooth integration of counting and absolute deviation [@lv2009unified]
+
+
+$$
+P_{\lambda,\gamma}(\omega_{ij})
+= \lambda\frac{(\gamma+1)\lvert\omega_{ij}\rvert}{\gamma+\lvert\omega_{ij}\rvert},
+\quad \gamma > 0.
+$$
+
+
 <div class="note">
 **Note**:
 
@@ -225,7 +235,7 @@ while the inset panel (left) magnifies the region near zero $[-1, 1]$.
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
-penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad")
+penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "sica")
 
 pen_df <- compute_penalty(seq(-4, 4, by = 0.01), penalties, lambda = 1)
 plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +

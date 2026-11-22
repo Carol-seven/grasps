@@ -27,6 +27,8 @@ Available options include:
 \insertCite{zhang2010nearly}{grasps}.
 \item "scad": Smoothly clipped absolute deviation
 \insertCite{fan2001variable,fan2009network}{grasps}.
+\item "sica": Smooth integration of counting and absolute deviation
+\insertCite{lv2009unified}{grasps}.
 }
 If \code{penalty} has length 1, it is recycled to the common length
 determined by \code{penalty}, \code{lambda}, and \code{gamma}.}
@@ -48,6 +50,7 @@ The default value and valid range depend on the penalty:
 \item "lsp": default 0.1; must be positive.
 \item "mcp": default 3; must be greater than 1.
 \item "scad": default 3.7; must be greater than 2.
+\item "sica": default 1; must be positive.
 }
 For \code{"lasso"}, \code{gamma} is ignored.}
 }

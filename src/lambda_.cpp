@@ -19,7 +19,7 @@ arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
     W = lambda / (arma::pow(abs_Omega, gamma) + eps);
 
   } else if (penalty == "atan") {
-    W = lambda * gamma * (gamma + 2/M_PI) / (gamma*gamma + Omega%Omega);
+    W = lambda * gamma * (gamma + 2/M_PI) / (gamma * gamma + Omega % Omega);
 
   } else if (penalty == "exp") {
     W = (lambda / gamma) * arma::exp(-abs_Omega / gamma);
@@ -31,13 +31,16 @@ arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
     W = (lambda / std::log1p(1.0 / gamma)) / (gamma + abs_Omega);
 
   } else if (penalty == "mcp") {
-    W = (lambda - abs_Omega/gamma) % (abs_Omega <= gamma*lambda);
+    W = (lambda - abs_Omega / gamma) % (abs_Omega <= gamma * lambda);
 
   } else if (penalty == "scad") {
     W.fill(lambda);
     W = W % (abs_Omega <= lambda);
     W += ((gamma*lambda - abs_Omega) / (gamma - 1)) %
-      ((abs_Omega > lambda) % (abs_Omega <= gamma*lambda));
+      ((abs_Omega > lambda) % (abs_Omega <= gamma * lambda));
+
+  } else if (penalty == "sica") {
+    W = lambda * gamma * (gamma + 1.0) / arma::square(gamma + abs_Omega);
 
   } else {
     stop("Unsupported penalty type!");
@@ -60,7 +63,8 @@ double lambda_group(const arma::mat& Omega, const std::string& penalty,
     return lambda / (std::pow(Omega_norm, gamma) + eps);
 
   } else if (penalty == "atan") {
-    return lambda * gamma * (gamma + 2/M_PI) / (gamma*gamma + Omega_norm*Omega_norm);
+    return lambda * gamma * (gamma + 2 / M_PI) /
+      (gamma * gamma + Omega_norm * Omega_norm);
 
   } else if (penalty == "exp") {
     return (lambda / gamma) * std::exp(-Omega_norm / gamma);
@@ -72,8 +76,8 @@ double lambda_group(const arma::mat& Omega, const std::string& penalty,
     return (lambda / std::log1p(1.0 / gamma)) / (gamma + Omega_norm);
 
   } else if (penalty == "mcp") {
-    if (Omega_norm <= gamma*lambda) {
-      return lambda - Omega_norm/gamma;
+    if (Omega_norm <= gamma * lambda) {
+      return lambda - Omega_norm / gamma;
     } else {
       return 0.0;
     }
@@ -81,14 +85,17 @@ double lambda_group(const arma::mat& Omega, const std::string& penalty,
   } else if (penalty == "scad") {
     if (Omega_norm <= lambda) {
       return lambda;
-    } else if (Omega_norm <= gamma*lambda) {
+    } else if (Omega_norm <= gamma * lambda) {
       return (gamma*lambda - Omega_norm) / (gamma - 1);
     } else {
       return 0.0;
     }
 
+  } else if (penalty == "sica") {
+    const double denom = gamma + Omega_norm;
+    return lambda * gamma * (gamma + 1.0) / (denom * denom);
+
   } else {
     stop("Unsupported penalty type!");
   }
 }
-

@@ -24,6 +24,8 @@
 #' \insertCite{zhang2010nearly}{grasps}.
 #' \item "scad": Smoothly clipped absolute deviation
 #' \insertCite{fan2001variable,fan2009network}{grasps}.
+#' \item "sica": Smooth integration of counting and absolute deviation
+#' \insertCite{lv2009unified}{grasps}.
 #' }
 #' If \code{penalty} has length 1, it is recycled to the common length
 #' determined by \code{penalty}, \code{lambda}, and \code{gamma}.
@@ -45,6 +47,7 @@
 #' \item "lsp": default 0.1; must be positive.
 #' \item "mcp": default 3; must be greater than 1.
 #' \item "scad": default 3.7; must be greater than 2.
+#' \item "sica": default 1; must be positive.
 #' }
 #' For \code{"lasso"}, \code{gamma} is ignored.
 #'
@@ -74,7 +77,7 @@
 compute_derivative <- function(omega, penalty, lambda, gamma = NA) {
 
   validate_vector(omega, "omega")
-  penalties <- c("lasso", "atan", "exp", "lq", "lsp", "mcp", "scad")
+  penalties <- c("lasso", "atan", "exp", "lq", "lsp", "mcp", "scad", "sica")
   if (!is.character(penalty) || length(penalty) == 0L ||
       anyNA(penalty) || any(!penalty %in% penalties)) {
     stop(sprintf("Invalid `penalty`.\nAvailable options: %s.",
@@ -114,8 +117,8 @@ deriv_internal <- function(omega, penalty, lambda, gamma) {
   if (penalty != "lasso") {
     if (missing(gamma) || is.na(gamma)) {
       gamma <- switch(penalty,
-                      "atan" = 0.005, "exp" = 0.01, "lq" = 0.5,
-                      "lsp" = 0.1, "mcp" = 3, "scad" = 3.7)
+                      "atan" = 0.005, "exp" = 0.01, "lq" = 0.5, "lsp" = 0.1,
+                      "mcp" = 3, "scad" = 3.7, "sica" = 1)
     }
     lower <- switch(penalty, "mcp" = 1, "scad" = 2, 0)
     validate_scalar(gamma, "gamma", lower = lower)
@@ -150,6 +153,10 @@ deriv_internal <- function(omega, penalty, lambda, gamma) {
   } else if (penalty == "scad") {
     res <- lambda * (a <= lambda) +
       pmax(gamma * lambda - a, 0) / (gamma - 1) * (a > lambda)
+
+  } else if (penalty == "sica") {
+    res <- lambda * gamma * (gamma + 1) / (gamma + a)^2
+
   }
 
   return(data.frame(omega = omega,

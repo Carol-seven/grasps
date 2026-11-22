@@ -48,6 +48,8 @@
 #' \insertCite{zhang2010nearly}{grasps}.
 #' \item "scad": Smoothly clipped absolute deviation
 #' \insertCite{fan2001variable,fan2009network}{grasps}.
+#' \item "sica": Smooth integration of counting and absolute deviation
+#' \insertCite{lv2009unified}{grasps}.
 #' }
 #'
 #' @param diag.ind A logical value (default = TRUE) specifying whether to
@@ -85,6 +87,7 @@
 #' \item "lsp": default 0.1; must be positive.
 #' \item "mcp": default 3; must be greater than 1.
 #' \item "scad": default 3.7; must be greater than 2.
+#' \item "sica": default 1; must be positive.
 #' }
 #' This argument is ignored when \code{penalty = "lasso"}.
 #'
@@ -359,7 +362,8 @@ grasps <- function(X, n = nrow(X), membership, penalty,
 
   ## Validate the penalty specification ----------------------------------------
 
-  penalties <- c("lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad")
+  penalties <- c("lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad",
+                 "sica")
 
   if (!is.character(penalty) || length(penalty) != 1L ||
       is.na(penalty) || !(penalty %in% penalties)) {
@@ -414,7 +418,7 @@ grasps <- function(X, n = nrow(X), membership, penalty,
     if (is.null(gamma)) {
       gamma <- switch(penalty,
                       "adapt" = 0.5, "atan" = 0.005, "exp"  = 0.01, "lq" = 0.5,
-                      "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7)
+                      "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7, "sica" = 1)
     }
     lower <- switch(penalty, "mcp" = 1, "scad" = 2, 0)
     validate_scalar(gamma, "gamma", lower = lower)
