@@ -192,7 +192,7 @@ stopifnot(isTRUE(all.equal(scad.one.step$hatOmega[1, 1], 0.8879,
                            tolerance = 1e-4)),
           scad.one.step$lla.iterations == 1L,
           is.na(scad.one.step$lla.converged),
-          isTRUE(all.equal(scad.iterative$hatOmega[1, 1], 0.9411,
+          isTRUE(all.equal(scad.iterative$hatOmega[1, 1], 0.9412,
                            tolerance = 1e-4)),
           scad.iterative$lla.iterations > 1L,
           isTRUE(scad.iterative$lla.converged))

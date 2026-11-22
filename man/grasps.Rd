@@ -305,6 +305,9 @@ and held fixed while the resulting weighted subproblem is solved.
 When \code{lla = TRUE}, the penalty weights are updated after each weighted
 subproblem until the relative change between successive precision matrix
 estimates is no greater than \code{tol.lla}, or \code{maxiter.lla} is reached.
+Starting with the second LLA step, ADMM is warm-started using the final
+primal and scaled dual variables and the final \code{rho} from the previous
+weighted subproblem.
 This iterative procedure is intended to approach a stationary point of
 the original non-convex objective but does not guarantee a global optimum.
 

@@ -139,8 +139,8 @@ List ADMMlla(
     const arma::mat& S, const List& group_idx, const std::string& penalty,
     bool diag_ind, bool diag_grp, bool diag_include,
     const double& lambda, const double& alpha, const double& gamma,
-    const arma::mat& weight_ref,
-    double rho, const double tau_incr, const double tau_decr, const double nu,
+    const arma::mat& weight_ref, arma::mat& Z, arma::mat& U, double& rho,
+    const double tau_incr, const double tau_decr, const double nu,
     const double tol_abs, const double tol_rel, const int maxiter) {
 
   int p = S.n_cols;
@@ -148,8 +148,6 @@ List ADMMlla(
   bool converged = false;
 
   arma::mat Omega = arma::diagmat(1 / arma::diagvec(S));
-  arma::mat Z = arma::zeros(p, p);
-  arma::mat U = arma::zeros(p, p);
   arma::mat Z_old = Z;
 
   arma::mat I = arma::ones(p, p);
@@ -260,14 +258,16 @@ List ADMMsggn(
   int lla_iterations = 0;
   bool all_admm_converged = true;
   bool lla_converged = false;
+  arma::mat Z = arma::zeros(S.n_rows, S.n_cols);
+  arma::mat U = arma::zeros(S.n_rows, S.n_cols);
 
   for (int lla_iter = 0; lla_iter < steps; ++lla_iter) {
 
     List step = ADMMlla(S, group_idx, penalty,
                         diag_ind, diag_grp, diag_include,
                         lambda, alpha, gamma,
-                        weight_ref,
-                        rho, tau_incr, tau_decr, nu,
+                        weight_ref, Z, U, rho,
+                        tau_incr, tau_decr, nu,
                         tol_abs, tol_rel, maxiter);
 
     hatOmega = Rcpp::as<arma::mat>(step["hatOmega"]);
