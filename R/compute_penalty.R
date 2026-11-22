@@ -142,7 +142,7 @@ pen_internal <- function(omega, penalty, lambda, gamma) {
     res <- lambda * (a + epsilon)^gamma
 
   } else if (penalty == "lsp") {
-    res <- lambda * log1p(a / gamma)
+    res <- lambda * (log1p(a / gamma) / log1p(1 / gamma))
 
   } else if (penalty == "mcp") {
     res <- (lambda * a - a^2 / (2 * gamma)) * (a <= gamma * lambda) +

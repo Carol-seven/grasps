@@ -142,7 +142,7 @@ deriv_internal <- function(omega, penalty, lambda, gamma) {
     res <- lambda * gamma * (a + epsilon)^(gamma - 1)
 
   } else if (penalty == "lsp") {
-    res <- lambda / (gamma + a)
+    res <- (lambda / (gamma + a)) / log1p(1 / gamma)
 
   } else if (penalty == "mcp") {
     res <- (lambda - a / gamma) * (a <= gamma * lambda)

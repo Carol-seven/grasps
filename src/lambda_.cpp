@@ -28,7 +28,7 @@ arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
     W = lambda * gamma * arma::pow(abs_Omega + eps, gamma - 1.0);
 
   } else if (penalty == "lsp") {
-    W = lambda / (gamma + abs_Omega);
+    W = (lambda / std::log1p(1.0 / gamma)) / (gamma + abs_Omega);
 
   } else if (penalty == "mcp") {
     W = (lambda - abs_Omega/gamma) % (abs_Omega <= gamma*lambda);
@@ -69,7 +69,7 @@ double lambda_group(const arma::mat& Omega, const std::string& penalty,
     return lambda * gamma * std::pow(Omega_norm + eps, gamma - 1.0);
 
   } else if (penalty == "lsp") {
-    return lambda / (gamma + Omega_norm);
+    return (lambda / std::log1p(1.0 / gamma)) / (gamma + Omega_norm);
 
   } else if (penalty == "mcp") {
     if (Omega_norm <= gamma*lambda) {
