@@ -39,6 +39,10 @@ arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
     W += ((gamma*lambda - abs_Omega) / (gamma - 1)) %
       ((abs_Omega > lambda) % (abs_Omega <= gamma * lambda));
 
+  } else if (penalty == "selo") {
+    W = (lambda * gamma / std::log(2.0)) /
+      ((abs_Omega + gamma) % (2.0 * abs_Omega + gamma));
+
   } else if (penalty == "sica") {
     W = lambda * gamma * (gamma + 1.0) / arma::square(gamma + abs_Omega);
 
@@ -90,6 +94,10 @@ double lambda_group(const arma::mat& Omega, const std::string& penalty,
     } else {
       return 0.0;
     }
+
+  } else if (penalty == "selo") {
+    return (lambda * gamma / std::log(2.0)) /
+      ((Omega_norm + gamma) * (2.0 * Omega_norm + gamma));
 
   } else if (penalty == "sica") {
     const double denom = gamma + Omega_norm;

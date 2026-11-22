@@ -27,6 +27,8 @@ Available options include:
 \insertCite{zhang2010nearly}{grasps}.
 \item "scad": Smoothly clipped absolute deviation
 \insertCite{fan2001variable,fan2009network}{grasps}.
+\item "selo": Seamless-L0 penalty
+\insertCite{dicker2013variable}{grasps}.
 \item "sica": Smooth integration of counting and absolute deviation
 \insertCite{lv2009unified}{grasps}.
 }
@@ -50,6 +52,7 @@ The default value and valid range depend on the penalty:
 \item "lsp": default 0.1; must be positive.
 \item "mcp": default 3; must be greater than 1.
 \item "scad": default 3.7; must be greater than 2.
+\item "selo": default 0.01; must be positive.
 \item "sica": default 1; must be positive.
 }
 For \code{"lasso"}, \code{gamma} is ignored.}
@@ -79,12 +82,12 @@ library(ggplot2)
 
 deriv_df <- compute_derivative(
   omega = seq(0, 4, by = 0.01),
-  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad"),
+  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "selo", "sica"),
   lambda = 1)
 
 plot(deriv_df) +
   scale_y_continuous(limits = c(0, 1.5)) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE))
+  guides(color = guide_legend(nrow = 3, byrow = TRUE))
 }
 \references{
 \insertAllCited{}

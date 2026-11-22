@@ -78,6 +78,7 @@ the following penalties:
 | LSP (`penalty = "lsp"`) | @candes2008enhancing; @mazumder2011sparsenet |
 | MCP (`penalty = "mcp"`) | @zhang2010nearly |
 | SCAD (`penalty = "scad"`) | @fan2001variable; @fan2009network |
+| SELO (`penalty = "selo"`) | @dicker2013variable |
 | SICA (`penalty = "sica"`) | @lv2009unified |
 
 

@@ -44,6 +44,7 @@ the following penalties:
 | LSP (`penalty = "lsp"`) | Candès et al. ([2008](#ref-candes2008enhancing)); Mazumder et al. ([2011](#ref-mazumder2011sparsenet)) |
 | MCP (`penalty = "mcp"`) | Zhang ([2010](#ref-zhang2010nearly)) |
 | SCAD (`penalty = "scad"`) | Fan and Li ([2001](#ref-fan2001variable)); Fan et al. ([2009](#ref-fan2009network)) |
+| SELO (`penalty = "selo"`) | Dicker et al. ([2013](#ref-dicker2013variable)) |
 | SICA (`penalty = "sica"`) | Lv and Fan ([2009](#ref-lv2009unified)) |
 
 See the vignette
@@ -141,6 +142,12 @@ plot(adj)
 <div id="ref-candes2008enhancing" class="csl-entry">
 
 Candès, Emmanuel J., Michael B. Wakin, and Stephen P. Boyd. 2008. “Enhancing Sparsity by Reweighted $\ell_1$ Minimization.” *Journal of Fourier Analysis and Applications* 14 (5): 877–905. <https://doi.org/10.1007/s00041-008-9045-x>.
+
+</div>
+
+<div id="ref-dicker2013variable" class="csl-entry">
+
+Dicker, Lee, Baosheng Huang, and Xihong Lin. 2013. “Variable Selection and Estimation with the Seamless-$L_0$ Penalty.” *Statistica Sinica* 23 (2): 929–62. <https://www3.stat.sinica.edu.tw/statistica/j23n2/J23N220/J23N220.html>.
 
 </div>
 
