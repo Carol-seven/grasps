@@ -214,6 +214,15 @@ P_{\lambda,\gamma}(\omega_{ij})
 \end{cases}
 \quad \gamma &gt; 2.
 \]</span></p>
+<ol start="9" type="1">
+<li>SICA: Smooth integration of counting and absolute deviation <span class="citation" data-cites="lv2009unified">(<a href="#ref-lv2009unified" role="doc-biblioref">Lv and Fan 2009</a>)</span>
+</li>
+</ol>
+<p><span class="math display">\[
+P_{\lambda,\gamma}(\omega_{ij})
+= \lambda\frac{(\gamma+1)\lvert\omega_{ij}\rvert}{\gamma+\lvert\omega_{ij}\rvert},
+\quad \gamma &gt; 0.
+\]</span></p>
 <div class="note">
 <p><strong>Note</strong>:</p>
 <ul><li>For lasso, which is convex, the additional parameter <span class="math inline">\(\gamma\)</span> is not required, and the penalty function <span class="math inline">\(P_{\lambda,\gamma}(\cdot)\)</span> simplifies to <span class="math inline">\(P_\lambda(\cdot)\)</span>.
@@ -228,7 +237,7 @@ P_{\lambda,\gamma}(\omega_{ij})
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Carol-seven/grasps" class="external-link">grasps</a></span><span class="op">)</span> <span class="co">## for penalty computation</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co">## for visualization</span></span>
 <span></span>
-<span><span class="va">penalties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"atan"</span>, <span class="st">"exp"</span>, <span class="st">"lasso"</span>, <span class="st">"lq"</span>, <span class="st">"lsp"</span>, <span class="st">"mcp"</span>, <span class="st">"scad"</span><span class="op">)</span></span>
+<span><span class="va">penalties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"atan"</span>, <span class="st">"exp"</span>, <span class="st">"lasso"</span>, <span class="st">"lq"</span>, <span class="st">"lsp"</span>, <span class="st">"mcp"</span>, <span class="st">"scad"</span>, <span class="st">"sica"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pen_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_penalty.html">compute_penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">4</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>, <span class="va">penalties</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pen_df</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, zoom.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -292,6 +301,9 @@ Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008. <span>“Sparse In
 </div>
 <div id="ref-fu1998penalized" class="csl-entry" role="listitem">
 Fu, Wenjiang J. 1998. <span>“Penalized Regressions: <span>T</span>he Bridge Versus the Lasso.”</span> <em>Journal of Computational and Graphical Statistics</em> 7 (3): 397–416. <a href="https://doi.org/10.1080/10618600.1998.10474784" class="external-link">https://doi.org/10.1080/10618600.1998.10474784</a>.
+</div>
+<div id="ref-lv2009unified" class="csl-entry" role="listitem">
+Lv, Jinchi, and Yingying Fan. 2009. <span>“<span class="nocase">A Unified Approach to Model Selection and Sparse Recovery using Regularized Least Squares</span>.”</span> <em>The Annals of Statistics</em> 37 (6A): 3498–528. <a href="https://doi.org/10.1214/09-AOS683" class="external-link">https://doi.org/10.1214/09-AOS683</a>.
 </div>
 <div id="ref-mazumder2011sparsenet" class="csl-entry" role="listitem">
 Mazumder, Rahul, Jerome H. Friedman, and Trevor Hastie. 2011. <span>“<span>SparseNet</span>: <span>C</span>oordinate Descent with Nonconvex Penalties.”</span> <em>Journal of the American Statistical Association</em> 106 (495): 1125–38. <a href="https://doi.org/10.1198/jasa.2011.tm09738" class="external-link">https://doi.org/10.1198/jasa.2011.tm09738</a>.

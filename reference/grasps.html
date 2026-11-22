@@ -147,6 +147,9 @@ Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and s
 <li><p>"scad": Smoothly clipped absolute deviation
 (Fan and Li 2001; Fan et al. 2009)
 .</p></li>
+<li><p>"sica": Smooth integration of counting and absolute deviation
+(Lv and Fan 2009)
+.</p></li>
 </ol></dd>
 
 
@@ -194,6 +197,7 @@ The default value and valid range depend on the penalty:</p><ol><li><p>"adapt": 
 <li><p>"lsp": default 0.1; must be positive.</p></li>
 <li><p>"mcp": default 3; must be greater than 1.</p></li>
 <li><p>"scad": default 3.7; must be greater than 2.</p></li>
+<li><p>"sica": default 1; must be positive.</p></li>
 </ol><p>This argument is ignored when <code>penalty = "lasso"</code>.</p></dd>
 
 
@@ -503,6 +507,10 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 “Penalized Regressions: The Bridge versus the Lasso.”
 <em>Journal of Computational and Graphical Statistics</em>, <b>7</b>(3), 397–416.
 <a href="https://doi.org/10.1080/10618600.1998.10474784" class="external-link">doi:10.1080/10618600.1998.10474784</a>
+.<br><br> Lv J, Fan Y (2009).
+“A Unified Approach to Model Selection and Sparse Recovery using Regularized Least Squares.”
+<em>The Annals of Statistics</em>, <b>37</b>(6A), 3498–3528.
+<a href="https://doi.org/10.1214/09-AOS683" class="external-link">doi:10.1214/09-AOS683</a>
 .<br><br> Mazumder R, Friedman JH, Hastie T (2011).
 “SparseNet: Coordinate Descent with Nonconvex Penalties.”
 <em>Journal of the American Statistical Association</em>, <b>106</b>(495), 1125–1138.

@@ -39,6 +39,9 @@ compute_derivative(omega, penalty, lambda, gamma = NA)
   7.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
+  8.  "sica": Smooth integration of counting and absolute deviation (Lv
+      and Fan 2009) .
+
   If `penalty` has length 1, it is recycled to the common length
   determined by `penalty`, `lambda`, and `gamma`.
 
@@ -66,6 +69,8 @@ compute_derivative(omega, penalty, lambda, gamma = NA)
   5.  "mcp": default 3; must be greater than 1.
 
   6.  "scad": default 3.7; must be greater than 2.
+
+  7.  "sica": default 1; must be positive.
 
   For `"lasso"`, `gamma` is ignored.
 
@@ -132,6 +137,11 @@ Fu WJ (1998). “Penalized Regressions: The Bridge versus the Lasso.”
 *Journal of Computational and Graphical Statistics*, **7**(3), 397–416.
 [doi:10.1080/10618600.1998.10474784](https://doi.org/10.1080/10618600.1998.10474784)
 .  
+  
+Lv J, Fan Y (2009). “A Unified Approach to Model Selection and Sparse
+Recovery using Regularized Least Squares.” *The Annals of Statistics*,
+**37**(6A), 3498–3528.
+[doi:10.1214/09-AOS683](https://doi.org/10.1214/09-AOS683) .  
   
 Mazumder R, Friedman JH, Hastie T (2011). “SparseNet: Coordinate Descent
 with Nonconvex Penalties.” *Journal of the American Statistical

@@ -45,9 +45,10 @@ using the following penalties:
 | Atan (`penalty = "atan"`) | Wang and Zhu ([2016](#ref-wang2016variable)) |
 | Exp (`penalty = "exp"`) | Wang et al. ([2018](#ref-wang2018variable)) |
 | Lq (`penalty = "lq"`) | Frank and Friedman ([1993](#ref-frank1993statistical)); Fu ([1998](#ref-fu1998penalized)); Fan and Li ([2001](#ref-fan2001variable)) |
-| LSP (`penalty = "lsp"`) | Candès et al. ([2008](#ref-candes2008enhancing)) |
+| LSP (`penalty = "lsp"`) | Candès et al. ([2008](#ref-candes2008enhancing)); Mazumder et al. ([2011](#ref-mazumder2011sparsenet)) |
 | MCP (`penalty = "mcp"`) | Zhang ([2010](#ref-zhang2010nearly)) |
 | SCAD (`penalty = "scad"`) | Fan and Li ([2001](#ref-fan2001variable)); Fan et al. ([2009](#ref-fan2009network)) |
+| SICA (`penalty = "sica"`) | Lv and Fan ([2009](#ref-lv2009unified)) |
 
 See the vignette [Penalized Precision Matrix Estimation in
 grasps](https://shiying-xiao.com/grasps/articles/pen_est#penalties) for
@@ -167,6 +168,16 @@ Inverse Covariance Estimation with the Graphical Lasso.” *Biostatistics*
 Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge versus the
 Lasso.” *Journal of Computational and Graphical Statistics* 7 (3):
 397–416. <https://doi.org/10.1080/10618600.1998.10474784>.
+
+Lv, Jinchi, and Yingying Fan. 2009. “A Unified Approach to Model
+Selection and Sparse Recovery using Regularized Least Squares.” *The
+Annals of Statistics* 37 (6A): 3498–528.
+<https://doi.org/10.1214/09-AOS683>.
+
+Mazumder, Rahul, Jerome H. Friedman, and Trevor Hastie. 2011.
+“SparseNet: Coordinate Descent with Nonconvex Penalties.” *Journal of
+the American Statistical Association* 106 (495): 1125–38.
+<https://doi.org/10.1198/jasa.2011.tm09738>.
 
 Tibshirani, Robert. 1996. “Regression Shrinkage and Selection via the
 Lasso.” *Journal of the Royal Statistical Society: Series B

@@ -138,6 +138,13 @@ optimization.
 \dfrac{\lambda^2(\gamma+1)}{2} & \text{if } \vert\omega\_{ij}\vert \geq
 \gamma\lambda. \end{cases} \quad \gamma \> 2. \\
 
+9.  SICA: Smooth integration of counting and absolute deviation ([Lv and
+    Fan 2009](#ref-lv2009unified))
+
+\\ P\_{\lambda,\gamma}(\omega\_{ij}) =
+\lambda\frac{(\gamma+1)\lvert\omega\_{ij}\rvert}{\gamma+\lvert\omega\_{ij}\rvert},
+\quad \gamma \> 0. \\
+
 **Note**:
 
 - For lasso, which is convex, the additional parameter \\\gamma\\ is not
@@ -157,7 +164,7 @@ magnifies the region near zero \\\[-1, 1\]\\.
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
-penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad")
+penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "sica")
 
 pen_df <- compute_penalty(seq(-4, 4, by = 0.01), penalties, lambda = 1)
 plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
@@ -218,6 +225,11 @@ Inverse Covariance Estimation with the Graphical Lasso.” *Biostatistics*
 Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge Versus the
 Lasso.” *Journal of Computational and Graphical Statistics* 7 (3):
 397–416. <https://doi.org/10.1080/10618600.1998.10474784>.
+
+Lv, Jinchi, and Yingying Fan. 2009. “A Unified Approach to Model
+Selection and Sparse Recovery using Regularized Least Squares.” *The
+Annals of Statistics* 37 (6A): 3498–528.
+<https://doi.org/10.1214/09-AOS683>.
 
 Mazumder, Rahul, Jerome H. Friedman, and Trevor Hastie. 2011.
 “SparseNet: Coordinate Descent with Nonconvex Penalties.” *Journal of
