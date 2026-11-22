@@ -34,7 +34,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">grasps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/v0.1.3/vignettes/pen_est.qmd" class="external-link"><code>vignettes/pen_est.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Carol-seven/grasps/blob/main/vignettes/pen_est.qmd" class="external-link"><code>vignettes/pen_est.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -175,12 +175,13 @@ P_{\lambda,\gamma}(\omega_{ij}) = \lambda\vert\omega_{ij}\vert^\gamma,
 \quad 0 &lt; \gamma &lt; 1.
 \]</span></p>
 <ol start="6" type="1">
-<li>LSP: Log-sum penalty <span class="citation" data-cites="candes2008enhancing">(<a href="#ref-candes2008enhancing" role="doc-biblioref">Candès et al. 2008</a>)</span>
+<li>LSP: Log-sum penalty <span class="citation" data-cites="candes2008enhancing mazumder2011sparsenet">(<a href="#ref-candes2008enhancing" role="doc-biblioref">Candès et al. 2008</a>; <a href="#ref-mazumder2011sparsenet" role="doc-biblioref">Mazumder et al. 2011</a>)</span>
 </li>
 </ol>
 <p><span class="math display">\[
 P_{\lambda,\gamma}(\omega_{ij})
-= \lambda\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
+= \frac{\lambda}{\log\left(1+\frac{1}{\gamma}\right)}
+\log\left(1+\frac{\vert\omega_{ij}\vert}{\gamma}\right),
 \quad \gamma &gt; 0.
 \]</span></p>
 <ol start="7" type="1">
@@ -291,6 +292,9 @@ Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2008. <span>“Sparse In
 </div>
 <div id="ref-fu1998penalized" class="csl-entry" role="listitem">
 Fu, Wenjiang J. 1998. <span>“Penalized Regressions: <span>T</span>he Bridge Versus the Lasso.”</span> <em>Journal of Computational and Graphical Statistics</em> 7 (3): 397–416. <a href="https://doi.org/10.1080/10618600.1998.10474784" class="external-link">https://doi.org/10.1080/10618600.1998.10474784</a>.
+</div>
+<div id="ref-mazumder2011sparsenet" class="csl-entry" role="listitem">
+Mazumder, Rahul, Jerome H. Friedman, and Trevor Hastie. 2011. <span>“<span>SparseNet</span>: <span>C</span>oordinate Descent with Nonconvex Penalties.”</span> <em>Journal of the American Statistical Association</em> 106 (495): 1125–38. <a href="https://doi.org/10.1198/jasa.2011.tm09738" class="external-link">https://doi.org/10.1198/jasa.2011.tm09738</a>.
 </div>
 <div id="ref-tibshirani1996regression" class="csl-entry" role="listitem">
 Tibshirani, Robert. 1996. <span>“Regression Shrinkage and Selection via the <span>L</span>asso.”</span> <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 58 (1): 267–88. <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" class="external-link">https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</a>.

@@ -111,11 +111,13 @@ optimization.
 \lambda\vert\omega\_{ij}\vert^\gamma, \quad 0 \< \gamma \< 1. \\
 
 6.  LSP: Log-sum penalty ([Candès et al.
-    2008](#ref-candes2008enhancing))
+    2008](#ref-candes2008enhancing); [Mazumder et al.
+    2011](#ref-mazumder2011sparsenet))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) =
-\lambda\log\left(1+\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad
-\gamma \> 0. \\
+\frac{\lambda}{\log\left(1+\frac{1}{\gamma}\right)}
+\log\left(1+\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad \gamma
+\> 0. \\
 
 7.  MCP: Minimax concave penalty ([Zhang 2010](#ref-zhang2010nearly))
 
@@ -216,6 +218,11 @@ Inverse Covariance Estimation with the Graphical Lasso.” *Biostatistics*
 Fu, Wenjiang J. 1998. “Penalized Regressions: The Bridge Versus the
 Lasso.” *Journal of Computational and Graphical Statistics* 7 (3):
 397–416. <https://doi.org/10.1080/10618600.1998.10474784>.
+
+Mazumder, Rahul, Jerome H. Friedman, and Trevor Hastie. 2011.
+“SparseNet: Coordinate Descent with Nonconvex Penalties.” *Journal of
+the American Statistical Association* 106 (495): 1125–38.
+<https://doi.org/10.1198/jasa.2011.tm09738>.
 
 Tibshirani, Robert. 1996. “Regression Shrinkage and Selection via the
 Lasso.” *Journal of the Royal Statistical Society: Series B

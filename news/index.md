@@ -2,6 +2,8 @@
 
 ## grasps 0.1.3
 
+CRAN release: 2026-11-13
+
 - Fixed within-group local linear approximation (LLA) weights so that
   diagonal entries are excluded when `diag.include = FALSE`.
 - Revised adaptive group weights so that `gamma` is applied consistently

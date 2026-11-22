@@ -58,6 +58,6 @@ deriv_df <- compute_derivative(
 plot(deriv_df) +
   scale_y_continuous(limits = c(0, 1.5)) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE))
-#> Warning: Removed 79 rows containing missing values or values outside the scale range
+#> Warning: Removed 40 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```

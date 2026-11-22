@@ -31,7 +31,8 @@ compute_penalty(omega, penalty, lambda, gamma = NA)
   4.  "lq": Lq penalty (Frank and Friedman 1993; Fu 1998; Fan and
       Li 2001) .
 
-  5.  "lsp": Log-sum penalty (Candès et al. 2008) .
+  5.  "lsp": Log-sum penalty (Candès et al. 2008; Mazumder et al. 2011)
+      .
 
   6.  "mcp": Minimax concave penalty (Zhang 2010) .
 
@@ -130,6 +131,12 @@ Estimation with the Graphical Lasso.” *Biostatistics*, **9**(3),
 Fu WJ (1998). “Penalized Regressions: The Bridge versus the Lasso.”
 *Journal of Computational and Graphical Statistics*, **7**(3), 397–416.
 [doi:10.1080/10618600.1998.10474784](https://doi.org/10.1080/10618600.1998.10474784)
+.  
+  
+Mazumder R, Friedman JH, Hastie T (2011). “SparseNet: Coordinate Descent
+with Nonconvex Penalties.” *Journal of the American Statistical
+Association*, **106**(495), 1125–1138.
+[doi:10.1198/jasa.2011.tm09738](https://doi.org/10.1198/jasa.2011.tm09738)
 .  
   
 Tibshirani R (1996). “Regression Shrinkage and Selection via the Lasso.”
