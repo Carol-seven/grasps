@@ -52,9 +52,9 @@ plot.penderiv <- function(x, ...) {
 
   ## y-axis label
   y_lab <- if (inherits(x, "penalty")) {
-    expression("Penalty Function" ~ italic(lambda) * italic(p) ~ "(" * italic(omega) * ")")
+    expression("Penalty Function" ~ italic(P) ~ "(" * italic(omega) * ")")
   } else if (inherits(x, "derivative")) {
-    expression("Derivative Function" ~ italic(lambda) * italic(p) ~ "'(" * italic(omega) * ")")
+    expression("Derivative Function" ~ italic(P) ~ "'(" * italic(omega) * ")")
   } else {
     NULL
   }
