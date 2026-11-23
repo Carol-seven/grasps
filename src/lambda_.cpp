@@ -21,6 +21,9 @@ arma::mat lambda_individual(const arma::mat& Omega, const std::string& penalty,
   } else if (penalty == "atan") {
     W = lambda * gamma * (gamma + 2/M_PI) / (gamma * gamma + Omega % Omega);
 
+  } else if (penalty == "capped") {
+    W = lambda * arma::conv_to<arma::mat>::from(abs_Omega < gamma);
+
   } else if (penalty == "exp") {
     W = (lambda / gamma) * arma::exp(-abs_Omega / gamma);
 
@@ -69,6 +72,9 @@ double lambda_group(const arma::mat& Omega, const std::string& penalty,
   } else if (penalty == "atan") {
     return lambda * gamma * (gamma + 2 / M_PI) /
       (gamma * gamma + Omega_norm * Omega_norm);
+
+  } else if (penalty == "capped") {
+    return Omega_norm < gamma ? lambda : 0.0;
 
   } else if (penalty == "exp") {
     return (lambda / gamma) * std::exp(-Omega_norm / gamma);

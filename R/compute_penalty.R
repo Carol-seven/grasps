@@ -14,6 +14,8 @@
 #' \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
 #' \item "atan": Arctangent type penalty
 #' \insertCite{wang2016variable}{grasps}.
+#' \item "capped": Capped L1 penalty
+#' \insertCite{zhang2010analysis}{grasps}.
 #' \item "exp": Exponential type penalty
 #' \insertCite{wang2018variable}{grasps}.
 #' \item "lq": Lq penalty
@@ -44,6 +46,7 @@
 #' The default value and valid range depend on the penalty:
 #' \enumerate{
 #' \item "atan": default 0.005; must be positive.
+#' \item "capped": default 0.1; must be positive.
 #' \item "exp": default 0.01; must be positive.
 #' \item "lq": default 0.5; must be in \eqn{(0, 1)}.
 #' \item "lsp": default 0.1; must be positive.
@@ -80,8 +83,8 @@
 compute_penalty <- function(omega, penalty, lambda, gamma = NA) {
 
   validate_vector(omega, "omega")
-  penalties <- c("lasso", "atan", "exp", "lq", "lsp", "mcp", "scad", "selo",
-                 "sica")
+  penalties <- c("lasso", "atan", "capped", "exp", "lq", "lsp", "mcp", "scad",
+                 "selo", "sica")
   if (!is.character(penalty) || length(penalty) == 0L ||
       anyNA(penalty) || any(!penalty %in% penalties)) {
     stop(sprintf("Invalid `penalty`.\nAvailable options: %s.",
@@ -121,8 +124,9 @@ pen_internal <- function(omega, penalty, lambda, gamma) {
   if (penalty != "lasso") {
     if (missing(gamma) || is.na(gamma)) {
       gamma <- switch(penalty,
-                      "atan" = 0.005, "exp" = 0.01, "lq" = 0.5, "lsp" = 0.1,
-                      "mcp" = 3, "scad" = 3.7, "selo" = 0.01, "sica" = 1)
+                      "atan" = 0.005, "capped" = 0.1, "exp" = 0.01, "lq" = 0.5,
+                      "lsp" = 0.1, "mcp" = 3, "scad" = 3.7, "selo" = 0.01,
+                      "sica" = 1)
     }
     lower <- switch(penalty, "mcp" = 1, "scad" = 2, 0)
     validate_scalar(gamma, "gamma", lower = lower)
@@ -137,6 +141,9 @@ pen_internal <- function(omega, penalty, lambda, gamma) {
 
   if (penalty == "atan") {
     res <- lambda * (gamma + 2 / pi) * atan(a / gamma)
+
+  } else if (penalty == "capped") {
+    res <- lambda * pmin(a, gamma)
 
   } else if (penalty == "exp") {
     res <- lambda * (1 - exp(-a / gamma))

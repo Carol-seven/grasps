@@ -71,6 +71,8 @@ Available options include:
 \insertCite{zou2006adaptive,fan2009network}{grasps}.
 \item "atan": Arctangent type penalty
 \insertCite{wang2016variable}{grasps}.
+\item "capped": Capped L1 penalty
+\insertCite{zhang2010analysis}{grasps}.
 \item "exp": Exponential type penalty
 \insertCite{wang2018variable}{grasps}.
 \item "lq": Lq penalty
@@ -117,6 +119,7 @@ The default value and valid range depend on the penalty:
 \enumerate{
 \item "adapt": default 0.5; must be positive.
 \item "atan": default 0.005; must be positive.
+\item "capped": default 0.1; must be positive.
 \item "exp": default 0.01; must be positive.
 \item "lq": default 0.5; must be in \eqn{(0, 1)}.
 \item "lsp": default 0.1; must be positive.

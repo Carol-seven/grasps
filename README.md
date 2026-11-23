@@ -39,10 +39,11 @@ the following penalties:
 | Lasso (`penalty = "lasso"`) | Tibshirani ([1996](#ref-tibshirani1996regression)); Friedman et al. ([2008](#ref-friedman2008sparse)) |
 | Adaptive lasso (`penalty = "adapt"`) | Zou ([2006](#ref-zou2006adaptive)); Fan et al. ([2009](#ref-fan2009network)) |
 | Atan (`penalty = "atan"`) | Wang and Zhu ([2016](#ref-wang2016variable)) |
+| Capped L1 (`penalty = "capped"`) | T. Zhang ([2010](#ref-zhang2010analysis)) |
 | Exp (`penalty = "exp"`) | Wang et al. ([2018](#ref-wang2018variable)) |
 | Lq (`penalty = "lq"`) | Frank and Friedman ([1993](#ref-frank1993statistical)); Fu ([1998](#ref-fu1998penalized)); Fan and Li ([2001](#ref-fan2001variable)) |
 | LSP (`penalty = "lsp"`) | Candès et al. ([2008](#ref-candes2008enhancing)); Mazumder et al. ([2011](#ref-mazumder2011sparsenet)) |
-| MCP (`penalty = "mcp"`) | Zhang ([2010](#ref-zhang2010nearly)) |
+| MCP (`penalty = "mcp"`) | C.-H. Zhang ([2010](#ref-zhang2010nearly)) |
 | SCAD (`penalty = "scad"`) | Fan and Li ([2001](#ref-fan2001variable)); Fan et al. ([2009](#ref-fan2009network)) |
 | SELO (`penalty = "selo"`) | Dicker et al. ([2013](#ref-dicker2013variable)) |
 | SICA (`penalty = "sica"`) | Lv and Fan ([2009](#ref-lv2009unified)) |
@@ -214,6 +215,12 @@ Wang, Yanxin, and Li Zhu. 2016. “Variable Selection and Parameter Estimation w
 <div id="ref-zhang2010nearly" class="csl-entry">
 
 Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection under Minimax Concave Penalty.” *The Annals of Statistics* 38 (2): 894–942. <https://doi.org/10.1214/09-AOS729>.
+
+</div>
+
+<div id="ref-zhang2010analysis" class="csl-entry">
+
+Zhang, Tong. 2010. “Analysis of Multi-Stage Convex Relaxation for Sparse Regularization.” *Journal of Machine Learning Research* 11 (35): 1081–107. <http://jmlr.org/papers/v11/zhang10a.html>.
 
 </div>
 

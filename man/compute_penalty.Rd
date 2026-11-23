@@ -17,6 +17,8 @@ Available options include:
 \insertCite{tibshirani1996regression,friedman2008sparse}{grasps}.
 \item "atan": Arctangent type penalty
 \insertCite{wang2016variable}{grasps}.
+\item "capped": Capped L1 penalty
+\insertCite{zhang2010analysis}{grasps}.
 \item "exp": Exponential type penalty
 \insertCite{wang2018variable}{grasps}.
 \item "lq": Lq penalty
@@ -47,6 +49,7 @@ determined by \code{penalty}, \code{lambda}, and \code{gamma}.
 The default value and valid range depend on the penalty:
 \enumerate{
 \item "atan": default 0.005; must be positive.
+\item "capped": default 0.1; must be positive.
 \item "exp": default 0.01; must be positive.
 \item "lq": default 0.5; must be in \eqn{(0, 1)}.
 \item "lsp": default 0.1; must be positive.
@@ -82,8 +85,11 @@ library(ggplot2)
 
 pen_df <- compute_penalty(
   omega = seq(-4, 4, by = 0.01),
-  penalty = c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "selo", "sica"),
-  lambda = 1)
+  penalty = c("lasso", "atan", "capped", "exp",
+              "lq", "lsp", "mcp", "scad",
+              "selo", "sica"),
+  lambda = 1
+)
 
 plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
   guides(color = guide_legend(nrow = 3, byrow = TRUE))

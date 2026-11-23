@@ -73,6 +73,7 @@ the following penalties:
 | Lasso (`penalty = "lasso"`) | @tibshirani1996regression; @friedman2008sparse |
 | Adaptive lasso (`penalty = "adapt"`) | @zou2006adaptive; @fan2009network |
 | Atan (`penalty = "atan"`) | @wang2016variable |
+| Capped L1 (`penalty = "capped"`) | @zhang2010analysis |
 | Exp (`penalty = "exp"`) | @wang2018variable |
 | Lq (`penalty = "lq"`) | @frank1993statistical; @fu1998penalized; @fan2001variable |
 | LSP (`penalty = "lsp"`) | @candes2008enhancing; @mazumder2011sparsenet |

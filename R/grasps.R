@@ -38,6 +38,8 @@
 #' \insertCite{zou2006adaptive,fan2009network}{grasps}.
 #' \item "atan": Arctangent type penalty
 #' \insertCite{wang2016variable}{grasps}.
+#' \item "capped": Capped L1 penalty
+#' \insertCite{zhang2010analysis}{grasps}.
 #' \item "exp": Exponential type penalty
 #' \insertCite{wang2018variable}{grasps}.
 #' \item "lq": Lq penalty
@@ -84,6 +86,7 @@
 #' \enumerate{
 #' \item "adapt": default 0.5; must be positive.
 #' \item "atan": default 0.005; must be positive.
+#' \item "capped": default 0.1; must be positive.
 #' \item "exp": default 0.01; must be positive.
 #' \item "lq": default 0.5; must be in \eqn{(0, 1)}.
 #' \item "lsp": default 0.1; must be positive.
@@ -365,8 +368,8 @@ grasps <- function(X, n = nrow(X), membership, penalty,
 
   ## Validate the penalty specification ----------------------------------------
 
-  penalties <- c("lasso", "adapt", "atan", "exp", "lq", "lsp", "mcp", "scad",
-                 "selo", "sica")
+  penalties <- c("lasso", "adapt", "atan", "capped", "exp", "lq", "lsp", "mcp",
+                 "scad", "selo", "sica")
 
   if (!is.character(penalty) || length(penalty) != 1L ||
       is.na(penalty) || !(penalty %in% penalties)) {
@@ -420,9 +423,9 @@ grasps <- function(X, n = nrow(X), membership, penalty,
   } else {
     if (is.null(gamma)) {
       gamma <- switch(penalty,
-                      "adapt" = 0.5, "atan" = 0.005, "exp"  = 0.01, "lq" = 0.5,
-                      "lsp"  = 0.1, "mcp"  = 3, "scad" = 3.7, "selo" = 0.01,
-                      "sica" = 1)
+                      "adapt" = 0.5, "atan" = 0.005, "capped" = 0.1,
+                      "exp"  = 0.01, "lq" = 0.5, "lsp"  = 0.1, "mcp"  = 3,
+                      "scad" = 3.7, "selo" = 0.01, "sica" = 1)
     }
     lower <- switch(penalty, "mcp" = 1, "scad" = 2, 0)
     validate_scalar(gamma, "gamma", lower = lower)
