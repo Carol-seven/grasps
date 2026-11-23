@@ -132,6 +132,9 @@ Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and s
 <li><p>"atan": Arctangent type penalty
 (Wang and Zhu 2016)
 .</p></li>
+<li><p>"capped": Capped L1 penalty
+(Zhang 2010)
+.</p></li>
 <li><p>"exp": Exponential type penalty
 (Wang et al. 2018)
 .</p></li>
@@ -195,6 +198,7 @@ all Cartesian combinations of their values are evaluated.</p></dd>
 the chosen <code>penalty</code>.
 The default value and valid range depend on the penalty:</p><ol><li><p>"adapt": default 0.5; must be positive.</p></li>
 <li><p>"atan": default 0.005; must be positive.</p></li>
+<li><p>"capped": default 0.1; must be positive.</p></li>
 <li><p>"exp": default 0.01; must be positive.</p></li>
 <li><p>"lq": default 0.5; must be in \((0, 1)\).</p></li>
 <li><p>"lsp": default 0.1; must be positive.</p></li>
@@ -546,13 +550,16 @@ In Lafferty J, Williams C, Shawe-Taylor J, Zemel R, Culotta A (eds.), <em>Advanc
 “Nearly Unbiased Variable Selection under Minimax Concave Penalty.”
 <em>The Annals of Statistics</em>, <b>38</b>(2), 894–942.
 <a href="https://doi.org/10.1214/09-AOS729" class="external-link">doi:10.1214/09-AOS729</a>
-.<br><br> Zou H (2006).
+.<br><br> Zhang T (2010).
+“Analysis of Multi-Stage Convex Relaxation for Sparse Regularization.”
+<em>Journal of Machine Learning Research</em>, <b>11</b>(35), 1081–1107.
+<a href="http://jmlr.org/papers/v11/zhang10a.html" class="external-link">http://jmlr.org/papers/v11/zhang10a.html</a>.<br><br> Zou H (2006).
 “The Adaptive Lasso and Its Oracle Properties.”
 <em>Journal of the American Statistical Association</em>, <b>101</b>(476), 1418–1429.
 <a href="https://doi.org/10.1198/016214506000000735" class="external-link">doi:10.1198/016214506000000735</a>
 .<br><br> Zou H, Li R (2008).
 “One-Step Sparse Estimates in Nonconcave Penalized Likelihood Models.”
-<em>The Annals of statistics</em>, <b>36</b>(4), 1509–1533.
+<em>The Annals of Statistics</em>, <b>36</b>(4), 1509–1533.
 <a href="https://doi.org/10.1214/009053607000000802" class="external-link">doi:10.1214/009053607000000802</a>
 .</p>
     </div>

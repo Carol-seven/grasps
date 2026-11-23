@@ -83,22 +83,24 @@ grasps(
 
   3.  "atan": Arctangent type penalty (Wang and Zhu 2016) .
 
-  4.  "exp": Exponential type penalty (Wang et al. 2018) .
+  4.  "capped": Capped L1 penalty (Zhang 2010) .
 
-  5.  "lq": Lq penalty (Frank and Friedman 1993; Fu 1998; Fan and
+  5.  "exp": Exponential type penalty (Wang et al. 2018) .
+
+  6.  "lq": Lq penalty (Frank and Friedman 1993; Fu 1998; Fan and
       Li 2001) .
 
-  6.  "lsp": Log-sum penalty (Candès et al. 2008; Mazumder et al. 2011)
+  7.  "lsp": Log-sum penalty (Candès et al. 2008; Mazumder et al. 2011)
       .
 
-  7.  "mcp": Minimax concave penalty (Zhang 2010) .
+  8.  "mcp": Minimax concave penalty (Zhang 2010) .
 
-  8.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
+  9.  "scad": Smoothly clipped absolute deviation (Fan and Li 2001; Fan
       et al. 2009) .
 
-  9.  "selo": Seamless-L0 penalty (Dicker et al. 2013) .
+  10. "selo": Seamless-L0 penalty (Dicker et al. 2013) .
 
-  10. "sica": Smooth integration of counting and absolute deviation (Lv
+  11. "sica": Smooth integration of counting and absolute deviation (Lv
       and Fan 2009) .
 
 - diag.ind:
@@ -143,19 +145,21 @@ grasps(
 
   2.  "atan": default 0.005; must be positive.
 
-  3.  "exp": default 0.01; must be positive.
+  3.  "capped": default 0.1; must be positive.
 
-  4.  "lq": default 0.5; must be in \\(0, 1)\\.
+  4.  "exp": default 0.01; must be positive.
 
-  5.  "lsp": default 0.1; must be positive.
+  5.  "lq": default 0.5; must be in \\(0, 1)\\.
 
-  6.  "mcp": default 3; must be greater than 1.
+  6.  "lsp": default 0.1; must be positive.
 
-  7.  "scad": default 3.7; must be greater than 2.
+  7.  "mcp": default 3; must be greater than 1.
 
-  8.  "selo": default 0.01; must be positive.
+  8.  "scad": default 3.7; must be greater than 2.
 
-  9.  "sica": default 1; must be positive.
+  9.  "selo": default 0.01; must be positive.
+
+  10. "sica": default 1; must be positive.
 
   This argument is ignored when `penalty = "lasso"`.
 
@@ -546,13 +550,18 @@ Zhang C (2010). “Nearly Unbiased Variable Selection under Minimax
 Concave Penalty.” *The Annals of Statistics*, **38**(2), 894–942.
 [doi:10.1214/09-AOS729](https://doi.org/10.1214/09-AOS729) .  
   
+Zhang T (2010). “Analysis of Multi-Stage Convex Relaxation for Sparse
+Regularization.” *Journal of Machine Learning Research*, **11**(35),
+1081–1107.
+[http://jmlr.org/papers/v11/zhang10a.html](http://jmlr.org/papers/v11/zhang10a.md).  
+  
 Zou H (2006). “The Adaptive Lasso and Its Oracle Properties.” *Journal
 of the American Statistical Association*, **101**(476), 1418–1429.
 [doi:10.1198/016214506000000735](https://doi.org/10.1198/016214506000000735)
 .  
   
 Zou H, Li R (2008). “One-Step Sparse Estimates in Nonconcave Penalized
-Likelihood Models.” *The Annals of statistics*, **36**(4), 1509–1533.
+Likelihood Models.” *The Annals of Statistics*, **36**(4), 1509–1533.
 [doi:10.1214/009053607000000802](https://doi.org/10.1214/009053607000000802)
 .
 

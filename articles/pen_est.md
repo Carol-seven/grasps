@@ -96,21 +96,27 @@ optimization.
 \arctan\left(\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad \gamma
 \> 0. \\
 
-4.  Exp: Exponential type penalty ([Wang et al.
+4.  Capped: Capped L1 penalty ([T. Zhang 2010](#ref-zhang2010analysis))
+
+\\ P\_{\lambda,\gamma}(\omega\_{ij}) =
+\lambda\min\left(\lvert\omega\_{ij}\rvert,\gamma\right), \quad \gamma \>
+0. \\
+
+5.  Exp: Exponential type penalty ([Wang et al.
     2018](#ref-wang2018variable))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) =
 \lambda\left\[1-\exp\left(-\frac{\vert\omega\_{ij}\vert}{\gamma}\right)\right\],
 \quad \gamma \> 0. \\
 
-5.  Lq ([Frank and Friedman 1993](#ref-frank1993statistical); [Fu
+6.  Lq ([Frank and Friedman 1993](#ref-frank1993statistical); [Fu
     1998](#ref-fu1998penalized); [Fan and Li
     2001](#ref-fan2001variable))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) =
 \lambda\vert\omega\_{ij}\vert^\gamma, \quad 0 \< \gamma \< 1. \\
 
-6.  LSP: Log-sum penalty ([Candès et al.
+7.  LSP: Log-sum penalty ([Candès et al.
     2008](#ref-candes2008enhancing); [Mazumder et al.
     2011](#ref-mazumder2011sparsenet))
 
@@ -119,7 +125,8 @@ optimization.
 \log\left(1+\frac{\vert\omega\_{ij}\vert}{\gamma}\right), \quad \gamma
 \> 0. \\
 
-7.  MCP: Minimax concave penalty ([Zhang 2010](#ref-zhang2010nearly))
+8.  MCP: Minimax concave penalty ([C.-H. Zhang
+    2010](#ref-zhang2010nearly))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) = \begin{cases}
 \lambda\vert\omega\_{ij}\vert - \dfrac{\omega\_{ij}^2}{2\gamma}, &
@@ -127,7 +134,7 @@ optimization.
 \dfrac{1}{2}\gamma\lambda^2, & \text{if } \vert\omega\_{ij}\vert \>
 \gamma\lambda. \end{cases} \quad \gamma \> 1. \\
 
-8.  SCAD: Smoothly clipped absolute deviation ([Fan and Li
+9.  SCAD: Smoothly clipped absolute deviation ([Fan and Li
     2001](#ref-fan2001variable); [Fan et al. 2009](#ref-fan2009network))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) = \begin{cases}
@@ -138,14 +145,14 @@ optimization.
 \dfrac{\lambda^2(\gamma+1)}{2} & \text{if } \vert\omega\_{ij}\vert \geq
 \gamma\lambda. \end{cases} \quad \gamma \> 2. \\
 
-9.  SELO: Seamless-L0 penalty ([Dicker et al.
+10. SELO: Seamless-L0 penalty ([Dicker et al.
     2013](#ref-dicker2013variable))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) = \frac{\lambda}{\log(2)}
 \log\left(\frac{\lvert\omega\_{ij}\rvert}{\lvert\omega\_{ij}\rvert+\gamma}+1\right),
 \quad \gamma \> 0. \\
 
-10. SICA: Smooth integration of counting and absolute deviation ([Lv and
+11. SICA: Smooth integration of counting and absolute deviation ([Lv and
     Fan 2009](#ref-lv2009unified))
 
 \\ P\_{\lambda,\gamma}(\omega\_{ij}) =
@@ -171,7 +178,9 @@ magnifies the region near zero \\\[-1, 1\]\\.
 library(grasps) ## for penalty computation
 library(ggplot2) ## for visualization
 
-penalties <- c("atan", "exp", "lasso", "lq", "lsp", "mcp", "scad", "selo", "sica")
+penalties <- c("lasso", "atan", "capped", "exp",
+               "lq", "lsp", "mcp", "scad",
+               "selo", "sica")
 
 pen_df <- compute_penalty(seq(-4, 4, by = 0.01), penalties, lambda = 1)
 plot(pen_df, xlim = c(-1, 1), ylim = c(0, 1), zoom.size = 1) +
@@ -185,10 +194,10 @@ Figure 1: Illustrative penalty functions.
 [Figure 2](#fig-deriv) displays the derivative function
 \\P^\prime(\omega)\\ associated with a range of penalty types. The lasso
 exhibits a constant derivative, corresponding to uniform shrinkage. For
-MCP and SCAD, the derivatives are piecewise: initially equal to the
-lasso derivative, then decreasing over an intermediate region, and
-eventually dropping to zero, indicating that large \\\vert\omega\vert\\
-receive no shrinkage. Other non-convex penalties show smoothly
+capped L1, the derivative equals the lasso derivative below the cutoff
+and drops to zero at the cutoff, using the right derivative there. MCP
+decreases linearly to zero, while SCAD first stays constant and then
+decreases linearly to zero. Other non-convex penalties show smoothly
 diminishing derivatives as \\\vert\omega\vert\\ increases, reflecting
 their tendency to shrink small \\\vert\omega\vert\\ strongly while
 exerting little to no shrinkage on large ones.
@@ -265,6 +274,11 @@ and Statistics* 2016: 6495417. <https://doi.org/10.1155/2016/6495417>.
 Zhang, Cun-Hui. 2010. “Nearly Unbiased Variable Selection Under Minimax
 Concave Penalty.” *The Annals of Statistics* 38 (2): 894–942.
 <https://doi.org/10.1214/09-AOS729>.
+
+Zhang, Tong. 2010. “Analysis of Multi-Stage Convex Relaxation for Sparse
+Regularization.” *Journal of Machine Learning Research* 11 (35):
+1081–107.
+[http://jmlr.org/papers/v11/zhang10a.html](http://jmlr.org/papers/v11/zhang10a.md).
 
 Zou, Hui. 2006. “The Adaptive Lasso and Its Oracle Properties.” *Journal
 of the American Statistical Association* 101 (476): 1418–29.

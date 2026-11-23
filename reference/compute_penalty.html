@@ -78,6 +78,9 @@ Available options include:</p><ol><li><p>"lasso": Least absolute shrinkage and s
 <li><p>"atan": Arctangent type penalty
 (Wang and Zhu 2016)
 .</p></li>
+<li><p>"capped": Capped L1 penalty
+(Zhang 2010)
+.</p></li>
 <li><p>"exp": Exponential type penalty
 (Wang et al. 2018)
 .</p></li>
@@ -116,6 +119,7 @@ the penalty function.
 If <code>gamma</code> has length 1, it is recycled to the common length
 determined by <code>penalty</code>, <code>lambda</code>, and <code>gamma</code>.
 The default value and valid range depend on the penalty:</p><ol><li><p>"atan": default 0.005; must be positive.</p></li>
+<li><p>"capped": default 0.1; must be positive.</p></li>
 <li><p>"exp": default 0.01; must be positive.</p></li>
 <li><p>"lq": default 0.5; must be in \((0, 1)\).</p></li>
 <li><p>"lsp": default 0.1; must be positive.</p></li>
@@ -203,7 +207,10 @@ Arguments of length 1 are recycled to this common length.</p>
 “Nearly Unbiased Variable Selection under Minimax Concave Penalty.”
 <em>The Annals of Statistics</em>, <b>38</b>(2), 894–942.
 <a href="https://doi.org/10.1214/09-AOS729" class="external-link">doi:10.1214/09-AOS729</a>
-.</p>
+.<br><br> Zhang T (2010).
+“Analysis of Multi-Stage Convex Relaxation for Sparse Regularization.”
+<em>Journal of Machine Learning Research</em>, <b>11</b>(35), 1081–1107.
+<a href="http://jmlr.org/papers/v11/zhang10a.html" class="external-link">http://jmlr.org/papers/v11/zhang10a.html</a>.</p>
     </div>
 
     <div class="section level2">
@@ -213,8 +220,11 @@ Arguments of length 1 are recycled to this common length.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">pen_df</span> <span class="op">&lt;-</span> <span class="fu">compute_penalty</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">4</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"atan"</span>, <span class="st">"exp"</span>, <span class="st">"lasso"</span>, <span class="st">"lq"</span>, <span class="st">"lsp"</span>, <span class="st">"mcp"</span>, <span class="st">"scad"</span>, <span class="st">"selo"</span>, <span class="st">"sica"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lasso"</span>, <span class="st">"atan"</span>, <span class="st">"capped"</span>, <span class="st">"exp"</span>,</span></span>
+<span class="r-in"><span>              <span class="st">"lq"</span>, <span class="st">"lsp"</span>, <span class="st">"mcp"</span>, <span class="st">"scad"</span>,</span></span>
+<span class="r-in"><span>              <span class="st">"selo"</span>, <span class="st">"sica"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pen_df</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, zoom.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
